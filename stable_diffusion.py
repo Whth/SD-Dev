@@ -8,7 +8,7 @@ import requests
 from PIL import Image, PngImagePlugin
 from slugify import slugify
 
-from extensions.sdDev.api import (
+from .api import (
     API_PNG_INFO,
     API_TXT2IMG,
     API_IMG2IMG,
