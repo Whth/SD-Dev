@@ -96,7 +96,7 @@ class StableDiffusionPlugin(AbstractPlugin):
         from dynamicprompts.wildcards import WildcardManager
         from dynamicprompts.generators import RandomPromptGenerator
 
-        from modules.config_utils import CmdBuilder
+        from modules.cmd import CmdBuilder
         from modules.file_manager import img_to_base64
         from .controlnet import ControlNetUnit, Controlnet
         from .stable_diffusion import StableDiffusionApp, DiffusionParser, HiResParser
