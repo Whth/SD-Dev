@@ -133,7 +133,7 @@ class StableDiffusionPlugin(AbstractPlugin):
                 },
             }
         }
-        self._cmd_client.register(cmd_syntax_tree, True)
+        self._root_namespace_node.register(cmd_syntax_tree, True)
         translater: Optional[AbstractPlugin] = self._plugin_view.get(self.__TRANSLATE_PLUGIN_NAME, None)
         if translater:
             translate: StableDiffusionPlugin.__TRANSLATE_METHOD_TYPE = getattr(translater, self.__TRANSLATE_METHOD_NAME)
