@@ -1,6 +1,6 @@
 import os
 import re
-from typing import Tuple, List, Optional, Callable, Dict, Any
+from typing import Tuple, List, Optional, Callable, Any
 
 from modules.file_manager import download_file
 from modules.plugin_base import AbstractPlugin
@@ -95,6 +95,9 @@ class StableDiffusionPlugin(AbstractPlugin):
         from graia.ariadne.model import Group
         from dynamicprompts.wildcards import WildcardManager
         from dynamicprompts.generators import RandomPromptGenerator
+        from modules.cmd import RequiredPermission, ExecutableNode, NameSpaceNode
+        from modules.auth.resources import required_perm_generator
+        from modules.auth.permissions import Permission, PermissionCode
 
         from modules.cmd import CmdBuilder
         from modules.file_manager import img_to_base64
@@ -121,19 +124,53 @@ class StableDiffusionPlugin(AbstractPlugin):
             self.CONFIG_CONTROLNET_MODULE,
             self.CONFIG_CONTROLNET_MODEL,
         ]
-        cmd_syntax_tree: Dict = {
-            self._config_registry.get_config(self.CONFIG_CONFIG_CLIENT_KEYWORD): {
-                self.__CONFIG_CMD: {
-                    self.__CONFIG_LIST_CMD: cmd_builder.build_list_out_for(configurable_options),
-                    self.__CONFIG_SET_CMD: cmd_builder.build_setter_hall(),
-                },
-                self.__CONTROLNET_CMD: {
-                    self.__CONTROLNET_MODELS_CMD: lambda: "CN_Models:\n" + "\n".join(controlnet.models),
-                    self.__CONTROLNET_MODULES_CMD: lambda: "CN_Modules:\n" + "\n".join(controlnet.modules),
-                },
-            }
-        }
-        self._root_namespace_node.register(cmd_syntax_tree, True)
+
+        su_perm = Permission(id=PermissionCode.SuperPermission.value, name=self.get_plugin_name())
+        req_perm: RequiredPermission = required_perm_generator(
+            target_resource_name=self.get_plugin_name(), super_permissions=[su_perm]
+        )
+        tree = NameSpaceNode(
+            name=self._config_registry.get_config(self.CONFIG_CONFIG_CLIENT_KEYWORD),
+            required_permissions=req_perm,
+            help_message=self.get_plugin_description(),
+            children_node=[
+                NameSpaceNode(
+                    name=self.__CONFIG_CMD,
+                    required_permissions=req_perm,
+                    children_node=[
+                        ExecutableNode(
+                            name=self.__CONFIG_LIST_CMD,
+                            required_permissions=req_perm,
+                            source=cmd_builder.build_list_out_for(configurable_options),
+                        ),
+                        ExecutableNode(
+                            name=self.__CONFIG_SET_CMD,
+                            required_permissions=req_perm,
+                            source=cmd_builder.build_setter_hall(),
+                        ),
+                    ],
+                ),
+                NameSpaceNode(
+                    name=self.__CONTROLNET_CMD,
+                    required_permissions=req_perm,
+                    children_node=[
+                        ExecutableNode(
+                            name=self.__CONTROLNET_MODELS_CMD,
+                            required_permissions=req_perm,
+                            source=lambda: "CN_Models:\n" + "\n".join(controlnet.models),
+                        ),
+                        ExecutableNode(
+                            name=self.__CONTROLNET_MODULES_CMD,
+                            required_permissions=req_perm,
+                            source=lambda: "CN_Modules:\n" + "\n".join(controlnet.modules),
+                        ),
+                    ],
+                ),
+            ],
+        )
+        self._auth_manager.add_perm_from_req(req_perm)
+        self._root_namespace_node.add_node(tree)
+
         translater: Optional[AbstractPlugin] = self._plugin_view.get(self.__TRANSLATE_PLUGIN_NAME, None)
         if translater:
             translate: StableDiffusionPlugin.__TRANSLATE_METHOD_TYPE = getattr(translater, self.__TRANSLATE_METHOD_NAME)
