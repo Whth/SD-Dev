@@ -1,6 +1,6 @@
 import os
 import re
-from typing import Tuple, List, Optional, Callable, Any
+from typing import Tuple, List, Optional, Callable, Any, Union
 
 from modules.file_manager import download_file
 from modules.plugin_base import AbstractPlugin
@@ -129,6 +129,22 @@ class StableDiffusionPlugin(AbstractPlugin):
         req_perm: RequiredPermission = required_perm_generator(
             target_resource_name=self.get_plugin_name(), super_permissions=[su_perm]
         )
+
+        async def diffusion_history() -> Image:
+            """
+            This function is a receiver for GroupMessage events with the decorator "ContainKeyword(keyword='sd ag')".
+            It takes in two parameters:
+                - "app" which is of type Ariadne
+                - "group" which is of type Group
+
+            This function is responsible for sending the result of the "txt2img_history" method of the "SD_app" object,
+            which is an asynchronous method that returns an output directory path. The result is sent as a message to the
+            group using the "send_message" method of the "app" object. The message contains an empty MessageChain
+            concatenated with an Image object, which is created using the first path in the "send_result" list.
+            """
+            send_result = await SD_app.txt2img_history(output_dir_path)
+            return Image(path=send_result[0])
+
         tree = NameSpaceNode(
             name=self._config_registry.get_config(self.CONFIG_CONFIG_CLIENT_KEYWORD),
             required_permissions=req_perm,
@@ -166,6 +182,11 @@ class StableDiffusionPlugin(AbstractPlugin):
                         ),
                     ],
                 ),
+                ExecutableNode(
+                    name='ag',
+                    required_permissions=req_perm,
+                    source=diffusion_history,
+                )
             ],
         )
         self._auth_manager.add_perm_from_req(req_perm)
@@ -225,24 +246,21 @@ class StableDiffusionPlugin(AbstractPlugin):
 
         from graia.ariadne import Ariadne
 
-        @self.receiver(
-            GroupMessage,
-            decorators=[ContainKeyword(keyword=self._config_registry.get_config(self.CONFIG_POS_KEYWORD))],
-        )
-        async def group_diffusion(app: Ariadne, group: Group, message: MessageChain, message_event: GroupMessage):
+        from graia.ariadne.model import Friend
+
+        from graia.ariadne.event.message import FriendMessage
+        async def diffusion(app: Ariadne, target: Union[Group, Friend], message: MessageChain,
+                            message_event: Union[GroupMessage, FriendMessage]):
             """
-            An asynchronous function that handles group diffusion messages.
+            Asynchronously performs diffusion on the given message and sends the resulting image as a message in the group or to a friend.
 
             Args:
                 app (Ariadne): The Ariadne instance.
-                group (Group): The group where the message was sent.
-                message (MessageChain): The message content.
-                message_event (GroupMessage): The group message event.
+                target (Union[Group, Friend]): The target group or friend to send the image to.
+                message (MessageChain): The message containing the prompts for diffusion.
+                message_event (Union[GroupMessage, FriendMessage]): The message event.
 
             Returns:
-                None
-
-            Raises:
                 None
             """
             # Extract positive and negative prompts from the message
@@ -274,28 +292,20 @@ class StableDiffusionPlugin(AbstractPlugin):
                 )
 
             # Send the image as a message in the group
-            await app.send_message(group, MessageChain("") + Image(path=send_result[0]))
+            await app.send_message(target, MessageChain("") + Image(path=send_result[0]))
 
-        @self.receiver(
+        from graia.ariadne.event.message import FriendMessage
+        self.receiver(
             GroupMessage,
-            decorators=[ContainKeyword(keyword="sd ag")],
-        )
-        async def group_diffusion_history(app: Ariadne, group: Group):
-            """
-            This function is a receiver for GroupMessage events with the decorator "ContainKeyword(keyword='sd ag')".
-            It takes in two parameters:
-                - "app" which is of type Ariadne
-                - "group" which is of type Group
+            decorators=[ContainKeyword(keyword=self._config_registry.get_config(self.CONFIG_POS_KEYWORD))],
+        )(diffusion)
+        self.receiver(
+            FriendMessage,
+            decorators=[ContainKeyword(keyword=self._config_registry.get_config(self.CONFIG_POS_KEYWORD))],
+        )(diffusion)
 
-            This function is responsible for sending the result of the "txt2img_history" method of the "SD_app" object,
-            which is an asynchronous method that returns an output directory path. The result is sent as a message to the
-            group using the "send_message" method of the "app" object. The message contains an empty MessageChain
-            concatenated with an Image object, which is created using the first path in the "send_result" list.
-            """
-            send_result = await SD_app.txt2img_history(output_dir_path)
-            await app.send_message(group, MessageChain("") + Image(path=send_result[0]))
-
-        async def _get_image_url(app: Ariadne, message: MessageChain, message_event: GroupMessage):
+        async def _get_image_url(app: Ariadne, message: MessageChain,
+                                 message_event: Union[GroupMessage, FriendMessage]):
             if Image in message:
                 image_url = message[Image, 1][0].url
             elif hasattr(message_event.quote, "origin"):
@@ -332,7 +342,7 @@ class StableDiffusionPlugin(AbstractPlugin):
 
 
 def de_assembly(
-    message: str, specify_batch_size: bool = False
+        message: str, specify_batch_size: bool = False
 ) -> Tuple[List[str], List[str], int] | Tuple[List[str], List[str]]:
     """
     Generates the function comment for the given function body.
@@ -395,7 +405,7 @@ class PromptProcessorRegistry(object):
         return pos_prompt, neg_prompt
 
     def register(
-        self, judge: Callable[[], Any], processor: Callable[[str, str], Tuple[str, str]], process_name: str = None
+            self, judge: Callable[[], Any], processor: Callable[[str, str], Tuple[str, str]], process_name: str = None
     ) -> None:
         """
         Register a new judge and processor pair to the registry list.
