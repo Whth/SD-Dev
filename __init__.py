@@ -13,6 +13,7 @@ class CMD:
     IMG2IMG = "i"
     TXT2IMG = "t"
     LIKE = "lk"
+    SIZE = "size"
 
 
 class StableDiffusionPlugin(AbstractPlugin):
@@ -230,15 +231,34 @@ class StableDiffusionPlugin(AbstractPlugin):
                     required_permissions=req_perm,
                     help_message="mark last generation as liked,or generate from favorite",
                     children_node=[
+                        NameSpaceNode(
+                            name=CMD.SIZE,
+                            required_permissions=req_perm,
+                            help_message="the size of the Favorite storage",
+                            children_node=[
+                                ExecutableNode(
+                                    name=CMD.TXT2IMG,
+                                    required_permissions=req_perm,
+                                    source=lambda: f"The size of the t2i Favorite storage is: \n"
+                                    f"{len(SD_app.txt2img_params.favorite)}",
+                                ),
+                                ExecutableNode(
+                                    name=CMD.IMG2IMG,
+                                    required_permissions=req_perm,
+                                    source=lambda: f"The size of the i2i Favorite storage is: \n"
+                                    f"{len(SD_app.img2img_params.favorite)}",
+                                ),
+                            ],
+                        ),
                         ExecutableNode(
                             name=CMD.TXT2IMG,
                             required_permissions=req_perm,
-                            source=lambda: SD_app.add_favorite_t(),
+                            source=lambda: f"add to t2i favorite\nSuccess={SD_app.add_favorite_t()}",
                         ),
                         ExecutableNode(
                             name=CMD.IMG2IMG,
                             required_permissions=req_perm,
-                            source=lambda: SD_app.add_favorite_i(),
+                            source=lambda: f"add to i2i favorite\nSuccess={SD_app.add_favorite_i()}",
                         ),
                         NameSpaceNode(
                             name=CMD.AGAIN,

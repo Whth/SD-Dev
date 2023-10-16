@@ -35,6 +35,77 @@ DEFAULT_POSITIVE_PROMPT = (
 )
 
 
+class RetrievedData(BaseModel):
+    favorite: List[Dict]
+    history: List[Dict]
+
+
+class PersistentManager(BaseModel):
+    class Config:
+        allow_mutation = False
+        validate_assignment = True
+
+    save_path: str = Field(exclude=True)
+    max_history: int = Field(default=20, exclude=True)
+    current: Dict = Field(default_factory=dict, const=True, exclude=True)
+    favorite: List[Dict] = Field(default_factory=list, const=True)
+    history: List[Dict] = Field(default_factory=list, const=True)
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        self.load() if pathlib.Path(self.save_path).exists() else None
+
+    @validator("save_path")
+    def validate_save_path(cls, v):
+        pathlib.Path(v).parent.mkdir(parents=True, exist_ok=True)
+        return v
+
+    def save(self):
+        with open(self.save_path, "w", encoding="utf-8") as f:
+            json.dump(self.dict(), f, indent=2, ensure_ascii=False)
+
+    def load(self):
+        self.favorite.clear()
+        self.history.clear()
+        with open(self.save_path, "r", encoding="utf-8") as f:
+            loaded_data: RetrievedData = RetrievedData(**json.load(f))
+            self.favorite.extend(loaded_data.favorite)
+            self.history.extend(loaded_data.history)
+
+    def payload_init(self):
+        self.current.clear()
+
+    def add_payload(self, payload: Dict):
+        self.current.update(payload)
+
+    def store(self, with_save=True):
+        self.history.append(copy.deepcopy(self.current))
+        self._prune_history()
+        self.save() if with_save else None
+
+    def add_favorite(self, with_save=True):
+        """
+        Adds the current item to the list of favorite items.
+
+        Raises:
+            ValueError: If there is no current item to add to the favorite list.
+
+        Returns:
+            None
+        """
+        if not self.current:
+            raise ValueError("No current to add to favorite")
+        if self.current in self.favorite:
+            return
+
+        self.favorite.append(copy.deepcopy(self.current))
+        self.save() if with_save else None
+
+    def _prune_history(self):
+        for _ in range(len(self.history) - self.max_history):
+            self.history.pop(0)
+
+
 class DiffusionParser(NamedTuple):
     """
     use to parse config
@@ -66,8 +137,8 @@ class HiResParser(NamedTuple):
     # hr_negative_prompt:
 
 
-I2I_HISTORY_SAVE_PATH = 'i2i_history.json'
-T2I_HISTORY_SAVE_PATH = 't2i_history.json'
+I2I_HISTORY_SAVE_PATH = "i2i_history.json"
+T2I_HISTORY_SAVE_PATH = "t2i_history.json"
 
 
 class StableDiffusionApp(object):
@@ -79,22 +150,34 @@ class StableDiffusionApp(object):
         self._host_url: str = host_url
         self._cache_dir: str = cache_dir
         self._img2img_params: PersistentManager = PersistentManager(
-            save_path=f'{self._cache_dir}/{I2I_HISTORY_SAVE_PATH}')
+            save_path=f"{self._cache_dir}/{I2I_HISTORY_SAVE_PATH}"
+        )
         self._txt2img_params: PersistentManager = PersistentManager(
-            save_path=f'{self._cache_dir}/{T2I_HISTORY_SAVE_PATH}')
+            save_path=f"{self._cache_dir}/{T2I_HISTORY_SAVE_PATH}"
+        )
 
-    def add_favorite_i(self):
+    @property
+    def img2img_params(self) -> PersistentManager:
+        return self._img2img_params
+
+    @property
+    def txt2img_params(self) -> PersistentManager:
+        return self._txt2img_params
+
+    def add_favorite_i(self) -> bool:
         self._img2img_params.add_favorite()
+        return True
 
-    def add_favorite_t(self):
+    def add_favorite_t(self) -> bool:
         self._txt2img_params.add_favorite()
+        return True
 
     async def txt2img(
-            self,
-            output_dir: str,
-            diffusion_parameters: DiffusionParser = DiffusionParser(),
-            HiRes_parameters: HiResParser = HiResParser(),
-            controlnet_parameters: Optional[ControlNetUnit] = None,
+        self,
+        output_dir: str,
+        diffusion_parameters: DiffusionParser = DiffusionParser(),
+        HiRes_parameters: HiResParser = HiResParser(),
+        controlnet_parameters: Optional[ControlNetUnit] = None,
     ) -> List[str]:
         """
         Generates images from text files and saves them to the specified output directory.
@@ -131,12 +214,12 @@ class StableDiffusionApp(object):
         return images_paths
 
     async def img2img(
-            self,
-            output_dir: str,
-            diffusion_parameters: DiffusionParser = DiffusionParser(),
-            controlnet_parameters: Optional[ControlNetUnit] = None,
-            image_path: Optional[str] = None,
-            image_base64: Optional[str] = None,
+        self,
+        output_dir: str,
+        diffusion_parameters: DiffusionParser = DiffusionParser(),
+        controlnet_parameters: Optional[ControlNetUnit] = None,
+        image_path: Optional[str] = None,
+        image_base64: Optional[str] = None,
     ) -> List[str]:
         """
         Converts an image to another image using the specified diffusion parameters and
@@ -185,7 +268,10 @@ class StableDiffusionApp(object):
 
         return images_paths
 
-    async def img2img_history(self, output_dir: str, ) -> List[str]:
+    async def img2img_history(
+        self,
+        output_dir: str,
+    ) -> List[str]:
         return await self._make_request(output_dir, self._img2img_params.history[-1])
 
     async def txt2img_history(self, output_dir: str) -> List[str]:
@@ -204,23 +290,21 @@ class StableDiffusionApp(object):
         """
         # Send a POST request to the API with the payload and get the response
         async with aiohttp.ClientSession() as session:
-            response_payload: Dict = await (
-                await session.post(f"{self._host_url}/{API_TXT2IMG}", json=payload)
-            ).json()
+            response_payload: Dict = await (await session.post(f"{self._host_url}/{API_TXT2IMG}", json=payload)).json()
         # Extract the generated images from the response payload
         img_base64: List[str] = extract_png_from_payload(response_payload)
         # Save the generated images to the output directory and return the list of file paths
         return save_base64_img_with_hash(img_base64_list=img_base64, output_dir=output_dir, host_url=self._host_url)
 
     async def txt2img_favorite(self, output_dir: str, index: Optional[int] = None) -> List[str]:
-        return await self._make_request(output_dir,
-                                        self._txt2img_params.favorite[index] if index else choice(
-                                            self._txt2img_params.favorite))
+        return await self._make_request(
+            output_dir, self._txt2img_params.favorite[index] if index else choice(self._txt2img_params.favorite)
+        )
 
     async def img2img_favorite(self, output_dir: str, index: Optional[int] = None) -> List[str]:
-        return await self._make_request(output_dir,
-                                        self._img2img_params.favorite[index] if index else choice(
-                                            self._img2img_params.favorite))
+        return await self._make_request(
+            output_dir, self._img2img_params.favorite[index] if index else choice(self._img2img_params.favorite)
+        )
 
 
 def extract_png_from_payload(payload: Dict) -> List[str]:
@@ -241,7 +325,7 @@ def extract_png_from_payload(payload: Dict) -> List[str]:
 
 
 def save_base64_img_with_hash(
-        img_base64_list: List[str], output_dir: str, host_url: str, max_file_name_length: int = 34
+    img_base64_list: List[str], output_dir: str, host_url: str, max_file_name_length: int = 34
 ) -> List[str]:
     """
     Process a list of base64-encoded images and save them as PNG files in the specified output directory.
@@ -296,74 +380,3 @@ def get_image_ratio(image_path):
     img = Image.open(image_path)
     width, height = img.size
     return width / height
-
-
-class RetrievedData(BaseModel):
-    favorite: List[Dict]
-    history: List[Dict]
-
-
-class PersistentManager(BaseModel):
-    class Config:
-        allow_mutation = False
-        validate_assignment = True
-
-    save_path: str = Field(exclude=True)
-    max_history: int = Field(default=20, exclude=True)
-    current: Dict = Field(default_factory=dict, const=True, exclude=True)
-    favorite: List[Dict] = Field(default_factory=list, const=True)
-    history: List[Dict] = Field(default_factory=list, const=True)
-
-    def __init__(self, **data):
-        super().__init__(**data)
-        self.load() if pathlib.Path(self.save_path).exists() else None
-
-    @validator('save_path')
-    def validate_save_path(cls, v):
-        pathlib.Path(v).parent.mkdir(parents=True, exist_ok=True)
-        return v
-
-    def save(self):
-        with open(self.save_path, 'w', encoding='utf-8') as f:
-            json.dump(self.dict(), f, indent=2, ensure_ascii=False)
-
-    def load(self):
-        self.favorite.clear()
-        self.history.clear()
-        with open(self.save_path, 'r', encoding='utf-8') as f:
-            loaded_data: RetrievedData = RetrievedData(**json.load(f))
-            self.favorite.extend(loaded_data.favorite)
-            self.history.extend(loaded_data.history)
-
-    def payload_init(self):
-        self.current.clear()
-
-    def add_payload(self, payload: Dict):
-        self.current.update(payload)
-
-    def store(self, with_save=True):
-        self.history.append(copy.deepcopy(self.current))
-        self._prune_history()
-        self.save() if with_save else None
-
-    def add_favorite(self, with_save=True):
-        """
-        Adds the current item to the list of favorite items.
-
-        Raises:
-            ValueError: If there is no current item to add to the favorite list.
-
-        Returns:
-            None
-        """
-        if not self.current:
-            raise ValueError('No current to add to favorite')
-        if self.current in self.favorite:
-            return
-
-        self.favorite.append(copy.deepcopy(self.current))
-        self.save() if with_save else None
-
-    def _prune_history(self):
-        for _ in range(len(self.history) - self.max_history):
-            self.history.pop(0)
