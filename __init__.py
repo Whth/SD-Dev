@@ -9,10 +9,10 @@ __all__ = ["StableDiffusionPlugin"]
 
 
 class CMD:
-    AGAIN = 'ag'
-    IMG2IMG = 'i'
-    TXT2IMG = 't'
-    LIKE = 'lk'
+    AGAIN = "ag"
+    IMG2IMG = "i"
+    TXT2IMG = "t"
+    LIKE = "lk"
 
 
 class StableDiffusionPlugin(AbstractPlugin):
@@ -222,8 +222,8 @@ class StableDiffusionPlugin(AbstractPlugin):
                             name=CMD.IMG2IMG,
                             required_permissions=req_perm,
                             source=diffusion_history_i,
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 NameSpaceNode(
                     name=CMD.LIKE,
@@ -255,11 +255,10 @@ class StableDiffusionPlugin(AbstractPlugin):
                                     required_permissions=req_perm,
                                     source=diffusion_favorite_i,
                                 ),
-                            ]
-                        )
-                    ]
-                )
-
+                            ],
+                        ),
+                    ],
+                ),
             ],
         )
         self._auth_manager.add_perm_from_req(req_perm)
@@ -322,8 +321,13 @@ class StableDiffusionPlugin(AbstractPlugin):
         from graia.ariadne.model import Friend
 
         from graia.ariadne.event.message import FriendMessage
-        async def diffusion(app: Ariadne, target: Union[Group, Friend], message: MessageChain,
-                            message_event: Union[GroupMessage, FriendMessage]):
+
+        async def diffusion(
+            app: Ariadne,
+            target: Union[Group, Friend],
+            message: MessageChain,
+            message_event: Union[GroupMessage, FriendMessage],
+        ):
             """
             Asynchronously performs diffusion on the given message and sends the resulting image as a message in the group or to a friend.
 
@@ -339,7 +343,7 @@ class StableDiffusionPlugin(AbstractPlugin):
             # Extract positive and negative prompts from the message
             pos_prompt, neg_prompt = de_assembly(str(message))
 
-            pos_prompt, neg_prompt = processor.process("".join(pos_prompt), "".join(neg_prompt))
+            pos_prompt, neg_prompt = processor.process(",".join(pos_prompt), ",".join(neg_prompt))
             # Create a diffusion parser with the prompts
             diffusion_paser = (
                 DiffusionParser(
@@ -368,6 +372,7 @@ class StableDiffusionPlugin(AbstractPlugin):
             await app.send_message(target, MessageChain("") + Image(path=send_result[0]))
 
         from graia.ariadne.event.message import FriendMessage
+
         self.receiver(
             GroupMessage,
             decorators=[ContainKeyword(keyword=self._config_registry.get_config(self.CONFIG_POS_KEYWORD))],
@@ -377,8 +382,9 @@ class StableDiffusionPlugin(AbstractPlugin):
             decorators=[ContainKeyword(keyword=self._config_registry.get_config(self.CONFIG_POS_KEYWORD))],
         )(diffusion)
 
-        async def _get_image_url(app: Ariadne, message: MessageChain,
-                                 message_event: Union[GroupMessage, FriendMessage]):
+        async def _get_image_url(
+            app: Ariadne, message: MessageChain, message_event: Union[GroupMessage, FriendMessage]
+        ):
             if Image in message:
                 image_url = message[Image, 1][0].url
             elif hasattr(message_event.quote, "origin"):
@@ -415,29 +421,31 @@ class StableDiffusionPlugin(AbstractPlugin):
 
 
 def de_assembly(
-        message: str, specify_batch_size: bool = False
+    message: str, specify_batch_size: bool = False, pos_keyword: List[str] = ("+",), neg_keyword: List[str] = ("-",)
 ) -> Tuple[List[str], List[str], int] | Tuple[List[str], List[str]]:
     """
-    Generates the function comment for the given function body.
+    De-assembles a given message into positive and negative prompts.
 
     Args:
-        message (str): The input message.
-        specify_batch_size (bool, optional): Whether to specify the batch size. Defaults to False.
+        message (str): The message to be de-assembled.
+        specify_batch_size (bool, optional): Specifies whether to specify a batch size. Defaults to False.
+        pos_keyword (List[str], optional): List of positive keywords. Defaults to ["+"].
+        neg_keyword (List[str], optional): List of negative keywords. Defaults to ["-"].
 
     Returns:
-        tuple: A tuple containing the positive prompt, negative prompt, and batch size (if specified).
+        Tuple[List[str], List[str], int] | Tuple[List[str], List[str]]: A tuple containing the positive prompts, negative prompts, and the batch size (if specified).
+
+    Raises:
+        None
     """
     if message == "":
         return [""], [""]
-    # TODO seems needs a regex format checker to allow the customize split kward
-    pos_pattern = r"(\+(.*?)\+)?"
-    pos_prompt = re.findall(pattern=pos_pattern, string=message)
-    pos_prompt = [i[1] for i in pos_prompt if i[0] != ""]
-
-    neg_pattern = r"(\-(.*?)\-)?"
-    neg_prompt = re.findall(pattern=neg_pattern, string=message)
-    neg_prompt = [i[1] for i in neg_prompt if i[0] != ""]
-
+    pos_regx = "".join(pos_keyword)
+    neg_regx = "".join(neg_keyword)
+    pat = re.compile(rf"(?:([{pos_regx}])(.*?)\1)?(?:([{neg_regx}])(.*?)\3)?")
+    matched_list = pat.findall(string=message)
+    pos_prompt = list(map(lambda match: match[1], filter(lambda match: match[1], matched_list)))
+    neg_prompt = list(map(lambda match: match[2], filter(lambda match: match[2], matched_list)))
     if specify_batch_size:
         batch_size_pattern = r"(\d+[pP])?"
         temp = re.findall(pattern=batch_size_pattern, string=message)
@@ -478,7 +486,7 @@ class PromptProcessorRegistry(object):
         return pos_prompt, neg_prompt
 
     def register(
-            self, judge: Callable[[], Any], processor: Callable[[str, str], Tuple[str, str]], process_name: str = None
+        self, judge: Callable[[], Any], processor: Callable[[str, str], Tuple[str, str]], process_name: str = None
     ) -> None:
         """
         Register a new judge and processor pair to the registry list.
