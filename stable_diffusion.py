@@ -1,24 +1,28 @@
 import base64
+import copy
 import io
+import json
 import os.path
+import pathlib
+from random import choice
 from typing import NamedTuple, List, Dict, Optional
 
 import aiohttp
 import requests
 from PIL import Image, PngImagePlugin
+from pydantic import BaseModel, Field, validator
 from slugify import slugify
 
+from modules.file_manager import rename_image_with_hash, img_to_base64
 from .api import (
     API_PNG_INFO,
     API_TXT2IMG,
-    API_IMG2IMG,
     INIT_IMAGES_KEY,
     IMAGE_KEY,
     IMAGES_KEY,
     PNG_INFO_KEY,
     ALWAYSON_SCRIPTS_KEY,
 )
-from modules.file_manager import rename_image_with_hash, img_to_base64
 from .controlnet import ControlNetUnit, make_cn_payload
 
 DEFAULT_NEGATIVE_PROMPT = "loathed,low resolution,porn,NSFW,strange shaped finger,cropped,panties visible"
@@ -62,6 +66,10 @@ class HiResParser(NamedTuple):
     # hr_negative_prompt:
 
 
+I2I_HISTORY_SAVE_PATH = 'i2i_history.json'
+T2I_HISTORY_SAVE_PATH = 't2i_history.json'
+
+
 class StableDiffusionApp(object):
     """
     class that implements the basic diffusion api
@@ -70,31 +78,41 @@ class StableDiffusionApp(object):
     def __init__(self, host_url: str, cache_dir: str):
         self._host_url: str = host_url
         self._cache_dir: str = cache_dir
-        self._img2img_params: HistoryWatcher = HistoryWatcher()
-        self._txt2img_params: HistoryWatcher = HistoryWatcher()
+        self._img2img_params: PersistentManager = PersistentManager(
+            save_path=f'{self._cache_dir}/{I2I_HISTORY_SAVE_PATH}')
+        self._txt2img_params: PersistentManager = PersistentManager(
+            save_path=f'{self._cache_dir}/{T2I_HISTORY_SAVE_PATH}')
+
+    def add_favorite_i(self):
+        self._img2img_params.add_favorite()
+
+    def add_favorite_t(self):
+        self._txt2img_params.add_favorite()
 
     async def txt2img(
-        self,
-        output_dir: str,
-        diffusion_parameters: DiffusionParser = DiffusionParser(),
-        HiRes_parameters: HiResParser = HiResParser(),
-        controlnet_parameters: Optional[ControlNetUnit] = None,
+            self,
+            output_dir: str,
+            diffusion_parameters: DiffusionParser = DiffusionParser(),
+            HiRes_parameters: HiResParser = HiResParser(),
+            controlnet_parameters: Optional[ControlNetUnit] = None,
     ) -> List[str]:
         """
-        Converts text to image and saves the generated images to the specified output directory.
+        Generates images from text files and saves them to the specified output directory.
 
         Args:
+            output_dir (str): The path to the directory where the generated images will be saved.
+            diffusion_parameters (DiffusionParser, optional): An instance of the DiffusionParser class
+                that contains the parameters for the diffusion process.
+                Defaults to DiffusionParser().
+            HiRes_parameters (HiResParser, optional): An instance of the HiResParser class
+                that contains the parameters for the HiRes process.
+                Defaults to HiResParser().
+            controlnet_parameters (ControlNetUnit, optional): An instance of the ControlNetUnit class
+                that contains the parameters for the controlnet process.
+                Defaults to None.
 
-            output_dir (str): The directory where the generated images will be saved.
-            diffusion_parameters (DiffusionParser, optional): An optional instance of the DiffusionParser class
-                that contains the diffusion parameters.
-            HiRes_parameters (HiResParser, optional): An optional instance of the HiResParser class that contains
-                the Hi-Res parameters. Defaults to HiResParser().
-            controlnet_parameters (ControlNetUnit, optional): An optional instance of the HiResParser class
-                that contains the controlnet parameters. Defaults to None.
         Returns:
-            List[str]: A list of image filenames that were saved.
-
+            List[str]: A list of paths to the generated images.
         """
 
         self._txt2img_params.payload_init()
@@ -106,22 +124,19 @@ class StableDiffusionApp(object):
             alwayson_scripts[ALWAYSON_SCRIPTS_KEY].update(make_cn_payload([controlnet_parameters]))
 
         self._txt2img_params.add_payload(alwayson_scripts)
-        async with aiohttp.ClientSession() as session:
-            response_payload: Dict = await (
-                await session.post(f"{self._host_url}/{API_TXT2IMG}", json=self._txt2img_params.current)
-            ).json()
-        self._txt2img_params.store()
-        img_base64: List[str] = extract_png_from_payload(response_payload)
+        images_paths = await self._make_request(output_dir, self._txt2img_params.current)
 
-        return save_base64_img_with_hash(img_base64_list=img_base64, output_dir=output_dir, host_url=self._host_url)
+        self._txt2img_params.store()
+
+        return images_paths
 
     async def img2img(
-        self,
-        output_dir: str,
-        diffusion_parameters: DiffusionParser = DiffusionParser(),
-        controlnet_parameters: Optional[ControlNetUnit] = None,
-        image_path: Optional[str] = None,
-        image_base64: Optional[str] = None,
+            self,
+            output_dir: str,
+            diffusion_parameters: DiffusionParser = DiffusionParser(),
+            controlnet_parameters: Optional[ControlNetUnit] = None,
+            image_path: Optional[str] = None,
+            image_base64: Optional[str] = None,
     ) -> List[str]:
         """
         Converts an image to another image using the specified diffusion parameters and
@@ -164,43 +179,48 @@ class StableDiffusionApp(object):
         # Add the alwayson scripts to the payload
         self._img2img_params.add_payload(alwayson_scripts)
 
-        # Send a POST request to the API with the payload and get the response
-        async with aiohttp.ClientSession() as session:
-            response_payload: Dict = await (
-                await session.post(f"{self._host_url}/{API_IMG2IMG}", json=self._img2img_params.current)
-            ).json()
+        images_paths = await self._make_request(output_dir, self._img2img_params.current)
 
         self._img2img_params.store()
-        # Extract the generated images from the response payload
-        img_base64: List[str] = extract_png_from_payload(response_payload)
 
-        # Save the generated images to the output directory and return the list of file paths
-        return save_base64_img_with_hash(img_base64_list=img_base64, output_dir=output_dir, host_url=self._host_url)
+        return images_paths
 
-    async def img2img_history(self, output_dir: str) -> List[str]:
-        # Send a POST request to the API with the payload and get the response
-        async with aiohttp.ClientSession() as session:
-            response_payload: Dict = await (
-                await session.post(f"{self._host_url}/{API_IMG2IMG}", json=self._img2img_params.history)
-            ).json()
-
-        # Extract the generated images from the response payload
-        img_base64: List[str] = extract_png_from_payload(response_payload)
-
-        # Save the generated images to the output directory and return the list of file paths
-        return save_base64_img_with_hash(img_base64_list=img_base64, output_dir=output_dir, host_url=self._host_url)
+    async def img2img_history(self, output_dir: str, ) -> List[str]:
+        return await self._make_request(output_dir, self._img2img_params.history[-1])
 
     async def txt2img_history(self, output_dir: str) -> List[str]:
+        return await self._make_request(output_dir, self._txt2img_params.history[-1])
+
+    async def _make_request(self, output_dir, payload: Dict) -> List[str]:
+        """
+        Makes a request to the API and saves the generated images to the output directory.
+
+        Args:
+            output_dir: The directory where the generated images will be saved.
+            payload: The payload to be sent in the request.
+
+        Returns:
+            A list of paths to the saved images.
+        """
         # Send a POST request to the API with the payload and get the response
         async with aiohttp.ClientSession() as session:
             response_payload: Dict = await (
-                await session.post(f"{self._host_url}/{API_TXT2IMG}", json=self._txt2img_params.history)
+                await session.post(f"{self._host_url}/{API_TXT2IMG}", json=payload)
             ).json()
         # Extract the generated images from the response payload
         img_base64: List[str] = extract_png_from_payload(response_payload)
-
         # Save the generated images to the output directory and return the list of file paths
         return save_base64_img_with_hash(img_base64_list=img_base64, output_dir=output_dir, host_url=self._host_url)
+
+    async def txt2img_favorite(self, output_dir: str, index: Optional[int] = None) -> List[str]:
+        return await self._make_request(output_dir,
+                                        self._txt2img_params.favorite[index] if index else choice(
+                                            self._txt2img_params.favorite))
+
+    async def img2img_favorite(self, output_dir: str, index: Optional[int] = None) -> List[str]:
+        return await self._make_request(output_dir,
+                                        self._img2img_params.favorite[index] if index else choice(
+                                            self._img2img_params.favorite))
 
 
 def extract_png_from_payload(payload: Dict) -> List[str]:
@@ -221,7 +241,7 @@ def extract_png_from_payload(payload: Dict) -> List[str]:
 
 
 def save_base64_img_with_hash(
-    img_base64_list: List[str], output_dir: str, host_url: str, max_file_name_length: int = 34
+        img_base64_list: List[str], output_dir: str, host_url: str, max_file_name_length: int = 34
 ) -> List[str]:
     """
     Process a list of base64-encoded images and save them as PNG files in the specified output directory.
@@ -278,26 +298,72 @@ def get_image_ratio(image_path):
     return width / height
 
 
-class HistoryWatcher(object):
-    def __init__(self):
-        super().__init__()
-        self._current: Dict = {}
-        self._history: Dict = {}
+class RetrievedData(BaseModel):
+    favorite: List[Dict]
+    history: List[Dict]
+
+
+class PersistentManager(BaseModel):
+    class Config:
+        allow_mutation = False
+        validate_assignment = True
+
+    save_path: str = Field(exclude=True)
+    max_history: int = Field(default=20, exclude=True)
+    current: Dict = Field(default_factory=dict, const=True, exclude=True)
+    favorite: List[Dict] = Field(default_factory=list, const=True)
+    history: List[Dict] = Field(default_factory=list, const=True)
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        self.load() if pathlib.Path(self.save_path).exists() else None
+
+    @validator('save_path')
+    def validate_save_path(cls, v):
+        pathlib.Path(v).parent.mkdir(parents=True, exist_ok=True)
+        return v
+
+    def save(self):
+        with open(self.save_path, 'w', encoding='utf-8') as f:
+            json.dump(self.dict(), f, indent=2, ensure_ascii=False)
+
+    def load(self):
+        self.favorite.clear()
+        self.history.clear()
+        with open(self.save_path, 'r', encoding='utf-8') as f:
+            loaded_data: RetrievedData = RetrievedData(**json.load(f))
+            self.favorite.extend(loaded_data.favorite)
+            self.history.extend(loaded_data.history)
 
     def payload_init(self):
-        self._current = {}
+        self.current.clear()
 
     def add_payload(self, payload: Dict):
-        self._current.update(payload)
+        self.current.update(payload)
 
-    def store(self):
-        self._history = {}
-        self._history.update(self._current)
+    def store(self, with_save=True):
+        self.history.append(copy.deepcopy(self.current))
+        self._prune_history()
+        self.save() if with_save else None
 
-    @property
-    def history(self) -> Dict:
-        return self._history
+    def add_favorite(self, with_save=True):
+        """
+        Adds the current item to the list of favorite items.
 
-    @property
-    def current(self) -> Dict:
-        return self._current
+        Raises:
+            ValueError: If there is no current item to add to the favorite list.
+
+        Returns:
+            None
+        """
+        if not self.current:
+            raise ValueError('No current to add to favorite')
+        if self.current in self.favorite:
+            return
+
+        self.favorite.append(copy.deepcopy(self.current))
+        self.save() if with_save else None
+
+    def _prune_history(self):
+        for _ in range(len(self.history) - self.max_history):
+            self.history.pop(0)

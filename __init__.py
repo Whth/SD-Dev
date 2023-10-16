@@ -8,6 +8,13 @@ from modules.plugin_base import AbstractPlugin
 __all__ = ["StableDiffusionPlugin"]
 
 
+class CMD:
+    AGAIN = 'ag'
+    IMG2IMG = 'i'
+    TXT2IMG = 't'
+    LIKE = 'lk'
+
+
 class StableDiffusionPlugin(AbstractPlugin):
     __TRANSLATE_PLUGIN_NAME: str = "BaiduTranslater"
     __TRANSLATE_METHOD_NAME: str = "translate"
@@ -61,7 +68,7 @@ class StableDiffusionPlugin(AbstractPlugin):
 
     @classmethod
     def get_plugin_version(cls) -> str:
-        return "0.1.0"
+        return "0.1.1"
 
     @classmethod
     def get_plugin_author(cls) -> str:
@@ -130,20 +137,39 @@ class StableDiffusionPlugin(AbstractPlugin):
             target_resource_name=self.get_plugin_name(), super_permissions=[su_perm]
         )
 
-        async def diffusion_history() -> Image:
+        async def diffusion_history_t() -> Image:
             """
-            This function is a receiver for GroupMessage events with the decorator "ContainKeyword(keyword='sd ag')".
-            It takes in two parameters:
-                - "app" which is of type Ariadne
-                - "group" which is of type Group
+            Retrieves the diffusion history and converts it into an image.
 
-            This function is responsible for sending the result of the "txt2img_history" method of the "SD_app" object,
-            which is an asynchronous method that returns an output directory path. The result is sent as a message to the
-            group using the "send_message" method of the "app" object. The message contains an empty MessageChain
-            concatenated with an Image object, which is created using the first path in the "send_result" list.
+            Returns:
+                Image: The image representation of the diffusion history.
             """
+            # Retrieve the diffusion history and store the result
             send_result = await SD_app.txt2img_history(output_dir_path)
+
+            # Create an Image object with the path to the result
             return Image(path=send_result[0])
+
+        async def diffusion_history_i() -> Image:
+            """
+            Retrieves the diffusion history and converts it into an image.
+
+            Returns:
+                Image: The image representation of the diffusion history.
+            """
+            # Retrieve the diffusion history and store the result
+            send_result = await SD_app.img2img_history(output_dir_path)
+
+            # Create an Image object with the path to the result
+            return Image(path=send_result[0])
+
+        async def diffusion_favorite_t(index: int = None) -> Image:
+            images = await SD_app.txt2img_favorite(output_dir_path, index)
+            return Image(path=images[0])
+
+        async def diffusion_favorite_i(index: int = None) -> Image:
+            images = await SD_app.img2img_favorite(output_dir_path, index)
+            return Image(path=images[0])
 
         tree = NameSpaceNode(
             name=self._config_registry.get_config(self.CONFIG_CONFIG_CLIENT_KEYWORD),
@@ -182,11 +208,58 @@ class StableDiffusionPlugin(AbstractPlugin):
                         ),
                     ],
                 ),
-                ExecutableNode(
-                    name='ag',
+                NameSpaceNode(
+                    name=CMD.AGAIN,
                     required_permissions=req_perm,
-                    source=diffusion_history,
+                    help_message="Generate from history, img2img or txt2img",
+                    children_node=[
+                        ExecutableNode(
+                            name=CMD.TXT2IMG,
+                            required_permissions=req_perm,
+                            source=diffusion_history_t,
+                        ),
+                        ExecutableNode(
+                            name=CMD.IMG2IMG,
+                            required_permissions=req_perm,
+                            source=diffusion_history_i,
+                        )
+                    ]
+                ),
+                NameSpaceNode(
+                    name=CMD.LIKE,
+                    required_permissions=req_perm,
+                    help_message="mark last generation as liked,or generate from favorite",
+                    children_node=[
+                        ExecutableNode(
+                            name=CMD.TXT2IMG,
+                            required_permissions=req_perm,
+                            source=lambda: SD_app.add_favorite_t(),
+                        ),
+                        ExecutableNode(
+                            name=CMD.IMG2IMG,
+                            required_permissions=req_perm,
+                            source=lambda: SD_app.add_favorite_i(),
+                        ),
+                        NameSpaceNode(
+                            name=CMD.AGAIN,
+                            required_permissions=req_perm,
+                            help_message="retrieve a favorite generation, with index or random",
+                            children_node=[
+                                ExecutableNode(
+                                    name=CMD.TXT2IMG,
+                                    required_permissions=req_perm,
+                                    source=diffusion_favorite_t,
+                                ),
+                                ExecutableNode(
+                                    name=CMD.IMG2IMG,
+                                    required_permissions=req_perm,
+                                    source=diffusion_favorite_i,
+                                ),
+                            ]
+                        )
+                    ]
                 )
+
             ],
         )
         self._auth_manager.add_perm_from_req(req_perm)
