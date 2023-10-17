@@ -4,9 +4,8 @@ import io
 import json
 import os.path
 import pathlib
-import random
 from random import choice
-from typing import NamedTuple, List, Dict, Optional
+from typing import List, Dict, Optional
 
 import aiohttp
 import requests
@@ -25,28 +24,7 @@ from .api import (
     ALWAYSON_SCRIPTS_KEY,
 )
 from .controlnet import ControlNetUnit, make_cn_payload
-
-__DEFAULT_NEGATIVE_PROMPT__ = (
-    "loathed,low resolution,porn,NSFW,strange shaped finger,cropped,panties visible,"
-    "pregnant,ugly,vore,duplicate,extra fingers,fused fingers,too many fingers,mutated hands,"
-    "poorly drawn face,mutation,bad anatomy,blurry,malformed limbs,disfigured,extra limbs,"
-    "missing arms,missing legs,extra arms,deformed legs, bad anatomy, bad hands, "
-    "text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, "
-    "low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, "
-    "bad feet,,poorly drawn asymmetric eyes,cloned face,limbs,mutilated,deformed,malformed,"
-    "multiple breasts,missing fingers,poorly drawn,poorly drawn hands,extra legs,"
-    "mutated hands and fingers,bad anatomy disfigured malformed mutated,worst quality,"
-    "too many fingers,malformed hands,Missing limbs,long neck,blurry,missing arms,three arms,"
-    "long body,more than 2 thighs,more than 2 nipples,missing legs,mutated hands and fingers ,"
-    "low quality,jpeg artifacts,signature,extra digit,fewer digits,lowres,bad anatomy,extra limbs,"
-)
-
-__DEFAULT_POSITIVE_PROMPT__ = (
-    "modern art,student uniform,white shirt,short blue skirt,white tights,joshi,JK,1girl:1.2,solo,upper body,"
-    "shy,extremely cute,lovely,fish eye,outside,on street"
-    "beautiful,expressionless,cool girl,medium breasts,water color,oil,see through"
-    "thighs,thin torso,masterpiece,wonderful art,high resolution,hair ornament,strips,body curve,hair,SFW:1.3,"
-)
+from .parser import DiffusionParser, HiResParser
 
 
 class RetrievedData(BaseModel):
@@ -120,44 +98,6 @@ class PersistentManager(BaseModel):
             self.history.pop(0)
 
 
-__R_GEN__ = random.SystemRandom()
-
-
-def get_seed() -> int:
-    return __R_GEN__.getrandbits(32)
-
-
-class DiffusionParser(NamedTuple):
-    """
-    use to parse config
-    """
-
-    prompt: str = __DEFAULT_POSITIVE_PROMPT__
-    negative_prompt: str = __DEFAULT_NEGATIVE_PROMPT__
-    styles: List[str] = []
-    seed: int = -1
-    sampler_name: str = "UniPC"
-    steps: int = 18
-    cfg_scale: float = 6.9
-    width: int = 512
-    height: int = 768
-
-
-class HiResParser(NamedTuple):
-    """
-    use to parse hires config
-    """
-
-    enable_hr: bool = False
-    denoising_strength: float = 0.69
-    hr_scale: float = 1.3
-    hr_upscaler: str = "Latent"
-    # hr_checkpoint_name: string
-    # hr_sampler_name: string
-    # hr_prompt:
-    # hr_negative_prompt:
-
-
 I2I_HISTORY_SAVE_PATH = "i2i_history.json"
 T2I_HISTORY_SAVE_PATH = "t2i_history.json"
 
@@ -221,8 +161,8 @@ class StableDiffusionApp(object):
 
         self._txt2img_params.payload_init()
         alwayson_scripts: Dict = {ALWAYSON_SCRIPTS_KEY: {}}
-        self._txt2img_params.add_payload(diffusion_parameters._asdict())
-        self._txt2img_params.add_payload(HiRes_parameters._asdict())
+        self._txt2img_params.add_payload(diffusion_parameters.dict())
+        self._txt2img_params.add_payload(HiRes_parameters.dict())
 
         if controlnet_parameters:
             alwayson_scripts[ALWAYSON_SCRIPTS_KEY].update(make_cn_payload([controlnet_parameters]))
@@ -265,7 +205,7 @@ class StableDiffusionApp(object):
         alwayson_scripts: Dict = {ALWAYSON_SCRIPTS_KEY: {}}
 
         # Add the diffusion parameters to the payload
-        self._img2img_params.add_payload(diffusion_parameters._asdict())
+        self._img2img_params.add_payload(diffusion_parameters.dict())
 
         if image_path:
             # Convert the input image to base64 and add it to the payload
