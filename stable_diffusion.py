@@ -4,6 +4,7 @@ import io
 import json
 import os.path
 import pathlib
+import random
 from random import choice
 from typing import NamedTuple, List, Dict, Optional
 
@@ -25,12 +26,25 @@ from .api import (
 )
 from .controlnet import ControlNetUnit, make_cn_payload
 
-DEFAULT_NEGATIVE_PROMPT = "loathed,low resolution,porn,NSFW,strange shaped finger,cropped,panties visible"
+__DEFAULT_NEGATIVE_PROMPT__ = (
+    "loathed,low resolution,porn,NSFW,strange shaped finger,cropped,panties visible,"
+    "pregnant,ugly,vore,duplicate,extra fingers,fused fingers,too many fingers,mutated hands,"
+    "poorly drawn face,mutation,bad anatomy,blurry,malformed limbs,disfigured,extra limbs,"
+    "missing arms,missing legs,extra arms,deformed legs, bad anatomy, bad hands, "
+    "text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, "
+    "low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, "
+    "bad feet,,poorly drawn asymmetric eyes,cloned face,limbs,mutilated,deformed,malformed,"
+    "multiple breasts,missing fingers,poorly drawn,poorly drawn hands,extra legs,"
+    "mutated hands and fingers,bad anatomy disfigured malformed mutated,worst quality,"
+    "too many fingers,malformed hands,Missing limbs,long neck,blurry,missing arms,three arms,"
+    "long body,more than 2 thighs,more than 2 nipples,missing legs,mutated hands and fingers ,"
+    "low quality,jpeg artifacts,signature,extra digit,fewer digits,lowres,bad anatomy,extra limbs,"
+)
 
-DEFAULT_POSITIVE_PROMPT = (
+__DEFAULT_POSITIVE_PROMPT__ = (
     "modern art,student uniform,white shirt,short blue skirt,white tights,joshi,JK,1girl:1.2,solo,upper body,"
-    "shy,extremely cute,lovely,"
-    "beautiful,expressionless,cool girl,medium breasts,"
+    "shy,extremely cute,lovely,fish eye,outside,on street"
+    "beautiful,expressionless,cool girl,medium breasts,water color,oil,see through"
     "thighs,thin torso,masterpiece,wonderful art,high resolution,hair ornament,strips,body curve,hair,SFW:1.3,"
 )
 
@@ -106,13 +120,20 @@ class PersistentManager(BaseModel):
             self.history.pop(0)
 
 
+__R_GEN__ = random.SystemRandom()
+
+
+def get_seed() -> int:
+    return __R_GEN__.getrandbits(32)
+
+
 class DiffusionParser(NamedTuple):
     """
     use to parse config
     """
 
-    prompt: str = DEFAULT_POSITIVE_PROMPT
-    negative_prompt: str = DEFAULT_NEGATIVE_PROMPT
+    prompt: str = __DEFAULT_POSITIVE_PROMPT__
+    negative_prompt: str = __DEFAULT_NEGATIVE_PROMPT__
     styles: List[str] = []
     seed: int = -1
     sampler_name: str = "UniPC"
