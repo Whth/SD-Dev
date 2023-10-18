@@ -14,6 +14,20 @@ class CMD:
     TXT2IMG = "t"
     LIKE = "lk"
     SIZE = "size"
+    DEFAULT = "default"
+    SET = "set"
+    CONFIG = "config"
+    LIST_OUT = "list"
+
+    POS_PROMPT = "pos"
+    NEG_PROMPT = "neg"
+    SHOT_SIZE = "shot"
+
+    CONTROLNET_CMD = "cn"
+    CONTROLNET_MODELS_CMD = "models"
+    CONTROLNET_MODULES_CMD = "modules"
+
+    # TODO add cn detect cmd
 
 
 class StableDiffusionPlugin(AbstractPlugin):
@@ -21,15 +35,6 @@ class StableDiffusionPlugin(AbstractPlugin):
     __TRANSLATE_METHOD_NAME: str = "translate"
     __TRANSLATE_METHOD_TYPE = Callable[[str, str, str], str]  # [tolang, query, fromlang] -> str
     # TODO deal with this super high coupling
-
-    __CONFIG_CMD = "config"
-    __CONFIG_LIST_CMD = "list"
-
-    __CONFIG_SET_CMD = "set"
-    __CONTROLNET_CMD = "cn"
-    __CONTROLNET_MODELS_CMD = "models"
-    __CONTROLNET_MODULES_CMD = "modules"
-    # TODO add cn detect cmd
 
     TXT2IMG_DIRNAME = "txt2img"
     IMG2IMG_DIRNAME = "img2img"
@@ -111,6 +116,13 @@ class StableDiffusionPlugin(AbstractPlugin):
         from modules.file_manager import img_to_base64
         from .controlnet import ControlNetUnit, Controlnet
         from .stable_diffusion import StableDiffusionApp, DiffusionParser, HiResParser
+        from .parser import (
+            set_default_pos_prompt,
+            set_default_neg_prompt,
+            set_shot_size,
+            get_default_neg_prompt,
+            get_default_pos_prompt,
+        )
 
         self.__register_all_config()
         self._config_registry.load_config()
@@ -178,32 +190,32 @@ class StableDiffusionPlugin(AbstractPlugin):
             help_message=self.get_plugin_description(),
             children_node=[
                 NameSpaceNode(
-                    name=self.__CONFIG_CMD,
+                    name=CMD.CONFIG,
                     required_permissions=req_perm,
                     children_node=[
                         ExecutableNode(
-                            name=self.__CONFIG_LIST_CMD,
+                            name=CMD.LIST_OUT,
                             required_permissions=req_perm,
                             source=cmd_builder.build_list_out_for(configurable_options),
                         ),
                         ExecutableNode(
-                            name=self.__CONFIG_SET_CMD,
+                            name=CMD.SET,
                             required_permissions=req_perm,
                             source=cmd_builder.build_setter_hall(),
                         ),
                     ],
                 ),
                 NameSpaceNode(
-                    name=self.__CONTROLNET_CMD,
+                    name=CMD.CONTROLNET_CMD,
                     required_permissions=req_perm,
                     children_node=[
                         ExecutableNode(
-                            name=self.__CONTROLNET_MODELS_CMD,
+                            name=CMD.CONTROLNET_MODELS_CMD,
                             required_permissions=req_perm,
                             source=lambda: "CN_Models:\n" + "\n".join(controlnet.models),
                         ),
                         ExecutableNode(
-                            name=self.__CONTROLNET_MODULES_CMD,
+                            name=CMD.CONTROLNET_MODULES_CMD,
                             required_permissions=req_perm,
                             source=lambda: "CN_Modules:\n" + "\n".join(controlnet.modules),
                         ),
@@ -276,6 +288,31 @@ class StableDiffusionPlugin(AbstractPlugin):
                                     source=diffusion_favorite_i,
                                 ),
                             ],
+                        ),
+                    ],
+                ),
+                NameSpaceNode(
+                    name=CMD.DEFAULT,
+                    required_permissions=req_perm,
+                    help_message="Set default settings for the plugin",
+                    children_node=[
+                        ExecutableNode(
+                            name=CMD.POS_PROMPT,
+                            required_permissions=req_perm,
+                            help_message=set_default_pos_prompt.__doc__,
+                            source=lambda x: f"Set pos prompt to\n{x}\n\nSuccess={set_default_pos_prompt(x)}",
+                        ),
+                        ExecutableNode(
+                            name=CMD.NEG_PROMPT,
+                            required_permissions=req_perm,
+                            help_message=set_default_neg_prompt.__doc__,
+                            source=lambda x: f"Set neg prompt to\n{x}\nSuccess={set_default_neg_prompt(x)}",
+                        ),
+                        ExecutableNode(
+                            name=CMD.SHOT_SIZE,
+                            required_permissions=req_perm,
+                            help_message=set_shot_size.__doc__,
+                            source=lambda x: f"Set shot size\nSuccess={set_shot_size(x)}",
                         ),
                     ],
                 ),
@@ -362,19 +399,14 @@ class StableDiffusionPlugin(AbstractPlugin):
             """
             # Extract positive and negative prompts from the message
             pos_prompt, neg_prompt = de_assembly(str(message))
-
-            pos_prompt, neg_prompt = processor.process(",".join(pos_prompt), ",".join(neg_prompt))
+            pos_prompt = ",".join(pos_prompt) if pos_prompt else get_default_pos_prompt()
+            neg_prompt = ",".join(neg_prompt) if neg_prompt else get_default_neg_prompt()
+            pos_prompt, neg_prompt = processor.process(pos_prompt, neg_prompt)
             # Create a diffusion parser with the prompts
-            diffusion_paser = (
-                DiffusionParser(
-                    prompt=pos_prompt,
-                    negative_prompt=neg_prompt,
-                    styles=self._config_registry.get_config(self.CONFIG_STYLES),
-                )
-                if pos_prompt
-                else DiffusionParser(
-                    styles=self._config_registry.get_config(self.CONFIG_STYLES),
-                )
+            diffusion_paser = DiffusionParser(
+                prompt=pos_prompt,
+                negative_prompt=neg_prompt,
+                styles=self._config_registry.get_config(self.CONFIG_STYLES),
             )
 
             image_url = await _get_image_url(app, message, message_event)

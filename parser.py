@@ -1,5 +1,5 @@
 import random
-from typing import List, Tuple, Dict
+from typing import List, Tuple
 
 from pydantic import BaseModel, Field
 
@@ -27,27 +27,62 @@ __DEFAULT_POSITIVE_PROMPT__ = (
 __R_GEN__ = random.SystemRandom()
 
 
-def set_default_pos_prompt(new_prompt: str):
+def set_default_pos_prompt(new_prompt: str) -> bool:
+    """
+    Sets the default positive prompt.
+
+    Args:
+        new_prompt (str): The new prompt to be set.
+
+    Returns:
+        bool: True if the prompt was set successfully, False otherwise.
+    """
     global __DEFAULT_POSITIVE_PROMPT__
-    __DEFAULT_POSITIVE_PROMPT__ = new_prompt if new_prompt else __DEFAULT_POSITIVE_PROMPT__
+    __DEFAULT_POSITIVE_PROMPT__ = new_prompt
+    return True
 
 
 def get_default_pos_prompt() -> str:
+    """
+    Returns the default positive prompt as a string.
+    """
     global __DEFAULT_POSITIVE_PROMPT__
     return __DEFAULT_POSITIVE_PROMPT__
 
 
-def set_default_neg_prompt(new_prompt: str):
+def set_default_neg_prompt(new_prompt: str) -> bool:
+    """
+    Set the default negative prompt.
+
+    Args:
+        new_prompt (str): The new negative prompt to set.
+
+    Returns:
+        bool: True if the default negative prompt was successfully set.
+    """
     global __DEFAULT_NEGATIVE_PROMPT__
-    __DEFAULT_NEGATIVE_PROMPT__ = new_prompt if new_prompt else __DEFAULT_NEGATIVE_PROMPT__
+    __DEFAULT_NEGATIVE_PROMPT__ = new_prompt
+    return True
 
 
 def get_default_neg_prompt() -> str:
+    """
+    Returns the default negative prompt.
+
+    :return: The default negative prompt.
+    :rtype: str
+    """
     global __DEFAULT_NEGATIVE_PROMPT__
     return __DEFAULT_NEGATIVE_PROMPT__
 
 
 def get_seed() -> int:
+    """
+    Generate a random 32-bit integer as a seed.
+
+    Returns:
+        int: A 32-bit integer generated as a seed.
+    """
     return __R_GEN__.getrandbits(32)
 
 
@@ -64,23 +99,33 @@ __SHOT_SIZE_TABLE__ = {
 }
 
 
-def set_shot_size(label):
+def set_shot_size(label: str) -> bool:
+    """
+    Set the shot size based on the given label.
+
+    Args:
+        label (str): The label to determine the shot size.
+
+    Returns:
+        bool: True if the label is found in the shot size table, False otherwise.
+    """
     global __ENFORCED_SIZE_TEMPLATE__, __SHOT_SIZE_TABLE__
-    __SHOTS_SIZE_TABLE__: Dict
+
     __ENFORCED_SIZE_TEMPLATE__ = __SHOT_SIZE_TABLE__.get(label, __PORTRAIT_SHOT__)
+    return label in __SHOT_SIZE_TABLE__
 
 
-def get_shot_size():
+def get_shot_size() -> Tuple[int, int]:
     global __ENFORCED_SIZE_TEMPLATE__
     return __ENFORCED_SIZE_TEMPLATE__
 
 
-def get_shot_width():
+def get_shot_width() -> int:
     global __ENFORCED_SIZE_TEMPLATE__
     return __ENFORCED_SIZE_TEMPLATE__[0]
 
 
-def get_shot_height():
+def get_shot_height() -> int:
     global __ENFORCED_SIZE_TEMPLATE__
     return __ENFORCED_SIZE_TEMPLATE__[1]
 
