@@ -132,7 +132,7 @@ def get_shot_height() -> int:
 
 class DiffusionParser(BaseModel):
     """
-    use to parse config
+    use to parse config_registry
     """
 
     prompt: str = Field(default_factory=get_default_pos_prompt)
@@ -148,7 +148,7 @@ class DiffusionParser(BaseModel):
 
 class HiResParser(BaseModel):
     """
-    use to parse hires config
+    use to parse hires config_registry
     """
 
     enable_hr: bool = False

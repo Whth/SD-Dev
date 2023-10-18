@@ -2,7 +2,7 @@ import os
 import re
 from typing import Tuple, List, Optional, Callable, Any, Union
 
-from modules.file_manager import download_file
+from modules.file_manager import download_file, get_pwd
 from modules.plugin_base import AbstractPlugin
 
 __all__ = ["StableDiffusionPlugin"]
@@ -60,8 +60,27 @@ class StableDiffusionPlugin(AbstractPlugin):
     CONFIG_ENABLE_DYNAMIC_PROMPT = "enable_dynamic_prompt"
     CONFIG_CONFIG_CLIENT_KEYWORD = "config_client_keyword"
 
+    DefaultConfig = {
+        CONFIG_POS_KEYWORD: "+",
+        CONFIG_NEG_KEYWORD: "-",
+        CONFIG_OUTPUT_DIR_PATH: f"{get_pwd()}/output",
+        CONFIG_IMG_TEMP_DIR_PATH: f"{get_pwd()}/temp",
+        CONFIG_SD_HOST: "http://localhost:7860",
+        CONFIG_WILDCARD_DIR_PATH: f"{get_pwd()}/asset/wildcard",
+        CONFIG_CONTROLNET_MODULE: "openpose_full",
+        CONFIG_CONTROLNET_MODEL: "control_v11p_sd15_openpose",
+        CONFIG_STYLES: [],
+        CONFIG_ENABLE_HR: 0,
+        CONFIG_ENABLE_TRANSLATE: 0,
+        CONFIG_ENABLE_CONTROLNET: 0,
+        CONFIG_ENABLE_SHUFFLE_PROMPT: 0,
+        CONFIG_ENABLE_DYNAMIC_PROMPT: 1,
+        CONFIG_CONFIG_CLIENT_KEYWORD: "sd",
+    }
+
     # TODO this should be removed, use pos prompt keyword and neg prompt keyword
-    def _get_config_parent_dir(self) -> str:
+    @classmethod
+    def _get_config_dir(cls) -> str:
         return os.path.abspath(os.path.dirname(__file__))
 
     @classmethod
@@ -79,26 +98,6 @@ class StableDiffusionPlugin(AbstractPlugin):
     @classmethod
     def get_plugin_author(cls) -> str:
         return "whth"
-
-    def __register_all_config(self):
-        self._config_registry.register_config(self.CONFIG_POS_KEYWORD, "+")
-        self._config_registry.register_config(self.CONFIG_NEG_KEYWORD, "-")
-        self._config_registry.register_config(self.CONFIG_OUTPUT_DIR_PATH, f"{self._get_config_parent_dir()}/output")
-        self._config_registry.register_config(self.CONFIG_IMG_TEMP_DIR_PATH, f"{self._get_config_parent_dir()}/temp")
-        self._config_registry.register_config(self.CONFIG_SD_HOST, "http://localhost:7860")
-
-        self._config_registry.register_config(
-            self.CONFIG_WILDCARD_DIR_PATH, f"{self._get_config_parent_dir()}/asset/wildcard"
-        )
-        self._config_registry.register_config(self.CONFIG_CONTROLNET_MODULE, "openpose_full")
-        self._config_registry.register_config(self.CONFIG_CONTROLNET_MODEL, "control_v11p_sd15_openpose")
-        self._config_registry.register_config(self.CONFIG_STYLES, [])
-        self._config_registry.register_config(self.CONFIG_ENABLE_HR, 0)
-        self._config_registry.register_config(self.CONFIG_ENABLE_TRANSLATE, 0)
-        self._config_registry.register_config(self.CONFIG_ENABLE_DYNAMIC_PROMPT, 1)
-        self._config_registry.register_config(self.CONFIG_ENABLE_SHUFFLE_PROMPT, 0)
-        self._config_registry.register_config(self.CONFIG_ENABLE_CONTROLNET, 0)
-        self._config_registry.register_config(self.CONFIG_CONFIG_CLIENT_KEYWORD, "sd")
 
     def install(self):
         from graia.ariadne.message.chain import MessageChain, Image
@@ -124,8 +123,6 @@ class StableDiffusionPlugin(AbstractPlugin):
             get_default_pos_prompt,
         )
 
-        self.__register_all_config()
-        self._config_registry.load_config()
         cmd_builder = CmdBuilder(
             config_setter=self._config_registry.set_config, config_getter=self._config_registry.get_config
         )
