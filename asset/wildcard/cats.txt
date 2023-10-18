@@ -1,0 +1,182 @@
+cat loaf
+kneading
+nuzzling
+scratching
+stretching
+norwegian forest cat
+persian cat
+ragdoll (cat)
+siamese cat
+black cat
+brown cat
+calico
+grey cat
+orange cat
+pink cat
+purple cat
+tortoiseshell cat
+white cat
+black panther
+cheetah
+cougar
+jaguar
+leopard
+leopard cat
+chinese leopard cat
+lion
+serval
+tiger
+cat
+cathead
+giant cat
+kitten
+too many cats
+cat between legs
+cat in mouth
+cat on ass
+cat on head
+cat on lap
+cat on person
+cat on shoulder
+cat bag
+cat band
+cat band footwear
+cat band gloves
+cat ear legwear
+cat boy
+cat bra
+cat button
+cat choker
+cat costume
+cat cutout
+cat cutout panties
+cat ear bikini
+cat ear headphones
+cat ear panties
+cat earrings
+cat ears
+slit pupils
+cat feet
+cat girl
+cat gloves
+cat hair
+cat hair ornament
+cat hat
+cat helmet
+cat hood
+cat lingerie
+cat mask
+cat nose
+cat ornament
+cat pajamas
+cat panties
+cat pasties
+cat paw
+cat paws
+cat pendant
+cat print
+cat skull
+cat slippers
+cat symbol
+cat tail
+cat thigh strap
+barbed tongue
+cat zipper
+whiskers
+# originally sourced from https://github.com/dariusk/corpora/blob/master/data/animals/cats.json
+Abyssinian
+Aegean
+American Bobtail
+American Curl
+American Shorthair
+American Wirehair
+Arabian Mau
+Asian
+Asian Semi-longhair
+Australian Mist
+Balinese
+Bambino
+Bengal
+Birman
+Bombay
+Brazilian Shorthair
+British Longhair
+British Semi-longhair
+British Shorthair
+Burmese
+Burmilla
+California Spangled
+Chantilly-Tiffany
+Chartreux
+Chausie
+Cheetoh
+Colorpoint Shorthair
+Cornish Rex
+Cymric
+Cyprus
+Devon Rex
+Donskoy
+Dragon Li
+Dwarf cat
+Egyptian Mau
+European Shorthair
+Exotic Shorthair
+Foldex
+German Rex
+Havana Brown
+Highlander
+Himalayan
+Japanese Bobtail
+Javanese
+Khao Manee
+Korat
+Korean Bobtail
+Korn Ja
+Kurilian Bobtail
+LaPerm
+Lykoi
+Maine Coon
+Manx
+Mekong Bobtail
+Minskin
+Munchkin
+Napoleon
+Nebelung
+Norwegian Forest cat
+Ocicat
+Ojos Azules
+Oregon Rex
+Oriental Bicolor
+Oriental Longhair
+Oriental Shorthair
+PerFold
+Persian (Modern)
+Persian (Traditional)
+Peterbald
+Pixie-bob
+Raas
+Ragamuffin
+Ragdoll
+Russian Blue
+Russian White, Black and Tabby
+Sam Sawet
+Savannah
+Scottish Fold
+Selkirk Rex
+Serengeti
+Serrade Petit
+Siamese
+Siberian
+Singapura
+Snowshoe
+Sokoke
+Somali
+Sphynx
+Suphalak
+Thai
+Thai Lilac
+Tonkinese
+Toyger
+Turkish Angora
+Turkish Van
+Ukrainian Levkoy

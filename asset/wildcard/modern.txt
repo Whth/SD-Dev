@@ -1,0 +1,154 @@
+__artists/European Art/modern/impressionism__
+__artists/European Art/modern/expressionism__
+__artists/European Art/modern/abstract_expressionism/abstract_expressionism__
+__artists/European Art/modern/american_impressionism__
+__artists/European Art/modern/cobs_art_colony__
+__artists/European Art/modern/heidelberg_school__
+__artists/European Art/modern/luminism_impressionism__
+__artists/European Art/modern/tonalism__
+__artists/European Art/modern/post_impressionism__
+__artists/European Art/modern/les_nabis__
+__artists/European Art/modern/cloisonnism__
+__artists/European Art/modern/synthetism__
+__artists/European Art/modern/neo_impressionism__
+__artists/European Art/modern/art_nouveau__
+__artists/European Art/modern/russion_avantgarde__
+__artists/European Art/modern/young_poland__
+__artists/European Art/modern/hagenbund__
+__artists/European Art/modern/fauvism__
+
+Constantine Andreou
+Thodoros Papadimitriou
+Giorgio de Chirico
+Jannis Kounellis
+Electros Vekris
+Theodoros Stamos
+{Panayiotis Vassilakis|Takis}
+Chryssa Vardea-Mavromichali
+Constantin Xenakis
+Hermon di Giovanno
+Panayiotis Varotsos
+Dimitris Mytaras
+Spyros Vassiliou
+Alekos Fassianos
+Theocharis Mores
+Dimitris Koukos
+Nikos Stratakis
+Steven Antonakos
+Kostas Tsoklis
+Nikos Hadjikyriakos-Ghikas
+Thanassis Stephopoulos
+Aggelika Korovessi
+Yiannis Melanitis
+
+# Originally sourced from https://aiartcreation.fandom.com/wiki/Collection:_Modern_Art/Pop_Art
+Aaron Douglas
+Agnes Lawrence Pelton
+Ai Weiwei
+Albert Gleizes
+Ali Nemah o Neema
+Andre Masson
+Andy Warhol
+Anselm Kiefer
+Archibald Motley Jr.
+Asger Jorn
+Brent Lynch
+Charles Csuri
+Charley Harper
+Constantin Brâncuși
+Diego Rivera
+Édouard Manet
+Edvard Munch
+Edward Hopper
+Egon Schiele
+El Anatsui
+Emil Nolde
+Emily Carr
+Franz Marc
+Franz Sedlacek
+Frida Kahlo
+Friedensreich Hundertwasser
+Georges Braque
+Georgia O'Keeffe
+Gerhard Richter
+Gorillaz
+Grant Wood
+Gustav Klimt
+Hannah Hoch
+Henri Matisse
+Jackson Pollock
+Jacob Lawrence
+James Ensor
+Jean-Michel Basquiat
+Jonathan Green
+Joseph Cornell
+Juan Gris
+Kandinsky
+Katharina Grosse
+Leonid Afremov
+Lisa Frank
+Mark Ryden
+Max Ernst
+Otto Dix
+Peter Doig
+Picasso
+Pierre Bonnard
+Roy Lichtenstein
+Takashi Murakami
+Tom Everhart
+Wifredo Lam
+William Glackens
+
+# Originally sourced from https://en.wikipedia.org/wiki/Periods_in_Western_art_history
+__style/artperiods/impressionism__
+Cos Cob Art Colony
+Heidelberg School
+Arts and Crafts movement
+Tonalism
+__style/artperiods/symbolism__
+__style/artperiods/post_impressionism__
+__style/artperiods/neo_impressionism__
+__style/artperiods/art_nouveau__
+Russian avant-garde
+Art à la Rue
+Young Poland
+Hagenbund
+Fauvism
+__style/artperiods/expressionism__
+Bloomsbury Group
+__style/artperiods/cubism__
+Ashcan School
+Art Deco
+__style/artperiods/futurism__
+Rayonism
+Synchromism
+Universal Flowering
+Vorticism
+Biomorphism
+__style/artperiods/suprematism__
+Dada
+Proletkult
+Productijism
+{De Stijl|Neoplasticism}
+Pittura Metafisica
+Arbeitsrat für Kunst
+Bauhaus
+Others group of artists
+__style/artperiods/constructivism__
+Precisionism
+__style/artperiods/surrealism__
+Devetsil
+Group of Seven
+Harlem renaissance
+American scene painting
+{New Objectivity|Neue Sachlichkeit}
+Grupo Montparnasse
+Northwest School
+Social realism
+__style/artperiods/socialist_realism__
+Abstraction-Création
+Allianz
+__style/artperiods/abstract_expressionism__
+Art informel
+{Outsider art|Art brut}
+

@@ -1,0 +1,2248 @@
+
+__creatures/mtg/human/human_archer__
+__creatures/mtg/human/human_artificer__
+__creatures/mtg/human/human_assassin__
+__creatures/mtg/human/human_barbarian__
+__creatures/mtg/human/human_berserker__
+__creatures/mtg/human/human_citizen__
+__creatures/mtg/human/human_cleric__
+__creatures/mtg/human/human_druid__
+__creatures/mtg/human/human_gamer__
+__creatures/mtg/human/human_horror__
+__creatures/mtg/human/human_knight__
+__creatures/mtg/human/human_knight_ally__
+__creatures/mtg/human/human_mercenary__
+__creatures/mtg/human/human_minion__
+__creatures/mtg/human/human_monk__
+__creatures/mtg/human/human_monk_cleric__
+__creatures/mtg/human/human_ninja__
+__creatures/mtg/human/human_noble__
+__creatures/mtg/human/human_nomad_mystic__
+__creatures/mtg/human/human_pilot__
+__creatures/mtg/human/human_pirate__
+__creatures/mtg/human/human_pirate_wizard__
+__creatures/mtg/human/human_ranger__
+__creatures/mtg/human/human_rebel_cleric__
+__creatures/mtg/human/human_rogue__
+__creatures/mtg/human/human_samurai__
+__creatures/mtg/human/human_scout__
+__creatures/mtg/human/human_shaman__
+__creatures/mtg/human/human_shaman_ally__
+__creatures/mtg/human/human_soldiers__
+__creatures/mtg/human/human_spellshaper__
+__creatures/mtg/human/human_warlock__
+__creatures/mtg/human/human_warrior__
+__creatures/mtg/human/human_warrior_ally__
+__creatures/mtg/human/human_wizard__
+__creatures/mtg/human/human_wizards__
+Loyal Retainers
+Ballot Broker
+Aysen Bureaucrats
+Azor's Elocutors
+Minister of Impediments
+Council of Advisors
+Council of the Absolute
+Brago's Representative
+Droning Bureaucrats
+Agent of Masks
+Scholarship Sponsor
+Cunning Advisor
+Imperial Recruiter
+Traveling Philosopher
+Seasoned Tactician
+Metagamer
+Persistent Petitioners
+Elder of Laurels
+Orzhov Advokist
+Cartel Aristocrat
+Trusted Advisor
+Corrupt Court Official
+Corrupt Eunuchs
+Garrulous Sycophant
+Femeref Archers
+Arbalest Elite
+Bassara Tower Archer
+Mardu Heart-Piercer
+Sawblade Slinger
+Atzocan Archer
+Ruthless Sniper
+Apprentice Sharpshooter
+Firebrand Archer
+Freewind Equenaut
+Dawnray Archer
+D'Avenant Trapper
+Stun Sniper
+Trophy Hunter
+Reverent Hunter
+Court Archers
+Sly Requisitioner
+Flamewright
+Quicksmith Genius
+Quicksmith Rebel
+Quicksmith Spy
+Embersmith
+Loyal Apprentice
+Experimental Aviator
+Tomakul Scrapsmith
+Geology Enthusiast
+Wreck Hunter
+Arbalest Engineers
+Wire Surgeons
+Sweatworks Brawler
+Junkyard Genius
+Marionette Master
+Doomed Artisan
+Skilled Animator
+Propeller Pioneer
+Myrsmith
+Aether Poisoner
+Restoration Gearsmith
+Audacious Reshapers
+Painsmith
+Scrapper Champion
+Scholar of Stars
+Sage of Lat-Nam
+Ingenious Artillerist
+Ingenious Smith
+Great Desert Prospector
+Hyperion Blacksmith
+Inventor's Apprentice
+Daring Archaeologist
+Argivian Archaeologist
+Argivian Blacksmith
+Battery Bearer
+Powerstone Engineer
+Diligent Excavator
+Reckless Fireweaver
+Reclusive Artificer
+Aeronaut Tinkerer
+Aether Chaser
+Maulfist Squad
+Maverick Thopterist
+Thopter Engineer
+Aerial Engineer
+Renowned Weaponsmith
+Ghirapur Gearcrafter
+Lifesmith
+Weldfast Engineer
+Weldfast Wingsmith
+Aviation Pioneer
+Wind-Kin Raiders
+Gearsmith Prodigy
+Workshop Elders
+Aspiring Aeronaut
+Riddlesmith
+Hooded Assassin
+Thrill-Kill Assassin
+Suq'Ata Assassin
+Fleshtaker
+Agent of the Fates
+Raffine's Silencer
+Lurking Deadeye
+Ruthless Ripper
+Abyssal Hunter
+Silumgar Assassin
+Nightshade Assassin
+Darkblade Agent
+Cruel Sadist
+Nekrataal
+Royal Assassin
+Orzhov Euthanist
+Stalking Assassin
+Thorn of the Black Rose
+King's Assassin
+Garza's Assassin
+Hired Blade
+Hired Poisoner
+Xathrid Slyblade
+Pillaging Horde
+Tiger-Tribe Hunter
+Balduvian War-Makers
+Balduvian Warlord
+Pardic Arsonist
+Pardic Collaborator
+Pardic Lancer
+Halberdier
+Keldon Warlord
+Hell-Bent Raider
+Barbarian Bully
+Barbarian Guides
+Barbarian Lunatic
+Barbarian Riftcutter
+Caves of Chaos Adventurer
+Keldon Champion
+Balduvian Barbarians
+Balduvian Horde
+Kolaghan Forerunners
+Unchained Berserker
+Blade-Tribe Berserkers
+Mogis's Marauder
+Lightning Berserker
+Lightning Mauler
+Spiraling Duelist
+Altac Bloodseeker
+Hardened Berserker
+Berserkers of Blood Ridge
+Vulshok Berserker
+Scab-Clan Berserker
+Vindictive Mob
+Rubblebelt Rioters
+Ruination Rioter
+Bloodsky Berserker
+Gruul Scrapper
+Valley Dasher
+Firehoof Cavalry
+Horde Ambusher
+Aerathi Berserker
+Tuskeri Firewalker
+Scab-Clan Mauler
+Ursine Champion
+Stormblood Berserker
+Dragonkin Berserker
+Rakdos Shred-Freak
+Bloodbraid Marauder
+Expendable Lackey
+Maestros Initiate
+Five Kids in a Trenchcoat
+Unlucky Witness
+Disciplined Duelist
+Scheming Fence
+Sizzling Soloist
+Backup Agent
+Voice of the Vermin
+Civic Gardener
+Gathering Throng
+Cleanup Crew
+Abbey Matron
+Abzan Battle Priest
+Academy Rector
+Acolyte of Affliction
+Acolyte of Xathrid
+Aerie Worshippers
+Airlift Chaplain
+Akroma's Devoted
+Ancestor's Chosen
+Ancestor's Prophet
+Angelheart Protector
+Angel's Herald
+Angus Mackenzie
+Anointed Chorister
+Anointed Peacekeeper
+Anointer of Champions
+Anointer Priest
+Apostle of Purifying Light
+Arashin Cleric
+Archfiend's Vessel
+Archpriest of Iona
+Arcus Acolyte
+Arena Rector
+Asmira, Holy Avenger
+Atalya, Samite Master
+Augur il-Vec
+Auriok Champion
+Auspicious Ancestor
+Avacynian Priest
+Bane's Invoker
+Banisher Priest
+Battlefield Medic
+Beacon of Destiny
+Beloved Chaplain
+Benalish Faithbonder
+Benalish Missionary
+Benevolent Bodyguard
+Bishop of Wings
+Blade Historian
+Blessed Orator
+Blighted Shaman
+Blood Celebrant
+Bonecaller Cleric
+Brine Shaman
+Cabal Archon
+Cabal Evangel
+Cabal Executioner
+Cabal Slaver
+Caregiver
+Cathedral Sanctifier
+Celestial Enforcer
+Celestus Sanctifier
+Clergy en-Vec
+Clergy of the Holy Nimbus
+Cleric of the Forward Order
+Codespell Cleric
+Combat MedicCustodi Soulbinders
+Confessor
+Containment Priest
+Court Cleric
+Crimson Acolyte
+Crossroads Consecrator
+Custodi Peacekeeper
+Custodi Soulcaller
+Dark Supplicant
+Daru Healer
+Daru Mender
+Daru Sanctifier
+Daru Spiritualist
+Daunting Defender
+D'Avenant HealerBalduvian Shaman
+Dawnbringer Cleric
+Dawning Purist
+Daybreak Chaplain
+Deathmark Prelate
+Death Speakers
+Dedicated Martyr
+Defender en-Vec
+Defender of the Order
+Demon's Disciple
+Devoted Caretaker
+Devout Chaplain
+Diregraf Escort
+Disciple of Grace
+Disciple of Griselbrand
+Disciple of Law
+Disciple of Malice
+Disciple of Phenax
+Disciple of Tevesh Szat
+Disciple of the Sun
+Disciple of the Vault
+Doomskar Oracle
+Drannith Healer
+Duskfang Mentor
+Earthblighter
+Ebonblade Reaper
+Edgewalker
+Elgaud Inquisitor
+Elite Spellbinder
+Emissary of Sunrise
+Empty-Shrine Kannushi
+Ephara's Warden
+Evangel of Heliod
+Exava, Rakdos Blood Witch
+Exiled Doomsayer
+Exorcist
+Faith Healer
+False Prophet
+Farrelite Priest
+Femeref Healer
+Field Surgeon
+Fiend Hunter
+Foothill Guide
+Fountain Watch
+Freyalise Supplicant
+Frontline Medic
+Glowrider
+Grand Abolisher
+Grassland Crusader
+Haazda Exonerator
+Hallowed Healer
+Hapatra, Vizier of Poisons
+Harsh Mentor
+Hazduhr the Abbot
+Headhunter
+Hedron-Field Purists
+Hekma Sentinels
+Heliod's Pilgrim
+High Priest of Penance
+Holy Justiciar
+Icatian Priest
+Impassioned Orator
+Imperious Oligarch
+Infernal Caretaker
+Jhessian Balmgiver
+Kaalia of the Vast
+Kaalia, Zenith Seeker
+Kabira EvangelSamite Archer
+Karona's Zealot
+Keensight Mentor
+Keepers of the Faith
+Kei Takahashi
+Kinjalli's Caller
+Kyler, Sigardian Emissary
+Lady Evangela
+Lorehold Apprentice
+Luminarch Aspirant
+Lyzolda, the Blood Witch
+Mangara, the Diplomat
+Martyr of Sands
+Master Apothecary
+Master Healer
+Mikaeus, the Lunarch
+Militant Inquisitor
+Ministrant of Obligation
+Miracle Worker
+Mother of Goons
+Mother of Runes
+Nearheath Chaplain
+Nearheath Pilgrim
+Niambi, Esteemed Speaker
+Niambi, Faithful Healer
+Nikara, Lair Scavenger
+Nils, Discipline Enforcer
+Noble Benefactor
+Noble Templar
+Nova Cleric
+Obsidian Acolyte
+Ollenbock Escort
+Ondu War Cleric
+Order of the Stars
+Orim, Samite Healer
+Oriss, Samite Guardian
+Orzhov Pontiff
+Pilgrim of Justice
+Pilgrim of Virtue
+Planar Guide
+Preacher
+Priest of Forgotten Gods
+Priest of Iroas
+Priest of the Blessed Graf
+Priest of the Blood Rite
+Priest of the Wakening Sun
+Pulsemage Advocate
+Qarsi High Priest
+Qarsi Sadist
+Ragnar
+Ravos, Soultender
+Revered Elder
+Royal Herbalist
+Sacred Guide
+Samite Alchemist
+Samite Elder
+Samite Healer
+Samite Herbalist
+Samite Pilgrim
+Sanctifier en-Vec
+Sanctifier of Souls
+Sanctum Custodian
+Sanctum Guardian
+Sanctum Prelate
+Scholar of Athreos
+Scribe of the Mindful
+Selfless Cathar
+Selfless Exorcist
+Serene Steward
+Serra Inquisitors
+Servant of Nefarox
+Setessan Battle Priest
+Shadowborn Apostle
+Shadow-Rite Priest
+Shadowstorm Vizier
+Shieldmage Advocate
+Sigardian Priest
+Sigardian Zealot
+Silent Attendant
+Silverquill Silencer
+Sin Collector
+Sister Hospitaller
+Skirsdag Flayer
+Skirsdag High Priest
+Skirsdag Supplicant
+Soldevi Adnate
+Soldevi Heretic
+Songstitcher
+Soulmender
+Soul's Attendant
+Soul Shepherd
+Soul Warden
+Speaker of the Heavens
+Starfield Mystic
+Starnheim Aspirant
+Steadfast Sentinel
+Stern Judge
+Storm ShamanGoldnight Commander
+Stronghold Confessor
+Suncleanser
+Sylvan Hierophant
+Syndicate Guildmage
+Syndic of Tithes
+Temmet, Vizier of Naktamun
+Temple Acolyte
+Teroh's Faithful
+Thalia's Geistcaller
+Thalisse, Reverent Medium
+Thraben Doomsayer
+Tireless Missionaries
+Torens, Fist of the Angels
+Tourach, Dread Cantor
+Traveling Minister
+Troubled Healer
+True Believer
+Tymna the Weaver
+Undead Slayer
+Urbis Protector
+Victory's Envoy
+Vigilant Martyr
+Vile Deacon
+Vizier of Deferment
+Vizier of Remedies
+Vizier of the Anointed
+Vizier of the True
+Vizier of Tumbling Sands
+Vizkopa Confessor
+War Oracle
+War Priest of Thune
+Whipgrass Entangler
+Whisper, Blood Liturgist
+Wingmantle Chaplain
+Witch Hunter
+Wojek Apothecary
+Yawgmoth, Thran Physician
+Zealous Inquisitor
+
+Channeler Initiate
+Noble Hierarch
+Witherbloom Apprentice
+Karametra's Acolyte
+Social Climber
+Yavimaya Enchantress
+Fugitive Druid
+Citanul Druid
+Citanul Hierophants
+Druid of Horns
+Krosan Restorer
+Paragon of Eternal Wilds
+Avid Reclaimer
+Rime Tender
+Gatherer of Graces
+Argothian Enchantress
+Zhur-Taa Druid
+Zoologist
+Humble Naturalist
+Ley Weaver
+Reclusive Taxidermist
+Nut Collector
+Wild Cantor
+Druid of Purification
+Hermit Druid
+Hope Tender
+Harvester Druid
+Ley Druid
+Yavimaya Elder
+Keeper of the Sacred Word
+Primal Druid
+Sylvan Shepherd
+Nightshade Peddler
+Augur of Autumn
+Druid Lyrist
+Honored Hierarch
+Groundskeeper
+Juniper Order Rootweaver
+Deathcap Cultivator
+Oashra Cultivator
+Wood Sage
+Axebane Guardian
+Krosan Wayfarer
+Diligent Farmhand
+Dragonsguard Elite
+Verduran Enchantress
+Ichneumon Druid
+Skull Prophet
+Stone-Seeder Hierophant
+Venom Connoisseur
+Mesa Enchantress
+Village Elder
+Harabaz DruidSteward of ValeronExuberant FirestokerWoodland Druid
+Dreampod DruidDrumhunterSunseed Nurturer
+Hidden Herbalists
+Krosan Avenger
+Ixalli's Diviner
+Mycologist
+Awakener Druid
+Citanul Woodreaders
+Sylvok Explorer
+Alloy Animist
+Setessan Petitioner
+Promised Kannushi
+Drover of the Mighty
+Somberwald Sage
+Avenging Druid
+Atzocan Seer
+Squirrel Wrangler
+Slippery Bogbonder
+Femeref Enchantress
+Vorthos, Steward of Myth
+Spike, Tournament Grinder
+Johnny, Combo Player
+Timmy, Power Gamer
+Wharf Infiltrator
+Fascist Art Director
+Foul Emissary
+Emrakul's Evangel
+Tempered Veteran
+Tilonalli's Knight
+Defender of Law
+Sacred Knight
+Knight of the Tusk
+Ethercaste Knight
+Craven Knight
+Lightwielder Paladin
+Benalish Cavalry
+Gustcloak Cavalier
+Knight of Obligation
+Caravan Escort
+Searing Spear Askari
+Pentarch Paladin
+Ladies' Knight
+Paladin of Prahv
+Blazing Blade Askari
+Ardenvale Paladin
+White Shield Crusader
+Varchild's Crusader
+Teferi's Honor Guard
+Cavalry Drillmaster
+Knight of Dawn's Light
+Knight of Malice
+Basri's Lieutenant
+Silverwing Squadron
+Knight of New Alara
+Vantress Paladin
+Capashen Knight
+Blood Knight
+Veteran Cavalier
+Skyknight Vanguard
+Benalish Lancer
+Wingsteed Rider
+Fiendslayer Paladin
+Kessig Wolfrider
+Truefire Paladin
+Charging Paladin
+Ledev Guardian
+Novice Knight
+Oathsworn Knight
+Truefire Captain
+Mesa Cavalier
+Noble Banneret
+Knight of Stromgald
+Cabal Paladin
+Embereth Paladin
+Gryff Rider
+Candlelit Cavalry
+Fireborn Knight
+Inspiring Captain
+Cloud Crusader
+Benalish Marshal
+Silver Knight
+Knight of the Skyward Eye
+Paladin en-Vec
+Azorius Skyguard
+Twinblade Paladin
+Knotvine Paladin
+Charity Extractor
+Trokin High Guard
+Embereth Skyblazer
+Wintermoor Commander
+Cavalry Master
+Lost Order of Jarkeld
+Triumphant Adventurer
+Lyev Skyknight
+Flight of Equenauts
+Outrider of Jhess
+Youthful Knight
+Femeref Knight
+Burning-Yard Trainer
+Knight of the Stampede
+White Knight
+Fervent Champion
+Riders of Gavony
+Northern Paladin
+Valiant Knight
+Knight Errant
+Sunrise Cavalier
+Alaborn Cavalier
+Knights of Thorn
+Southern Paladin
+Sister of Silence
+Lionheart Maverick
+Fallen Askari
+Chieftain en-Dal
+Attended Knight
+Order of the Sacred Torch
+Agent of Stromgald
+Hero of Oxid Ridge
+Lim-Dûl's Paladin
+Defender of Chaos
+Zhalfirin Commander
+Belle of the Brawl
+Coalition Skyknight
+Kjeldoran Skyknight
+Serra Paladin
+Sigiled Paladin
+Faithbearer Paladin
+Knight of New Benalia
+Knight of the Keep
+Forsworn Paladin
+Hero of Bladehold
+Hanweir Lancer
+Gallant Cavalry
+Acclaimed Contender
+Sigardian Paladin
+Blacklance Paragon
+Mirran Crusader
+Rowan's Battleguard
+Knight of the Reliquary
+Champion Lancer
+Aysen Crusader
+Knight of Sursi
+Knight of the Mists
+Knight of Dawn
+Capashen Templar
+Worthy Knight
+Order of the White Shield
+Suq'Ata Lancer
+Dakmor Lancer
+Knight of Glory
+Puresteel Paladin
+Moorland Rescuer
+Sky Hussar
+Venerable Knight
+Skyknight Legionnaire
+Knight of the White Orchid
+Knight Exemplar
+Knight of Dusk's Shadow
+Knight of Dusk
+Dauntless Bodyguard
+Odric's Outrider
+Stormfist Crusader
+Thalia's Lancers
+Clarion Cathars
+Citadel Castellan
+Gryffwing Cavalry
+Imperial Lancer
+Parhelion Patrol
+Benalish Honor Guard
+Inspiring Veteran
+Man of Measure
+Kjeldoran Knight
+Crusading Knight
+Knight of Sorrows
+Stromgald Cabal
+Knight-Captain of Eos
+Knight of Old Benalia
+Hussar Patrol
+Black Knight
+Locthwain Paladin
+Knight of Infamy
+Zhalfirin Knight
+Moorish Cavalry
+Daring Skyjek
+Juniper Order Advocate
+Knight of the Pilgrim's Road
+Griffin Rider
+Dawnstrike Paladin
+Bogardan Lancer
+Knights of the Black Rose
+Paragon of the Amesha
+Imperial Outrider
+Student of Warfare
+Azorius Knight-Arbiter
+Dragonsoul Knight
+Burning Shield Askari
+Pterodon Knight
+Heron's Grace Champion
+Accorder Paladin
+Benalish Knight
+Gryff Vanguard
+Resolute Rider
+Elite Headhunter
+Fervent Cathar
+Knight of Grace
+Kabira Vindicator
+Rowan's Stalwarts
+Silverblade Paladin
+Knight of Valor
+Hero of Goma Fada
+Talus Paladin
+Makindi Patrol
+Moggcatcher
+Sell-Sword Brute
+Bog Glider
+Bog Smugglers
+Agent of Shauku
+Mercenaries
+Seahunter
+Alley Grifters
+Highway Robber
+Robaran Mercenaries
+Soldier of Fortune
+Strongarm Thug
+Cateran Kidnappers
+Cateran Persuader
+Braids, Cabal Minion
+Chainer, Dementia Master
+Chainer, Nightmare Adept
+Graceblade Artisan
+Jukai Messenger
+Avacyn's Pilgrim
+Abbot of Keral Keep
+Leaping Master
+Bloodfire Enforcers
+Dragon Bell Monk
+Fleet-Footed Monk
+Ascendant Acolyte
+Keral Keep Disciples
+Serra Ascendant
+Dueling Coach
+Mystic of the Hidden Way
+Mistfire Adept
+Acolyte of the Inferno
+Ojutai Exemplars
+Jeskai Elder
+Jeskai Infiltrator
+Jeskai Sage
+Jeskai Student
+Valeron Wardens
+Monastery Mentor
+Monastery Swiftspear
+Order of the Sacred Bell
+Lotus-Eye Mystics
+Zephyr Scribe
+Okina Nightwatch
+Strongarm Monk
+Master of Pearls
+Dragon's Disciple
+Dragon's Eye Sentry
+Humble Budoka
+Student of Ojutai
+Geist-Honored Monk
+Serene Master
+Elusive Spellfist
+Mantis Rider
+Whirling Dervish
+Descendant of Masumaro
+Topan Ascetic
+Wandering Champion
+Soulfire Grand Master
+Dragon-Style Twins
+Monk Realist
+Venerable Monk
+Monk Idealist
+Militant Monk
+Devout Monk
+Reliquary Monk
+Moonsnare Specialist
+Moonblade Shinobi
+Prosperous Thief
+Inkrise Infiltrator
+Walker of Secret Ways
+Mistblade Shinobi
+Sakashima's Student
+Ninja of the Deep Hours
+Dokuchi Silencer
+Futurist Operative
+Thousand-Faced Shadow
+Biting-Palm Ninja
+Beloved Princess
+Wicked Guardian
+Imposing Sovereign
+Charming Prince
+King Suleiman
+Malevolent Noble
+Mystic Crusader
+Mystic Enforcer
+Mystic Penitent
+Mystic Visionary
+Mystic Zealot
+Speedway Fanatic
+Reckless Racer
+Aeronaut Admiral
+Ovalchase Daredevil
+Dinosaur Hunter
+Tomb Robber
+Captivating Crew
+Angrath's Marauders
+Burdened Aerialist
+Swaggering Corsair
+Deadeye Rig-Hauler
+Deadeye Tormentor
+Deadeye Tracker
+Prosperous Pirates
+Pirate Ship
+Armored Galleon
+Daring Saboteur
+Crafty Cutpurse
+Talas Air Ship
+Talas Lookout
+Talas Merchant
+Marauding Looter
+Cloud Pirates
+Shipwreck Looter
+Desperate Castaways
+Pitiless Plunderer
+Azure Fleet Admiral
+Daring Buccaneer
+Grasping Scoundrel
+Merchant Raiders
+Rishadan Airship
+Rishadan Brigand
+Rishadan Cutpurse
+Rishadan Footpad
+Brazen Buccaneers
+Brazen Freebooter
+Kitesail Corsair
+Kitesail Freebooter
+Smuggler Captain
+Skyship Plunderer
+Coastline Marauders
+Forerunner of the Coalition
+Dire Fleet Daredevil
+Dire Fleet Hoarder
+Dire Fleet Interloper
+Dire Fleet Poisoner
+Fathom Fleet Captain
+Fathom Fleet Cutthroat
+Fathom Fleet Firebrand
+Hostage Taker
+Sailor of Means
+Rowdy Crew
+Slippery Scoundrel
+Storm Fleet Aerialist
+Storm Fleet Sprinter
+Storm Fleet Spy
+Storm Fleet Swashbuckler
+Corsair Captain
+Trove Tracker
+Deadeye Brawler
+Deadeye Plunderers
+Deadeye Quartermaster
+Boarding Party
+Warkite Marauder
+Kukemssa Pirates
+Kitesail Skirmisher
+Steam Frigate
+Wanted Scoundrels
+Talas Researcher
+Storm Fleet Pyromancer
+Timestream Navigator
+Cloaked Cadet
+Kelsinko Ranger
+Somberwald Beastmaster
+Ramosian Revivalist
+Blightspeaker
+Samite Censer-Bearer
+Saltfield Recluse
+Children of Korlis
+Toluz, Clever Conductor
+Negan, the Cold-Blooded
+Nimble Trapfinder
+Eron the Relentless
+Corpse Hauler
+Cutthroat il-Dal
+Zulaport Duelist
+Marchesa's Emissary
+Tetsuko Umezawa, Fugitive
+Hypnotic Grifter
+Blade Juggler
+Nine-Fingers Keene
+Gwendlyn Di Corci
+Joven
+Orzhov Enforcer
+Notion Thief
+Sakashima of a Thousand Faces
+Rakdos Firewheeler
+Humble Defector
+Deranged Outcast
+Krovikan Scoundrel
+Fourth Bridge Prowler
+Marang River Prowler
+Dogged Detective
+Glint-Sleeve Siphoner
+Corpse Traders
+Stealer of Secrets
+Deathcult Rogue
+Neyam Shai Murad
+Undercity Informer
+Invisible Stalker
+Charging Bandits
+Whisper Agent
+Spireside Infiltrator
+Gwafa Hazid, Profiteer
+Grave Robbers
+Jhessian Thief
+Daring Thief
+Ali Baba
+Temple Thief
+Keldon Vandals
+Tooth Collector
+Lurking Informant
+Illuminator Virtuoso
+Trespasser il-Vec
+Chandler
+Starke of Rath
+Obsessive Skinner
+Errant, Street Artist
+Marchesa's Infiltrator
+Brinebarrow Intruder
+Midnight Scavengers
+Agent of Horizons
+Prowling Geistcatcher
+Soaring Thought-Thief
+Scarwood Bandits
+Audacious Thief
+Moriok Scavenger
+Eloise, Nephalia Sleuth
+Orzhov Racketeers
+Rogue Refiner
+Masked Blackguard
+Ambush Party
+Keymaster Rogue
+Disciple of Deceit
+Fortune Thief
+Acquisitions Expert
+Hired Torturer
+Dhund Operative
+Night Market Lookout
+Extraction Specialist
+Stromgald Spy
+Thieves' Guild Enforcer
+Rilsa Rael, Kingpin
+Jhessian Infiltrator
+Snooping Newsie
+Harbor Bandit
+Canal Courier
+Spontaneous Artist
+Bane Alley Broker
+Morbid Opportunist
+Tavern Scoundrel
+Gilt-Blade Prowler
+Fan Favorite
+Creepy Puppeteer
+Psionic Snoop
+Rag Dealer
+Shortcut Seeker
+Nimana Skydancer
+Deft Duelist
+Tavern Swindler
+Agent of Treachery
+Cunning Nightbonder
+Nimble Pilferer
+Kessig Cagebreakers
+Syndicate Enforcer
+Bane Alley Blackguard
+Nalia de'Arnise
+Lore Broker
+Spikewheel Acrobat
+Burning-Tree Vandal
+Relic Runner
+Neurok Commando
+Selhoff Occultist
+Veldrane of Sengir
+Safana, Calimport Cutthroat
+Hackrobat
+Nephalia Smuggler
+Laurine, the Diversion
+Koth's Courier
+Chevill, Bane of Monsters
+Opposition Agent
+Ingenious Thief
+Nimana Skitter-Sneak
+Dimir Informant
+Canyon Lurkers
+Marchesa's Smuggler
+"Brims" Barone, Midway Mobster
+Neurok Spy
+Emcee
+Ghoulcaller's Accomplice
+Sakashima the Impostor
+Aethertorch Renegade
+Hada Spy Patrol
+Gnat Alley Creeper
+Duskmantle Operative
+Master Thief
+Konda's Hatamoto
+Jukai Trainee
+Mothrider Samurai
+Numai Outcast
+Araba Mothrider
+Asari Captain
+Indebted Samurai
+Peerless Samurai
+Samurai Enforcers
+Imperial Subduer
+Battle-Mad Ronin
+Hand of Cruelty
+Hand of Honor
+Inner-Chamber Guard
+Cursed Ronin
+Ronin Cavekeeper
+Ronin Cliffrider
+Ronin Houndmaster
+Devoted Retainer
+Upriser Renegade
+Woodland Patrol
+Woodland Sleuth
+Tandem Lookout
+Fallaji Archaeologist
+Fallaji Wayfarer
+Bloodthorn Taunter
+Skyline Scout
+Courageous Outrider
+Pious Wayfarer
+Tireless Tracker
+Village Bell-Ringer
+Scholar of New Horizons
+Cloudblazer
+Jhessian Lookout
+Briarbridge Tracker
+Windscouter
+Hyrax Tower Scout
+Salt Road Patrol
+Salvage Scout
+Mwonvuli Beast Tracker
+Valeron Outlander
+Alert Heedbonder
+Mausoleum Guard
+Farbog Explorer
+Seekers' Squire
+Intrepid Adversary
+Intrepid Provisioner
+Byway Courier
+Trustworthy Scout
+Master of Diversion
+Argothian Opportunist
+Mtenda Herder
+Timberland Guide
+Sunrise Seeker
+Emperor's Vanguard
+Femeref Scouts
+Auriok Transfixer
+Akoum Stonewaker
+Akroan Conscriptor
+Alaundo the Seer
+Ardent Elementalist
+Arena Trickster
+Atla Palani, Nest Tender
+Bitterheart Witch
+Bloodboil Sorcerer
+Bogardan Dragonheart
+Brallin, Skyshark Rider
+Brimstone Mage
+Brood Keeper
+Brothers of Fire
+Burning-Tree Emissary
+Chaos Channeler
+Circle of Elders
+Clan Guildmage
+Conspiracy Theorist
+Crimson Mage
+Cult Guildmage
+Cult of the Waxing Moon
+Cunning Sparkmage
+Deathgreeter
+Draconic Disciple
+Dragonmaster Outcast
+Dragon's Rage Channeler
+Dragon Whisperer
+Eternal Witness
+Fa'adiyah Seer
+Fireblade Artist
+Flamespeaker Adept
+Frostwielder
+Gavi, Nest Warden
+Ghired, Conclave Exile
+Gigantomancer
+Gruul Beastmaster
+Gruul Guildmage
+Hiveheart Shaman
+Illustrious Historian
+Incendiary Oracle
+Ixalli's Keeper
+Jade Mage
+Judith, the Scourge Diva
+Jund Battlemage
+Juri, Master of the Revue
+Kaervek the Merciless
+Kazandu Tuskcaller
+Keldon Flamesage
+Kessig Flamebreather
+Kinetic Augur
+Kolaghan Stormsinger
+Kumano, Master YamabushiYoung Pyromancer
+Kumano's Pupils
+Lagomos, Hand of Hatred
+Mad Prophet
+Martyr of Ashes
+Martyr of Spores
+Master of the Wild Hunt
+Meren of Clan Nel Toth
+Minister of Pain
+Moodmark Painter
+Naya Battlemage
+Ophiomancer
+Oran-Rief Invoker
+Otepec Huntmaster
+Plaguecrafter
+Prismari Apprentice
+Prophetic Flamespeaker
+Rage Thrower
+Rakdos Trumpeter
+Rakka Mar
+Rattleclaw Mystic
+Reki, the History of Kamigawa
+Renowned Weaver
+Rix Maadi Guildmage
+Rix Maadi Reveler
+Seasoned Pyromancer
+Shaman of Forgotten Ways
+Sisters of the Flame
+Skarrg Guildmage
+Skinshifter
+Skirsdag Cultist
+Smoke Teller
+Stoneshaker Shaman
+Stonewright
+Stormcaller of Keranos
+Storm Herald
+Subira, Tulzidi Caravanner
+Tasigur, the Golden Fang
+Temur War Shaman
+Thermo-Alchemist
+Tilonalli's Skinshifter
+Tilonalli's Summoner
+Timeless Witness
+Trusted Forcemage
+Ulvenwald Tracker
+Valakut Invoker
+Valduk, Keeper of the Flame
+Vithian Renegades
+Vithian Stinger
+Vulshok Heartstoker
+Vulshok Sorcerer
+Wakedancer
+Weaver of Lightning
+Whisperer of the Wilds
+Wild Beastmaster
+Zaffai, Thunder Conductor
+
+Zulaport Chainmage
+Akoum Flameseeker
+Agadeem Occultist
+Murasa Pyromancer
+Firemantle Mage
+Herald of Anafenza
+Nav Squad Commandos
+Shu Cavalry
+Shu Elite Infantry
+Shu Grain Caravan
+Brokers Veteran
+Snare Tactician
+Company Commander
+Kongming's Contraptions
+Lavabrink Venturer
+Law-Rune Enforcer
+Gideon's Avenger
+Gideon's Company
+Gideon's Lawkeeper
+Jungle Patrol
+Flanking Troops
+Caldaia Guardian
+Reborn Hero
+Blade Instructor
+Everdawn Champion
+Pikemen
+Kytheon's Irregulars
+Volunteer Militia
+Volunteer Reserves
+Lowland Tracker
+Loyal Sentry
+Whisper Squad
+Independent Troops
+Elite Inquisitor
+Elite Javelineer
+Elite Scaleguard
+Elite Skirmisher
+Elite Vanguard
+Elspeth's Devotee
+Field Marshal
+Spire Patrol
+Fallaji Chaindancer
+Fallaji Vanguard
+Thalia's Lieutenant
+Expendable Troops
+Tomakul Honor Guard
+Parish-Blade Trainee
+Park Heights Maverick
+Stoic Champion
+Infantry Veteran
+Honor Guard
+Guardians of Akrasa
+Moorland Inquisitor
+Cemetery Protector
+Azorius Arrester
+Mirage Phalanx
+Captain of the Watch
+Kill-Zone Acrobat
+Zhalfirin Decoy
+Shock Troops
+Ceremonial Guard
+Bastion Protector
+Battalion Foot Soldier
+Consul's Lieutenant
+Tithe Taker
+Tocatli Honor Guard
+Akrasan Squire
+Akroan Crusader
+Akroan Hoplite
+Akroan Jailer
+Akroan Phalanx
+Akroan Sergeant
+Akroan Skyguard
+Nightguard Patrol
+Border Guard
+Throne Warden
+Air Marshal
+Daru Cavalier
+Daru Lancer
+Daru Warchief
+Retrieval Agent
+Iroas's Champion
+Ironfist Crusher
+Bounty Agent
+Wingshield Agent
+Doomed Traveler
+Hero of Iroas
+Hero of the Dunes
+Hero of the Games
+Hero of the Winds
+Roc Hunter
+Savior of Ollenbock
+Keen Glidemaster
+Keen-Eared Sentry
+Keeper of the Accord
+Shu Soldier-Farmers
+Tenth District Guard
+Tenth District Legionnaire
+Tenth District Veteran
+Dromoka Captain
+Opportunist
+Wei Ambush Force
+Wei Elite Companions
+Shield Bearer
+Shield Mate
+Squad Captain
+Wojek Bodyguard
+Wojek Halberdiers
+Armament Corps
+Bushmeat Poacher
+Inspiring Commander
+Selfless Squire
+Dauntless Cathar
+Dauntless River Marshal
+Perimeter Captain
+Perimeter Patrol
+Perimeter Sergeant
+Conclave Equenaut
+Conclave Phalanx
+Thundersong Trumpeter
+Palace Guard
+Palace Jailer
+Palace Sentinels
+Veteran Swordsmith
+Pearlspear Courier
+Radiant's Dragoons
+Town Sentry
+Crowd Favorites
+Hanweir Garrison
+Deftblade Elite
+Cloudreach Cavalry
+Gempalm Avenger
+General's Enforcer
+Giltspire Avenger
+Gerrard's Irregulars
+Llanowar Cavalry
+Duelcraft Trainer
+Serra Zealot
+Servant of the Scale
+Wing Commando
+Fabled Hero
+Phalanx Leader
+Phalanx Vanguard
+Oracle's Attendants
+Desperate Sentry
+Stormfront Riders
+Eager Cadet
+Swiftblade Vindicator
+Icatian Infantry
+Icatian Javelineers
+Icatian Lieutenant
+Icatian Phalanx
+Icatian Skirmishers
+Foriysian Brigade
+Foriysian Interceptor
+Dapper Shieldmate
+Impetuous Sunchaser
+Ignoble Soldier
+Ikiral Outrider
+Slayer of the Wicked
+Guardian of New Benalia
+Guardian Shield-Bearer
+Skyspear Cavalry
+Abzan Falconer
+Liege of the Axe
+Lieutenants of the Guard
+Baneslayer Aspirant
+Bant Sojourners
+Bant Sureblade
+Ardent Militia
+Ardent Recruit
+Ardent Soldier
+Auriok Bladewarden
+Auriok Edgewright
+Auriok Glaivemaster
+Auriok Salvagers
+Battlefield Butcher
+Salt Road Quartermasters
+Garenbrig Squire
+Precinct Captain
+Trap Digger
+Trap Runner
+Seasoned Marshal
+Branded Brawlers
+Nightsquad Commando
+Cho-Arrim Legate
+Gustcloak Runner
+Gustcloak Sentinel
+Checkpoint Officer
+Flailing Soldier
+Crusader of Odric
+Valiant Guard
+Valiant Rescuer
+Resistance Squad
+Resolute Reinforcements
+Skyrider Trainee
+Alaborn Grenadier
+Alaborn Musketeer
+Alaborn Trooper
+Fairgrounds Patrol
+Falconer Adept
+Firefist Striker
+Fireflux Squad
+Search Party Captain
+Surging Sentinels
+Ritual Guardian
+Forerunner of the Empire
+Battlewise Hoplite
+Kjeldoran Guard
+Kjeldoran Home Guard
+Kjeldoran Javelineer
+Kjeldoran Outrider
+Kjeldoran Phalanx
+Kjeldoran Royal Guard
+Kjeldoran Skycaptain
+Resistance Fighter
+Vampire Slayer
+Aeronaut Cavalry
+Fault Riders
+Favored Hoplite
+Favored of Iroas
+Steelshaper Apprentice
+Stern Constable
+Stern Marshal
+Siege Striker
+Siege Veteran
+Bomber Corps
+Sungold Sentinel
+Sunhome Stalwart
+Eiganjo Free-Riders
+Elder Cathar
+Haazda Marshal
+Haazda Officer
+Haazda Shield Mate
+Haazda Snare Squad
+Staunch Defenders
+Steadfast Cathar
+Steadfast Sentry
+Votary of the Conclave
+Heavy Ballista
+Heavy Infantry
+Ambush Paratrooper
+Ampryn Tactician
+Midnight Duelist
+Midnight Guard
+Elgaud Shieldmate
+Elite Arrester
+Paliano Vanguard
+Aerial Caravan
+Boros Swiftblade
+Royal Trooper
+Intrepid Hero
+Stalwart Pathlighter
+Stalwart Shield-Bearers
+Standing Army
+Standing Troops
+Basilica Guards
+Gavony Dawnguard
+Gavony Ironwright
+Gavony Silversmith
+Gavony Trapper
+Paragon of New Dawns
+Paranoid Parish-Blade
+Benalish Commander
+Benalish Heralds
+Benalish Hero
+Benalish Infantry
+Benalish Trapper
+Benalish Veteran
+Wu Admiral
+Wu Elite Cavalry
+Wu Infantry
+Wu Light Cavalry
+Squire
+Soldier of the Pantheon
+Dawnbringer Charioteers
+Foot Soldiers
+Fiend Binder
+Zealots en-Dal
+Meng Huo's Horde
+Mentor of the Meek
+Keldon Arsonist
+Keldon Firebombers
+Conscripted Infantry
+Glory Seeker
+Thraben Inspector
+Thraben Standard Bearer
+Thraben Valiant
+Master Decoy
+Master of Arms
+Scalebane's Elite
+Scaleguard Sentinels
+Militia Bugler
+Militia Rallier
+Gravel Slinger
+Helionaut
+Weathered Bodyguards
+Enlistment Officer
+Adherent of Hope
+Boros Challenger
+Boros Elite
+Mine Bearer
+Recruiter of the Guard
+Recruitment Officer
+Red Cliffs Armada
+Catapult Master
+Catapult Squad
+Cathar Commando
+Sunlit Hoplite
+Sunspire Gatekeepers
+Sunstrike Legionnaire
+Daysquad Marshal
+Ravaging Horde
+Fencing Ace
+Sergeant-at-Arms
+Champion of the Parish
+Estwald Shieldbasher
+Reverent Hoplite
+Court Street Denizen
+Martyr for the Cause
+Warlord's Elite
+Whip Sergeant
+Veteran Armorer
+Veteran Armorsmith
+Veteran Brawlers
+Veteran Cathar
+Descendant of Kiyomaro
+Kjeldoran Elite Guard
+Kjeldoran Escort
+Renegade Troops
+Renegade Warlord
+Topan Freeblade
+Frontline Strategist
+Bloodcrazed Hoplite
+Makeshift Battalion
+Vernadi Shieldmate
+Relic Seeker
+Righteous Avengers
+Auriok Steelshaper
+Auriok Sunchaser
+Auriok Survivors
+God-Favored General
+Dream Fighter
+Wyrm's Crossing Patrol
+Fresh-Faced RecruitKazandu Blademaster
+Veteran Warleader
+Affa Protector
+Resolute Blademaster
+Hada Freeblade
+Weapons TrainerRanger en-VecMounted Archers
+Crossbow Infantry
+Longbow Archer
+Fire Bowman
+Elite Archers
+D'Avenant ArcherKeldon BerserkerHanweir Militia Captain // Westvale Cult LeaderThraben Sentry // Thraben MilitiaMourning Patrol // Morning ApparitionLoyal Cathar // Unhallowed CatharSilverflame Squire // On AlertAngelfire CrusaderBushi Tenderfoot // Kenzo the HardheartedFaithful Squire // Kaiso, Memory of LoyaltyRanger of Eos
+Ranger-Captain of Eos
+Firebrand RangerWhipcorderMountain BanditHonorable Scout
+Icatian Scout
+Advance Scout
+Veteran ExplorerSandstone WarriorBallista Watcher // Ballista Wielder
+Brutal Cathar // Moonrage BruteWizened Arbiter
+Mageta the Lion
+Latulla, Keldon Overseer
+Alexi, Zephyr Mage
+Jaya Ballard, Task Mage
+Jolrael, Empress of Beasts
+Killian, Ink Duelist
+Tivash, Gloom Summoner
+Katilda, Dawnhart Prime
+Lynde, Cheerful Tormentor
+Baba Lysaga, Night Witch
+Fain, the Broker
+Saryth, the Viper's Fang
+Kaervek, the Spiteful
+Wyll, Blade of Frontiers
+Abzan Guide
+Abzan Kin-Guard
+Academy Raider
+Ahn-Crop Champion
+Akroan Line Breaker
+Alpine Houndmaster
+Arashin Foremost
+Archetype of AggressionHerald of Dromoka
+Ash Zealot
+Atarka Beastbreaker
+Avenging Huntbonder
+Backwoods Survivalists
+Ballroom Brawlers
+Banewhip Punisher
+Battershield Warrior
+Bear's Companion
+Beastbreaker of Bala Ged
+Beskir Shieldmate
+Blood-Chin Rager
+Bloodlust Inciter
+Bloodsoaked Champion
+Borderland Marauder
+Briarbridge Patrol
+Caldaia Strongarm
+Chakram Slinger
+Champion of Lambholt
+Champion of the Flame
+Chief of the Edge
+Chief of the Scale
+Cleaving Skyrider
+Combat Celebrant
+Crew Captain
+Cunning Survivor
+Dauntless Survivor
+Daybreak Combatants
+Den Protector
+Deputized Protester
+Devoted Crop-Mate
+Disciple of the Old Ways
+Dragon Hunter
+Dragonscale General
+Dromoka Warrior
+Dutiful Attendant
+Embraal Bruiser
+Embraal Gear-Smasher
+Enraged Revolutionary
+Enthralling Victor
+Erg Raiders
+Exemplar of Strength
+Expedition Champion
+Fearless Halberdier
+Flamerush Rider
+Fleshgrafter
+Forge Boss
+Frillscare Mentor
+Frontier Warmonger
+Frontline Rebel
+Gathan Raiders
+Geist Trappers
+Ghor-Clan Wrecker
+Glory-Bound Initiate
+Godo's Irregulars
+Golgari Thug
+Goma Fada Vanguard
+Gore-House Chainwalker
+Graveblade Marauder
+Grim Flayer
+Hamlet Captain
+Hamlet Vanguard
+Hand of Silumgar
+Hardy Veteran
+Harper Recruiter
+Harvesttide Sentry
+Heir of the Wilds
+Heronblade Elite
+Hero of Bretagard
+Hero of Leina Tower
+Hero of Precinct One
+Hidden Dragonslayer
+Honored Crop-Captain
+Horizon Seeker
+Hornbash Mentor
+Impetuous Protege
+Ironclad Slayer
+Kabira Outrider
+Kargan Dragonlord
+Kargan Dragonrider
+Kargan Intimidator
+Kargan Warleader
+Keldon Halberdier
+Keldon Marauders
+Keldon Overseer
+Keldon Raider
+Keldon Strike Team
+Keldon Warcaller
+Kessig Malcontents
+Kin-Tree Warden
+Kjeldoran Warrior
+Kolaghan Aspirant
+Kolaghan Skirmisher
+Kronch Wrangler
+Kruin Striker
+Labyrinth Champion
+Lightning Runner
+Lightwalker
+Mage-Ring Bully
+Manic Vandal
+Mardu Hateblade
+Mardu Hordechief
+Mardu Shadowspear
+Mardu Skullhunter
+Mardu Strike Leader
+Mardu Woe-Reaper
+Matca Rioters
+Maulfist Doorbuster
+Maulfist Revolutionary
+Melira's Keepers
+Menagerie Liberator
+Moriok Reaver
+Nef-Crop Entangler
+Night Clubber
+Oketra's Avenger
+Paired Tactician
+Paragon of Fierce Defiance
+Professional Face-Breaker
+Proud Mentor
+Proud Wildbonder
+Proven Combatant
+Radha's Firebrand
+Relentless Hunter
+Renegade Firebrand
+Renegade Rallier
+Resolute Survivors
+Rhet-Crop Spearmaster
+Rhonas's Stalwart
+Riot Ringleader
+Rip-Clan Crasher
+Riveteers Decoy
+Rubblebelt Raiders
+Rubble Slinger
+Sabertooth Outrider
+Sandsteppe Outcast
+Savvy Hunter
+Scorch Rider
+Seasoned Dungeoneer
+Seasoned Hallowblade
+Seeker of the Way
+Setessan Champion
+Setessan Skirmisher
+Setessan Starbreaker
+Sickle Dancer
+Sightless Brawler
+Sigiled Contender
+Sister Repentia
+Skarrgan Pit-Skulk
+Slate Street Ruffian
+Smelt-Ward Gatekeepers
+Snowhorn Rider
+Somberwald Vigilante
+Sonorous Howlbonder
+Soulblade Corrupter
+Species Specialist
+Splatter Thug
+Staunch-Hearted Warrior
+Steward of Solidarity
+Tenacious Underdog
+Timely Hordemate
+Titan Hunter
+Tormented Hero
+Triumph of Saint Katherine
+Trueheart Duelist
+Tuskguard Captain
+Unwavering Initiate
+Veteran Dungeoneer
+Voltaic Brawler
+Vulshok Battlemaster
+Vulshok Refugee
+War-Name Aspirant
+Wrecking Crew
+Zealous Conscripts
+Zephyrim
+Zulaport Enforcer
+
+Nimana Sell-Sword
+Bojuka Brigand
+Oran-Rief Survivalist
+Graypelt Hunter
+Reckless Cohort
+Etherium Spinner
+Puppet Conjurer
+Skill Borrower
+Vectis Dominator
+Windwright Mage
+Architects of Will
+Esper Battlemage
+Protean Thaumaturge
+Youthful Scholar
+Radiant Performer
+Star Pupil
+Graceful Adept
+Riptide Biologist
+Riptide Chronologist
+Riptide Director
+Riptide Entrancer
+Snapcaster Mage
+Sorcerer of the Fang
+Sorceress Queen
+Lunar Mystic
+Sly Instigator
+Flux Channeler
+Dimir Guildmage
+Minamo Scrollkeeper
+Minamo Sightbender
+Irencrag Pyromancer
+Mundungu
+Senate Guildmage
+Rockslide Sorcerer
+Puppeteer
+Laboratory Maniac
+Vortex Runner
+Tolarian Emissary
+Tolarian Entrancer
+Tolarian Scholar
+Whispering Wizard
+Burning Prophet
+Elite Instructor
+Lighthouse Chronologist
+Tribute Mage
+Trinket Mage
+Ghosthelm Courier
+Harmonic Prodigy
+Necra Disciple
+Meddling Mage
+Onyx Mage
+Disruptive Pitmage
+Disruptive Student
+Prodigal Pyromancer
+Prodigal Sorcerer
+Azorius Aethermage
+Azorius Justiciar
+Patron Wizard
+Sinister Concierge
+Havengul Runebinder
+Bogbrew Witch
+Capricious Sorcerer
+Captain of the Mists
+Temporal Adept
+Shivan Emissary
+Planebound Accomplice
+Rummaging Wizard
+Arcane Artisan
+Arcane Savant
+Dreamstealer
+Drifter il-Dal
+Stonewise Fortifier
+Reflector Mage
+Duskmantle Guildmage
+Wingcrafter
+Wingspan Mentor
+Survivor of the Unseen
+Artful Looter
+Artisan of Forms
+Prophet of Kruphix
+Grim Haruspex
+Grim Lavamancer
+Mage il-Vec
+Keen Duelist
+Jubilant Skybonder
+Dromoka Dunecaster
+Terraformer
+Supreme Inquisitor
+Suq'Ata Firewalker
+Oracle en-Vec
+Novice Occultist
+Mystic Archaeologist
+Flesh Carver
+Fleshformer
+Exhibition Magician
+Wojek Embermage
+Armorer Guildmage
+Dark Confidant
+Pondering Mage
+Portal Mage
+Lord of the Unreal
+Lore Weaver
+Blightcaster
+Sea Gate Oracle
+Crafty Pathmage
+Magus of the Abyss
+Magus of the Arena
+Magus of the Balance
+Magus of the Bazaar
+Magus of the Bridge
+Magus of the Candelabra
+Magus of the Coffers
+Magus of the Disk
+Magus of the Future
+Magus of the Jar
+Magus of the Library
+Magus of the Mind
+Magus of the Mirror
+Magus of the Moat
+Magus of the Moon
+Magus of the Order
+Magus of the Scroll
+Magus of the Tabernacle
+Magus of the Unseen
+Soul-Scar Mage
+Teferi's Protege
+Omenspeaker
+Omnispell Adept
+Legion Guildmage
+Thunderscape Battlemage
+Thunderscape Master
+Pain Seer
+Incursion Specialist
+Disciple of Bolas
+Disciple of Caelus Nin
+Disciple of Kangee
+Disciple of the Ring
+Bog Initiate
+Balshan Beguiler
+Raffine's Informant
+Rage Weaver
+Heartfire Immolator
+Brushstroke Paintermage
+Ana Battlemage
+Ana Disciple
+Anarchist
+Imagecrafter
+Scornful Egotist
+Krovikan Elementalist
+Krovikan Sorcerer
+Hapless Researcher
+Dega Disciple
+Scholar of the Ages
+Sadistic Augermage
+Sage of Epityr
+Sage of Hours
+Sage of Mysteries
+Shadowmage Infiltrator
+Gempalm Sorcerer
+Venerated Teacher
+Murmuring Mystic
+Musician
+Dualcaster Mage
+Beguiler of Wills
+Windrider Wizard
+Neurok Invisimancer
+Neurok Prodigy
+Neurok Transmuter
+New Prahv Guildmage
+Liliana's Scrounger
+Facet Reader
+Sandcrafter Mage
+Stormchaser Mage
+Stormscape Apprentice
+Stormscape Master
+Revolutionist
+Eager First-Year
+Pit Keeper
+Biomathematician
+Biovisionary
+Blood Cultist
+Skaab Wrangler
+Cunning Geysermage
+Cunning Lethemancer
+Cuombajj Witches
+Ruthless Technomancer
+Azure Mage
+Daring Apprentice
+Imperious Mindbreaker
+Umbra Mystic
+Skyward Eye Prophets
+Bant Battlemage
+Brine Seer
+Sparkmage Apprentice
+Spawnbroker
+League Guildmage
+Pyromantic Pilgrim
+Silumgar Sorcerer
+Merchant of Secrets
+Mercurial Chemister
+Galvanic Alchemist
+Sighted-Caste Sorcerer
+Ardent Electromancer
+Auramancer
+Auratouched Mage
+Voidmage Apprentice
+Overwhelmed Apprentice
+Ovinomancer
+Soldevi Sage
+Aphetto Alchemist
+Aphetto Exterminator
+Aphetto Grifter
+Aphetto Runecaster
+Apprentice Sorcerer
+Apprentice Wizard
+Demon's Herald
+Sea Gate Stormcaller
+Death Cultist
+Drownyard Explorers
+Riptide Survivor
+Skirk Alarmist
+Nightshade Seer
+Rimewind Cryomancer
+Rimewind Taskmage
+Archivist
+Archmage Emeritus
+Exclusion Mage
+Gust Walker
+Gustrider Exuberant
+Nivix Guildmage
+Lat-Nam Adept
+Erratic Visionary
+Escape Artist
+Smogsteed Rider
+Lumengrid Sentinel
+Lumengrid Warden
+Alabaster Mage
+Alchemist's Apprentice
+Civic Guildmage
+Information Dealer
+Stern Mentor
+Stern Proctor
+Obsessive Astronomer
+Obsessive Stitcher
+Reckless Embermage
+Reckless Scholar
+Rakdos Augermage
+Firefist Adept
+Coastal Wizard
+Moniker Mage
+Thought Courier
+Thoughtpicker Witch
+Academy Elite
+Academy Journeymage
+Academy Loremaster
+Academy Researchers
+Battlefield Thaumaturge
+Bazaar Trademage
+Research Assistant
+Treasure Mage
+Sphinx's Disciple
+Aether Adept
+Aether Channeler
+Fatespinner
+Fathom Mage
+Voidmage Husher
+Voidmage Prodigy
+Voidwielder
+Grixis Battlemage
+Grixis Illusionist
+Sunhome Guildmage
+El-Hajjâj
+Dakmor Sorceress
+Micromancer
+Midnight Pathlighter
+Midvast Protector
+Elite Arcanist
+Elite Guardmage
+House Guildmage
+Zuran Enchanter
+Zuran Spellcaster
+Lost Auramancers
+Passwall Adept
+Pathmaker Initiate
+Fireslinger
+Firmament Sage
+Granger Guildmage
+Seeker of Insight
+Cinder Seer
+Orzhov Guildmage
+Paragon of Gathering Mists
+Benalish Emissary
+Ghitu Amplifier
+Ghitu Chronicler
+Ghitu Journeymage
+Ghitu Lavarunner
+Jasmine Seer
+Thornscape Apprentice
+Thornscape Master
+Caligo Skin-Witch
+Thundering Sparkmage
+Thunderscape Apprentice
+Telepathic Spies
+Drannith Magistrate
+Drannith Stinger
+Keeper of the Beasts
+Keeper of the Cadence
+Keeper of the Dead
+Keeper of the Flame
+Keeper of the Light
+Keeper of the Mind
+Triskaidekaphile
+Thraben Heretic
+Might Weaver
+Symmetry Sage
+Scrivener
+Dismissive Pyromancer
+Wizard Mentor
+Wizards of Thay
+Echo Mage
+Echo Tracer
+Boneclad Necromancer
+Master of the Veil
+Willbender
+Willbreaker
+Clever Lumimancer
+Exultant Cultist
+Boros Guildmage
+Dragon's Eye Savants
+Balduvian Conjurer
+Balduvian Frostwaker
+Shaper Guildmage
+Mindreaver
+Meletis Astronomer
+Meletis Charlatan
+Cathartic Adept
+Shadow Guildmage
+Sunscape Apprentice
+Sunscape Battlemage
+Sunscape Master
+Sunscourge Champion
+Trophy Mage
+Sylvan Safekeeper
+Raven Guild Initiate
+Fervent Paincaster
+Watcher for Tomorrow
+Separatist Voidmage
+Serendib Sorcerer
+Manic Scribe
+Manifestation Sage
+Courtly Provocateur
+Covert Operative
+Martyr of Bones
+Martyr of Frost
+Blinding Mage
+Timebender
+Warden of the Beyond
+Quandrix Apprentice
+Deputy of Acquittals
+Deranged Assistant
+Descendant of Soramaro
+Archaeomancer
+Archaeomender
+Fugitive Wizard
+Frontline Sage
+Magus of the Vineyard
+Magus of the Wheel
+Magus of the Will
+Spellseeker
+Spellweaver Duo
+Magmatic Channeler
+Verduran Emissary
+Izzet Chronarch
+Izzet Guildmage
+Izzet Staticaster
+Hisoka's Guard
+Historian of Zhalfir
+Spirit Weaver
+Ashiok's Adept
+Ashiok's Forerunner
+Vizkopa Guildmage
+Urborg Emissary
+Auriok Windwalker
+God-Pharaoh's Faithful
+Xathrid NecromancerGorion, Wise Mentor
+Rionya, Fire Dancer
+Braids, Conjurer Adept
+Eutropia the Twice-Favored
+Princess Lucrezia
+Kydele, Chosen of Kruphix
+Teferi, Mage of Zhalfir
+Venser, Shaper Savant
+Jadar, Ghoulcaller of Nephalia
+Nebuchadnezzar
+Triad of Fates
+Stitcher Geralf
+Geralf, Visionary Stitcher
+Circu, Dimir Lobotomist
+Azami, Lady of Scrolls
+Zimone, Quandrix Prodigy
+Marchesa, the Black Rose
+Linessa, Zephyr Mage
+Hakim, Loreweaver
+Haldan, Avid Arcanist
+Naban, Dean of Iteration
+Donal, Herald of Wings
+Maga, Traitor to Mortals
+Kaza, Roil Chaser
+Sevinne, the Chronoclasm
+Tibor and Lumia
+Vhal, Candlekeep Researcher
+Raff Capashen, Ship's Mage
+Raff, Weatherlight Stalwart
+Inalla, Archmage Ritualist
+Naru Meha, Master Wizard
+Kess, Dissident Mage
+Vela the Night-Clad
+Gisa and Geralf
+Gisa, Glorious Resurrector
+The Raven Man
+Jhoira of the Ghitu
+Jodah, Archmage Eternal
+Jodah, the Unifier
+Lim-Dûl the Necromancer
+Inga Rune-Eyes
+Deekah, Fractal Theorist
+Dynaheir, Invoker Adept
+Ith, High Arcanist
+Ixidor, Reality Sculptor
+Lier, Disciple of the Drowned
+Baral, Chief of Compliance
+Volo, Guide to Monsters
+Volo, Itinerant Scholar
+Jalira, Master Polymorphist
+Riku of Two Reflections
+Mangara of Corondor
+Isareth the Awakener
+Ertai, Wizard Adept
+Eruth, Tormented Prophet
+Vadrik, Astral Archmage
+Ludevic, Necro-Alchemist
+Rasputin Dreamweaver
+Rasputin, the Oneiromancer
+Endrek Sahr, Master Breeder
+Barrin, Master Wizard
+Barrin, Tolarian Archmage
+Stenn, Paranoid Partisan
+Eleven, the Mage
+Zur the Enchanter
+Zur, Eternal Schemer
+Gadwick, the Wizened
+Gale, Waterdeep Prodigy
+Grandmother Sengir
+Sefris of the Hidden Ways
+Cecily, Haunted Mage
+Ghen, Arcanum Weaver
+Cabal Patriarch
+Tuknir Deathlock
+Heidar, Rimewind Master
+Adeliz, the Cinder Wind
+Taigam, Sidisi's Hand
+Garth One-Eye
+Hama Pashar, Ruin Seeker
+Rayne, Academy Chancellor
+Blind Seer
+Oskar, Rubbish Reclaimer
+Kaho, Minamo Historian
+Ghoulcaller Gisa
+Mairsil, the Pretender
+Rona, Sheoldred's Faithful
+Hisoka, Minamo Sensei
+Rielle, the EverwiseHalimar Excavator
+Halimar Tidecaller
+Spawnbinder MagePoppet Stitcher 
+Warped Researcher
+Cytoplast Manipulator
+

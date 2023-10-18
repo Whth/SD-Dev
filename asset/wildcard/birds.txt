@@ -1,0 +1,481 @@
+bird
+Phoenix
+Albatross
+Southern Royal Albatross
+Barred Buttonquail
+Blue Jay
+Bluebird
+Blue-footed Booby
+Cassowary
+Southern Cassowary
+Chick
+Chicken
+Rooster
+Cockatiel
+Cockatoo
+Blue-eyed Cockatoo
+Major Mitchell's Cockatoo
+Palm Cockatoo
+Sulphur-crested Cockatoo
+Yellowtip Cockatoo
+Condor
+Andean Condor
+Cormorant
+Crane (animal)
+Black Crowned Crane
+Grey Crowned Crane
+Red-crowned Crane
+Siberian Crane
+Crow
+Carrion Crow
+Cuckoo
+Dodo (bird)
+Duck
+Duckling
+Mallard
+Dusky Thrush
+Eagle
+Bald Eagle
+Haast's Eagle
+Little Egret
+Emu
+Falcon
+Peregrine Falcon
+Finch
+Eurasian Bullfinch
+Japanese Grosbeak
+Double-barred Finch
+Gouldian Finch
+Java Sparrow
+Zebra Finch
+Flamingo
+Frogmouth
+Blue-and-white Flycatcher
+Hill Blue Flycatcher
+Narcissus Flycatcher
+Verditer Flycatcher
+Yellow-rumped Flycatcher
+Goose
+Greater White-Fronted Goose
+Canada goose
+Hawk
+Goshawk
+Japanese Sparrowhawk
+Harris's Hawk
+Heron
+Chinese Pond Heron
+Great Blue Heron
+Grey Heron
+Hummingbird
+Japanese Bush Warbler
+Japanese Robin
+Japanese White-eye
+Common Kingfisher
+Crested Kingfisher
+Kookaburra
+Kiwi
+Southern Brown Kiwi
+Kori Bustard
+Lilac-breasted Roller
+Long-tailed Widowbird
+Magpie
+Azure-winged Magpie
+Black-throated Magpie-Jay
+Taiwan Blue Magpie
+Meadow Bunting
+Moa (animal)
+South Island Giant Moa
+Nightingale (bird)
+Northern Cardinal
+Northern Lapwing
+Nuthatch
+Oriental Dollarbird
+Black-headed Oriole
+Black-naped Oriole
+Osprey
+Ostrich
+Owl
+Snowy Owl
+Southern Boobook
+Parakeet
+Golden Parakeet
+Jandaya Parakeet
+Rose-ringed Parakeet
+Parrot
+African Grey Parrot
+Black-headed Parrot
+Eclectus Parrot
+Kakapo
+Kea (animal)
+Lovebird
+Macaw
+Blue-and-yellow Macaw
+Hyacinth Macaw
+Red-and-green Macaw
+Scarlet Macaw
+Pacific Parrotlet
+Yellow-headed Amazon
+Peacock
+Pelican
+Penguin
+Adelie Penguin
+African Penguin
+Emperor Penguin
+Fiordland Penguin
+Galapagos Penguin
+Humboldt Penguin
+Little Penguin
+Rockhopper Penguin
+Yellow-eyed Penguin
+Anthropornis
+Pheasant
+Copper Pheasant
+Ijima Copper Pheasant
+Golden Pheasant
+Green Pheasant
+Lady Amherst's Pheasant
+Pheasant-tailed Jacana
+Pigeon
+Dove
+Fantail Pigeon
+Passenger Pigeon
+White-bellied Green Pigeon
+Plover (animal)
+Puffin
+Quail
+Japanese Quail
+Raggiana Bird-of-paradise
+Red-flanked Bluetail
+Blue-fronted Redstart
+Daurian Redstart
+Resplendent Quetzal
+Roadrunner (animal)
+Ryukyu Minivet
+Seagull
+Secretarybird
+Shoebill
+Siberian Rubythroat
+Sparrow
+Eurasian Tree Sparrow
+House Sparrow
+Stork
+Oriental Stork
+Swallow
+Tree Swallow
+Swan
+Black Swan (bird)
+Takahe
+Great Tit
+Japanese Tit
+Long-tailed Tit
+Toucan
+Vulture
+Black-backed Wagtail
+Grey Wagtail
+White Wagtail
+Japanese Wagtail
+White-bellied Go-away-bird
+White-cheeked Starling
+Woodpecker
+Great Spotted Woodpecker
+Yellow Bittern
+Accentor
+African Barbet
+African Parrot
+African Warbler
+Albatross
+Anhinga
+Antpitta
+Antthrushe
+Apostlebird
+Asian Barbet
+Asitie
+Auk
+Australasian Robin
+Australasian Treecreeper
+Australo-Papuan Bellbird
+Avocet
+Barn-Owl
+Batise
+Bearded Reedling
+Bee-eater
+Bellmagpie
+Berrypecker
+Bird-of-Paradise
+Bittern
+Boatbill
+Boobie
+Bowerbird
+Bristlebird
+Bristlehead
+Broadbill
+Bulbul
+Bushshrike
+Bush Warbler
+Bustard
+Buttonquail
+Caracaras
+Cardinal
+Cassowary
+Chachalaca
+Chat-Tanager
+Chickadee
+Cisticola
+Cockatoo
+Coot
+Cormorant
+Cotinga
+Courser
+Crab-Plover
+Crane
+Crescentchest
+Crested Berrypecker
+Crested Shrikejay
+Crow
+Cuban Warbler
+Cuckoo
+Cuckoo-roller
+Cuckooshrike
+Cupwing
+Curassow
+Dapple-throat
+Dipper
+Donacobius
+Dove
+Drongo
+Duck
+Eagle
+Egret
+Egyptian Plover
+Emu
+Erpornis
+Euphonia
+Fairy-bluebird
+Fairy Flycatcher
+Fairywren
+Falcon
+Fantail
+Finch
+Finfoot
+Flamingo
+Flowerpecker
+Flufftail
+Frigatebird
+Frogmouth
+Gallinules
+Gannet
+Gnatcatcher
+Gnateater
+Goose
+Grassbird
+Grebe
+Ground Babbler
+Ground-Hornbill
+Ground-Roller
+Grouse
+Guan
+Guineafowl
+Gull
+Hamerkop
+Hawaiian Honeyeater
+Hawk
+Helmetshrike
+Heron
+Hispaniolan Tanager
+Hoatzin
+Honeyeater
+Honeyguide
+Hoopoo
+Hornbill
+Hummingbird
+Hyliota
+Hylocitrea
+Hypocolius
+Ibis
+Ibisbill
+Ifrita
+Indigobird
+Iora
+Jacamar
+Jacana
+Jaeger
+Jay
+Jewel-babbler
+Kagu
+Kingfisher
+Kinglet
+Kite
+Kiwi
+Lapwing
+Lark
+Laughingthrush
+Leafbird
+Leaf Warbler
+Limpkin
+Logrunner
+Longbill
+Longspur
+Long-tailed Tit
+Loon
+Lyrebird
+Magellanic Plover
+Magpie
+Magpie Goose
+Malagasy Warbler
+Manakin
+Megapode
+Melampitta
+Mesites
+Mitrospingid Tanagers
+Mockingbird
+Monarch Flycatcher
+Motmot
+Mottled Berryhunter
+Mousebird
+Murr
+New World Barbet
+New World Quail
+New World Sparrow
+New World Vultur
+New World Warbler
+New Zealand Parrot
+New Zealand Wren
+Nicator
+Nightjar
+Northern Storm-Petrel
+Nuthatch
+Oilbird
+Old World Bunting
+Old World Flycatcher
+Old World Oriole
+Old World Parrot
+Old World Sparrow
+Olive Warbler
+Osprey
+Ostrich
+Ovenbird
+Owl
+Owlet-nightjar
+Oxpecker
+Oystercatcher
+Painted-Snipe
+Palmchat
+Pardalotes
+Parrotbill
+Pelican
+Penduline-Tit
+Penguin
+Petrel
+Pheasant
+Pigeon
+Pipit
+Pitta
+Plains-wanderer
+Ploughbill
+Plovers
+Potoo
+Pratincole
+Przevalski's Pinktail
+Pseudo-Babbler
+Puerto Rican Tanager
+Puffbird
+Puffin
+Quail-thrush
+Rail-babbler
+Rails
+Reed Warbler
+Rhea
+Rockfowl
+Rockjumper
+Roller
+Royal Flycatcher
+Sandgrouse
+Sandpiper
+Sapayoa
+Satinbird
+Scimitar-Babbler
+Scimitarbill
+Screamer
+Scrub-bird
+Secretarybird
+Seedsnipe
+Seriema
+Shag
+Sharpbill
+Shearwater
+Sheathbill
+Shoebill
+Shrike
+Shrike-Babbler
+Shrike-tit
+Silky-flycatcher
+Sittella
+Skimmer
+Skua
+Snow Bunting
+Southern Storm-Petrel
+Spiderhunter
+Spindalise
+Spoonbill
+Spotted Elachura
+Starling
+Stilt
+Stitchbird
+Stork
+Sugarbird
+Sunbird
+Sunbittern
+Swallow
+Swift
+Sylviid Warbler
+Tanager
+Tapaculos
+Tern
+Thick-knee
+Thornbill
+Thrasher
+Thrushes
+Thrush-Tanager
+Tinamous
+Tit
+Tit Berrypecker
+Titmouse
+Tityra
+Todie
+Toucan
+Toucan-Barbet
+Tree-Babbler
+Treecreeper
+Treeswift
+Trogon
+Tropicbird
+Troupial
+Trumpeter
+Turaco
+Typical Antbird
+Tyrant Flycatcher
+Vanga
+Vireo
+Wagtail
+Wallcreeper
+Waterfowl
+Wattlebird
+Wattle-eye
+Waxbill
+Waxwing
+Weaver
+Wedgebill
+Whipbird
+Whistler
+White-eyes
+Whitehead
+White-winged Chough
+Woodcreeper
+Woodhoopo
+Woodpecker
+Woodswallow
+Wren
+Wrenthrush
+Yellow-breasted Chat
+Yuhina
+

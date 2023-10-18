@@ -1,0 +1,16 @@
+__creatures/mtg/aetherborn/aetherborn_artificer__
+__creatures/mtg/aetherborn/aetherborn_rogue__
+__creatures/mtg/aetherborn/aetherborn_warrior__
+Defiant Salvager
+Ironclad Revolutionary
+Ambitious Aetherborn
+Weaponcraft Enthusiast
+Lawless Broker
+Aetherborn Marauder
+Contraband Kingpin
+Alley Strangler
+Midnight Entourage
+Syndicate Trafficker
+Vengeful Rebel
+Night Market Aeronaut
+Prakhata Club Security

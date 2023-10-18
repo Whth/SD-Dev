@@ -1,0 +1,126 @@
+farming
+gardening
+farm
+field
+garden
+greenhouse
+nature
+outdoors
+bare tree
+floral arch
+foliage
+piranha plant
+plant boy
+plant girl
+plant monster
+plant wings
+potted plant
+flower pot
+hanging plant
+planter
+topiary
+branch
+branch
+flower
+fruit
+petals
+rose petals
+plant cell
+roots
+aerial root
+seed
+tree stump
+bush
+rose bush
+carnivorous plant
+pitcher plant
+venus flytrap
+clover
+flower
+grass
+bamboo
+herb
+cattail
+marijuana
+holly
+moss
+seaweed
+succulent plant
+agave
+cactus
+tree
+vines
+ivy
+Awakened Shrub
+Awakened Tree
+Gas Spore
+Myconid adult
+Myconid Sovereign
+Myconid sprout
+Needle Blight
+Quaggoth spore servant
+Shambling Mound
+Shrieker
+Treant
+Twig Blight
+Vine Blight
+Violet Fungus
+
+__creatures/mtg/plant/plant_dog__
+__creatures/mtg/plant/plant_elemental__
+__creatures/mtg/plant/plant_general__
+__creatures/mtg/plant/plant_hydra__
+__creatures/mtg/plant/plant_skeleton__
+__creatures/mtg/plant/plant_wall__
+__creatures/mtg/plant/plant_zombie__
+Greater Mossdog
+Bayou Groff
+Mossdog
+Thrashing Mossdog
+Phytotitan
+Bloom Hulk
+Creeperhulk
+Living Totem
+Plant Elemental
+Murasa Sproutling
+Bloodbriar
+Snapping Creeper
+Glinting Creeper
+Jaddi Offshoot
+Singing Tree
+Vinelasher Kudzu
+Ilysian Caryatid
+Tree of Perdition
+Tree of Redemption
+Grappling Sundew
+Grave Bramble
+Gatecreeper Vine
+Utopia Tree
+Sylvan Caryatid
+Phytohydra
+Rampant Rejuvenator
+Sprouting Phytohydra
+Genesis Hydra
+Briar Hydra
+Rot Farm Skeleton
+Moss-Pit Skeleton
+Mournwillow
+Jungle Barrier
+Tinder Wall
+Vine Trellis
+Portcullis Vine
+Carnivorous Plant
+Wall of Blossoms
+Wall of Brambles
+Wall of Pine Needles
+Floriferous Vinewall
+Overgrown Arch
+Whip Vine
+Wall of Roots
+Wall of Vines
+Woodwraith Strangler
+Shambling Shell
+Creakwood Ghoul
+Dreg Mangler
+Slitherhead
+Vulturous Zombie

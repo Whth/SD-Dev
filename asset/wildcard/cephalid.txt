@@ -1,0 +1,20 @@
+__creatures/mtg/cephalid/cephalid_general__
+__creatures/mtg/cephalid/cephalid_rogue__
+__creatures/mtg/cephalid/cephalid_wizard__
+Cephalid Broker
+Cephalid Inkshrouder
+Cephalid Retainer
+Cephalid Sage
+Callous Oppressor
+Cephalid Vandal
+Revel Ruiner
+Psychic Pickpocket
+Backstreet Bruiser
+Cephalid Facetaker
+Cephalid Looter
+Learned Learner
+Obscura Interceptor
+Cephalid Constable
+Cephalid Illusionist
+Cephalid Pathmage
+Cephalid Snitch

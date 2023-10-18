@@ -1,0 +1,54 @@
+__creatures/mtg/cat/cat_advisor__
+__creatures/mtg/cat/cat_citizen__
+__creatures/mtg/cat/cat_cleric__
+__creatures/mtg/cat/cat_demon__
+__creatures/mtg/cat/cat_monk__
+__creatures/mtg/cat/cat_rogue__
+__creatures/mtg/cat/cat_scout__
+__creatures/mtg/cat/cat_spirit__
+__creatures/mtg/cat/cat_warrior__
+Phabine, Boss's Confidant
+Denry Klin, Editor in Chief
+Kros, Defense Contractor
+Brokers Initiate
+Civil Servant
+Spara's Adjudicators
+Ajani's Sunstriker
+Savannah Sage
+Tethmos High Priest
+Leonin Abunas
+Leonin Arbiter
+Leonin Elder
+Leonin Lightscribe
+Healer of the Pride
+Abuna Acolyte
+Alms Collector
+Basri's Acolyte
+Leonin Relic-Warder
+Rakshasa Gravecaller
+Rakshasa Vizier
+Rakshasa Deathdealer
+Rakshasa Debaser
+Leonin Iconoclast
+Pride Guardian
+Oreskos Sun Guide
+Enlightened Ascetic
+Mage's Attendant
+Myrkul's Invoker
+Jewel Thief
+Black Market Tycoon
+Nacatl Outlander
+Oreskos Explorer
+Frontier Explorer
+Spirit of the Hearth
+Phantom Tiger
+Twilight Panther
+Spectral Lynx
+Mirri, Cat Warrior
+Mirri, Weatherlight Duelist
+Marisi, Breaker of the Coil
+Jazal Goldmane
+Jedit Ojanen
+Jedit Ojanen of Efrava
+Zar Ojanen, Scion of Efrava
+Purraj of Urborg

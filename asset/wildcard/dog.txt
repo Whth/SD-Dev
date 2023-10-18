@@ -1,0 +1,66 @@
+Afghan hound
+Akita Inu
+Australian Kelpie
+Beagle
+Bernese mountain dog
+Border collie
+Borzoi
+Boston terrier
+Briard
+Bulldog
+Bull terrier
+Chihuahua
+Chinese crested dog
+Chow Chow
+Dachshund
+Dalmatian
+Dingo
+Doberman
+English springer spaniel
+German shepherd
+Golden retriever
+Great Dane
+Greyhound
+Husky
+Irish setter
+Japanese spitz
+Maltese
+Mastiff
+Old English Sheepdog
+Papillon
+Pomeranian
+Poodle
+Pug
+Shar Pei
+Shiba inu
+St. Bernard
+Welsh corgi
+Yorkshire Terrier
+Hyena
+Wolf
+animal
+pet
+animalization
+dog on head
+dog walking
+guide dog
+no humans
+pack of dogs
+puppy
+dog costume
+dog ears
+dog hat
+dog paws
+dog tail
+__creatures/mtg/dog/dog_archer__
+__creatures/mtg/dog/dog_general__
+__creatures/mtg/dog/dog_scout__
+Ainok Artillerist
+Longshot Squad
+Aerie Bowmasters
+Mogis's Warhound
+Greater Tanuki
+Spirited Companion
+Ainok Guide
+Ainok Tracker
+Sandsteppe Scavenger

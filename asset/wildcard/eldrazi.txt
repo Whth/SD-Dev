@@ -1,0 +1,76 @@
+__creatures/mtg/eldrazi/eldrazi__
+__creatures/mtg/eldrazi/eldrazi_drone__
+__creatures/mtg/eldrazi/eldrazi_insect__
+__creatures/mtg/eldrazi/eldrazi_processor__
+Ulamog, the Ceaseless Hunger
+Ulamog, the Infinite Gyre
+Kozilek, Butcher of Truth
+Kozilek, the Great Distortion
+Emrakul, the Aeons Torn
+Emrakul, the Promised End
+Herald of Kozilek
+Culling Drone
+Reaver Drone
+Tide Drifter
+Kozilek's Predator
+Kozilek's Sentinel
+Kozilek's Shrieker
+Kozilek's Translator
+Flayer Drone
+Benthic Infiltrator
+Havoc Sower
+Sky Scourer
+Sludge Crawler
+Dominator Drone
+Prophet of Distortion
+Scion Summoner
+Incubator Drone
+Immobilizer Eldrazi
+Birthing Hulk
+Ruination Guide
+Rapacious One
+Gravity Negator
+Cultivator Drone
+Vile Aggregate
+Slaughter Drone
+Mist Intruder
+Eldrazi Skyspawner
+Salvage Drone
+Void Grafter
+Skitterskin
+Nest Invader
+Nettle Drone
+Thought Harvester
+Forerunner of Slaughter
+Fathom Feeder
+Eldrazi Aggressor
+Maw of Kozilek
+Stalking Drone
+Dread Drone
+Eyeless Watcher
+Mindmelter
+Blisterpod
+Silent Skimmer
+Emrakul's Hatcher
+Essence Depleter
+Brood Butcher
+Brood Monitor
+Broodwarden
+Blinding Drone
+Warden of Geometries
+Catacomb Sifter
+Vestige of Emrakul
+Distended Mindbender
+It of the Horrid Swarm
+Innocuous Insect
+Mind Raker
+Ulamog's Despoiler
+Ulamog's Nullifier
+Ulamog's Reclaimer
+Blight Herder
+Ruin Processor
+Murk Strider
+Cryptic Cruiser
+Oracle of Dust
+Void Attendant
+Wasteland Strangler

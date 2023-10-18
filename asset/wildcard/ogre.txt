@@ -1,0 +1,81 @@
+__creatures/mtg/ogre/ogre_berserker__
+__creatures/mtg/ogre/ogre_general__
+__creatures/mtg/ogre/ogre_mutant__
+__creatures/mtg/ogre/ogre_rogue__
+__creatures/mtg/ogre/ogre_warrior__
+Rubblebelt Recluse
+Sprinting Warbrute
+Ogre Berserker
+Ogre Siegebreaker
+Henchfiend of Ukor
+Skullknocker Ogre
+Sawtooth Ogre
+Drooling Ogre
+Hulking Ogre
+Gray Ogre
+Rustmouth Ogre
+Ogre Taskmaster
+Flailing Ogre
+Reckless Ogre
+Frenetic Ogre
+Ghazbán Ogre
+Ghazbán Ogress
+Menacing Ogre
+Krark-Clan Ogre
+Ogre Arsonist
+Ogre Enforcer
+Ogre Leadfoot
+Ogre Painbringer
+Ogre Resister
+Hasran Ogress
+Hoarding Ogre
+Singe-Mind Ogre
+Incurable Ogre
+Fire-Field Ogre
+Crooked Custodian
+Body Launderer
+Ratcatcher
+Mausoleum Turnkey
+Ogre Gatecrasher
+Ogre Jailbreaker
+Ogre Slumlord
+Undercity Scavenger
+Reckless Brute
+Rose Room Treasurer
+Bellowing Mauler
+Indentured Oaf
+Defiant Ogre
+Wrecking Ogre
+Bolrac-Clan Crusher
+Mardu Blazebringer
+Kazuul's Toll Collector
+Villainous Ogre
+Onakke Ogre
+Pugnacious Pugilist
+Shakedown Heavy
+Skull Collector
+Girder Goons
+Shinka Gatekeeper
+Savage Knuckleblade
+Blood Ogre
+Slaughterhouse Bouncer
+Atarka Pummeler
+Qal Sisma Behemoth
+Gruul Spellbreaker
+Sokenzan Bruiser
+Ogre Warrior
+Jagged Poppet
+Brawl-Bash Ogre
+Hellhole Flailer
+Barrage Ogre
+Poisonbelly Ogre
+Deathcurse Ogre
+Turret Ogre
+Ogre Battledriver
+Ogre Geargrabber
+Ogre Marauder
+Ogre Recluse
+Ogre Sentry
+Rakdos Roustabout
+Raving Oni-Slave
+Frost Ogre

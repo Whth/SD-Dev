@@ -1,0 +1,54 @@
+__artists/European Art/neoclassical/romanticism/american_romantic_painters__
+__artists/European Art/neoclassical/romanticism/armenian_romantic_painters__
+__artists/European Art/neoclassical/romanticism/austrian_romantic_painters__
+__artists/European Art/neoclassical/romanticism/belgian_romantic_painters__
+__artists/European Art/neoclassical/romanticism/brazilian_romantic_painters__
+__artists/European Art/neoclassical/romanticism/british_romaintic_painters__
+__artists/European Art/neoclassical/romanticism/bulgarian_romantic_painters__
+__artists/European Art/neoclassical/romanticism/danish_romantic_painters__
+__artists/European Art/neoclassical/romanticism/dutch_romantic_painters__
+__artists/European Art/neoclassical/romanticism/french_romantic_painters__
+__artists/European Art/neoclassical/romanticism/german_romantic_painters__
+__artists/European Art/neoclassical/romanticism/hungarian_romantic_painters__
+__artists/European Art/neoclassical/romanticism/irish_romantic_painters__
+__artists/European Art/neoclassical/romanticism/italian_romantic_painters__
+__artists/European Art/neoclassical/romanticism/luminism__
+__artists/European Art/neoclassical/romanticism/norwegian_romantic_painters__
+__artists/European Art/neoclassical/romanticism/polish_romantic_painters__
+__artists/European Art/neoclassical/romanticism/portuguese_romantic_painters__
+__artists/European Art/neoclassical/romanticism/romanian_romantic_painters__
+__artists/European Art/neoclassical/romanticism/russian_romantic_painters__
+__artists/European Art/neoclassical/romanticism/spanish_romantic_painters__
+__artists/European Art/neoclassical/romanticism/swiss_romantic_painters__
+__artists/European Art/neoclassical/norwich_school__
+__artists/European Art/neoclassical/biedermeier__
+__artists/European Art/neoclassical/realism__
+__artists/European Art/neoclassical/realism__
+__artists/European Art/neoclassical/hague_school__
+__artists/European Art/neoclassical/american_barbizon_school__
+__artists/European Art/neoclassical/spanish_electicism__
+__artists/European Art/neoclassical/macchiaioli__
+__artists/European Art/neoclassical/pre_raphaelite_brotherhood__
+# Originally sourced from https://en.wikipedia.org/wiki/Periods_in_Western_art_history
+Nazarene movement
+The Ancients
+Purismo
+Düsseldorf school
+Hudson River school
+Luminism
+Modern Greek art
+
+# Originally sourced from https://en.wikipedia.org/wiki/Periods_in_Western_art_history
+Norwich school
+Biedermeier
+Photography
+Realism
+Barbizon school
+Peredvizhniki
+Abramtsevo Colony
+Hague School
+American Barbizon school
+Spanish Eclecticism
+Macchiaioli
+Pre-Raphaelite Brotherhood
+

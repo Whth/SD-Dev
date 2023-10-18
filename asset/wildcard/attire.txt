@@ -1,0 +1,461 @@
+balaclava
+crown
+hair bow
+hair ribbon
+hairband
+headband
+forehead protector
+sweatband
+hachimaki
+mongkhon
+headdress
+maid headdress
+tiara
+veil
+honggaitou
+earrings
+hoop earrings
+stud earrings
+earclip
+glasses
+monocle
+hair ornament
+hairclip
+hairpin
+mask
+plague doctor mask
+surgical mask
+anklet
+arm belt
+armband
+armlet
+bracelet
+bangle
+spiked bracelet
+bridal gauntlets
+detached sleeves
+arm warmers
+fingernails
+gloves
+boxing gloves
+elbow gloves
+fingerless gloves
+bridal gauntlets
+spiked gloves
+yugake
+mittens
+leg belt
+ring
+claw ring
+wedding ring
+wedding ring
+thighlet
+wide sleeves
+wristband
+wrist cuffs
+wrist scrunchie
+ascot
+bowtie
+choker
+collar
+epaulettes
+feather boa
+lapels
+lapel pin
+neck ruff
+neckerchief
+necklace
+necktie
+tie clip
+neck ribbon
+scarf
+shawl
+stole
+aiguillette
+badge
+belly chain
+belt
+buckle
+sam browne belt
+boutonniere
+brooch
+buttons
+large buttons
+button badge
+corsage
+pentacle
+piercing
+sarong
+suspenders
+tassel
+watch
+pocket watch
+zipper
+garter belt
+garter straps
+legwear garter
+kneehighs
+leggings
+leg warmers
+over-kneehighs
+pantyhose
+thighband pantyhose
+socks
+ankle socks
+bobby socks
+loose socks
+tabi
+toe socks
+tube socks
+thighhighs
+thigh strap
+dress flower
+flower trim
+frills
+fur trim
+gathers
+gold trim
+lace trim
+ribbon trim
+see-through
+silver trim
+taut shirt
+torn clothes
+bloomers
+buruma
+chaps
+kilt
+pants
+bell-bottoms
+capri pants
+detached pants
+jeans
+cutoff jeans
+lowleg pants
+pants rolled up
+pelvic curtain
+petticoat
+sarong
+shorts
+bike shorts
+denim shorts
+dolphin shorts
+gym shorts
+lowleg shorts
+micro shorts
+short shorts
+shorts under skirt
+skirt
+bubble skirt
+high-waist skirt
+high-low skirt
+long skirt
+lowleg skirt
+microskirt
+miniskirt
+overall skirt
+plaid skirt
+pleated skirt
+suspender skirt
+blouse
+frilled shirt
+sleeveless shirt
+bustier
+crop top
+camisole
+cardigan
+cardigan vest
+coat
+duffel coat
+fur coat
+fur-trimmed coat
+long coat
+overcoat
+peacoat
+raincoat
+yellow raincoat
+transparent raincoat
+trench coat
+winter coat
+compression shirt
+corset
+dress
+halterneck
+criss-cross halter
+halterneck
+hoodie
+jacket
+blazer
+cropped jacket (bolero)
+letterman jacket
+safari jacket
+suit jacket
+sukajan
+trench coat
+poncho
+raglan sleeves
+sash
+shoulder sash
+stole
+shirt
+collared shirt
+dress shirt
+off-shoulder shirt
+sleeveless shirt
+striped shirt
+t-shirt
+shrug
+surcoat
+sweater
+pullover
+turtleneck
+sleeveless turtleneck
+sweater dress
+ribbed sweater
+aran sweater
+tabard
+tailcoat
+tank top
+stringer
+tube top
+bandeau
+underbust
+vest
+sweater vest
+waistcoat
+boots
+ankle boots
+armored boots
+knee boots
+high heel boots
+lace-up boots
+rubber boots
+thigh boots
+cowboy boots
+spurs
+cross-laced footwear
+flats
+footwear ribbon
+high heels
+loafers
+kiltie loafers
+mary janes
+platform footwear
+pointy footwear
+pumps
+sandals
+clog sandals
+cross-laced sandals
+flip-flops
+gladiator sandals
+geta
+okobo
+waraji
+zouri
+oxfords
+saddle shoes
+monk shoes
+slippers
+animal slippers
+ballet slippers
+crocs
+uwabaki
+sneakers
+high tops
+converse
+toeless footwear
+uwabaki
+winged footwear
+wedge heels
+argyle
+camouflage
+checkered
+floral print
+pinstripe pattern
+plaid
+polka dot
+striped
+multicolored stripes
+double vertical stripe
+animal print
+bat print
+bear print
+butterfly print
+cow print
+leopard print
+tiger print
+snake print
+clover print
+crescent print
+floral print
+rose print
+cherry blossom print
+sunflower print
+morning glory print
+food print
+fruit pattern
+apple print
+blueberry print
+cherry print
+kiwi print
+lemon print
+pineapple print
+orange print
+strawberry print
+watermelon print
+leaf print
+maple leaf print
+moon print
+musical note print
+paw print
+petal print
+piano print
+sparkle print
+triangle print
+space print
+starry sky print
+star print
+wave print
+wing print
+bikesuit
+racing suit
+bodystocking
+bodysuit
+jumpsuit
+short jumpsuit
+leotard
+strapless leotard
+playboy bunny
+swimsuit
+competition swimsuit
+slingshot swimsuit
+school swimsuit
+bikini
+leaf bikini
+string bikini
+micro bikini
+side-tie bikini bottom
+lowleg bikini
+thong bikini
+venus bikini
+sports bikini
+tankini
+criss-cross halter
+swim briefs
+jammers
+legskin
+rash guard
+robe
+bathrobe
+open robe
+kesa
+romper
+sarong
+tunic
+unitard
+chinese clothes
+changpao
+china dress
+fengguan
+hanfu
+longpao
+tangzhuang
+dirndl
+japanese clothes
+fundoshi
+yamakasa
+geta
+hakama
+hakama skirt
+hakama short skirt
+hakama pants
+kimono
+furisode
+layered kimono
+short kimono
+uchikake
+yukata
+haori
+happi
+chanchanko
+dotera
+hanten
+kimono skirt
+miko
+nontraditional miko
+sarashi
+Midriff sarashi
+Chest sarashi
+Budget sarashi
+Undone sarashi
+straw cape
+mino boushi
+tabi
+tasuki
+korean clothes
+hanbok
+vietnamese dress
+apron
+armor
+armored dress
+bikini armor
+band uniform
+cape
+capelet
+hood
+shoulder cape
+cassock
+cheerleader
+costume
+ghost costume
+gym uniform
+buruma
+habit
+harem outfit
+loincloth
+hazmat suit
+hev suit
+kigurumi
+animal costume
+bear costume
+boar costume
+cat costume
+cow costume
+dog costume
+monkey costume
+mouse costume
+panda costume
+penguin costume
+pig costume
+rabbit costume
+reindeer costume
+seal costume
+sheep costume
+tiger costume
+maid
+miko
+nontraditional miko
+military uniform
+overalls
+pajamas
+pilot suit
+plugsuit
+sailor
+santa costume
+school uniform
+serafuku
+sailor dress
+gakuran
+meiji schoolgirl uniform
+shosei
+suit
+business suit
+pant suit
+skirt suit
+tuxedo
+track suit
+sweatpants
+sweatshirt
+tutu
+waitress
+cowboy western

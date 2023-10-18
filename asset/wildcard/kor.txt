@@ -1,0 +1,36 @@
+__creatures/mtg/kor/kor_soldier__
+__creatures/mtg/kor/kor_soldier_ally__
+__creatures/mtg/kor/kor_spirit__
+__creatures/mtg/kor/kor_warrior__
+__creatures/mtg/kor/kor_wizard__
+Kor Aeronaut
+Lancers en-Kor
+Cliffside Rescuer
+Armament Master
+Kitesail Apprentice
+Valiant Veteran
+Kor Duelist
+Kor Firewalker
+Kor Hookmaster
+Kor Outfitter
+Kor Skyfisher
+Silkenfist Fighter
+Silkenfist Order
+Shadow Glider
+Kor Bladewhirl
+Kor Entanglers
+Kor Scythemaster
+Kor Sky Climber
+Makindi Shieldmate
+Ghostly Sentinel
+Skyclave Apparition
+Spirit en-Kor
+Soulbound Guardians
+Kor Blademaster
+Cliffhaven Sell-Sword
+Squad Commander
+Sea Gate Banneret
+Farsight Adept
+Dawnglare Invoker
+Thunderous Orator
+Kor Spiritdancer

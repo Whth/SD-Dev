@@ -1,0 +1,26 @@
+__creatures/mtg/centaur/centaur_archer__
+__creatures/mtg/centaur/centaur_cleric__
+__creatures/mtg/centaur/centaur_warrior__
+Nylea's Disciple
+Centaur Archer
+Krosan Archer
+Skyshooter
+Jolrael's Centaur
+Conclave Mentor
+Centaur Healer
+Centaur Peacemaker
+Centaur Battlemaster
+Stonehoof Chieftain
+Fanatic of Xenagos
+Pheres-Band Warchief
+Pharika's Disciple
+Pheres-Band Brawler
+Pheres-Band Centaurs
+Pheres-Band Raiders
+Pheres-Band Thunderhoof
+Pheres-Band Tromper
+Centaur Courser
+Centaur Safeguard
+Nessian Courser
+Scab-Clan Charger
+Swordwise Centaur

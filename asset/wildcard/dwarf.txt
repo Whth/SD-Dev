@@ -1,0 +1,61 @@
+__creatures/mtg/dwarf/dwarf_artificer__
+__creatures/mtg/dwarf/dwarf_cleric__
+__creatures/mtg/dwarf/dwarf_general__
+__creatures/mtg/dwarf/dwarf_pilot__
+__creatures/mtg/dwarf/dwarf_shaman__
+__creatures/mtg/dwarf/dwarf_soldier__
+Glint-Sleeve Artisan
+Toolcraft Exemplar
+Countless Gears Renegade
+Aether Inspector
+Aethershield Artificer
+Restoration Specialist
+Dwarven Weaponsmith
+Digsite Engineer
+Visionary Augmenter
+Aviary Mechanic
+Master Trinketeer
+Amber Gristle O'Maul
+Barrowin of Clan Undurr
+Hofri Ghostforge
+Pardic Miner
+Pardic Swordsmith
+Bloodfire Dwarf
+Dwarven Armorer
+Dwarven Blastminer
+Dwarven Bloodboiler
+Dwarven Demolition Team
+Dwarven Driller
+Dwarven Grunt
+Dwarven Miner
+Dwarven Patrol
+Dwarven Recruiter
+Dwarven Scorcher
+Dwarven Sea Clan
+Seven Dwarves
+Dwarven Trader
+Dwarven Vigilantes
+Bomb Squad
+Liberated Dwarf
+Mine Layer
+Enslaved Dwarf
+Whipkeeper
+Veteran Motorist
+Gearshift Ace
+Renegade Wheelsmith
+Twinscroll Shaman
+Duergar Hedge-Mage
+Dwarven Thaumaturgist
+Brazen Dwarf
+Storm-Kiln Artist
+Bastion Enforcer
+Consul's Shieldguard
+Dwarven Lieutenant
+Duergar Assailant
+Duergar Mine-Captain
+Dwarven Soldier
+Charismatic Vanguard
+Fairgrounds Warden
+Ninth Bridge Patrol
+Staunch Shieldmate
+Aerial Responder

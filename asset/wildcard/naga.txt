@@ -1,0 +1,16 @@
+__creatures/mtg/naga/naga_cleric__
+__creatures/mtg/naga/naga_shaman__
+__creatures/mtg/naga/naga_warrior__
+Naga Oracle
+Ramunap Excavator
+Dune Diviner
+Seer of the Last Tomorrow
+Vizier of the Menagerie
+Sultai Flayer
+Sultai Skullkeeper
+Sultai Soothsayer
+Hooded Brawler
+Sidewinder Naga
+Sinuous Striker
+Harrier Naga
+Tah-Crop Skirmisher

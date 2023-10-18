@@ -1,0 +1,12 @@
+__artists/European Art/renaissance/italian_renaissance__
+__artists/European Art/renaissance/early_netherlandish_painters__
+__artists/European Art/renaissance/german_renaissance__
+
+# originally sourced from https://en.wikipedia.org/wiki/Periods_in_Western_art_history
+Italian Renaissance
+Renaissance Classicism
+Early Netherlandish painting
+Early Cretan School
+Renaissance
+
+

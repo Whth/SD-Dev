@@ -1,0 +1,139 @@
+# Originally sourced from Clements Checklist v2022
+African Broadbill
+Gray-headed Broadbill
+Gray-headed Broadbill (Zenker's)
+Gray-headed Broadbill (Sharpe's)
+Gray-headed Broadbill (Gray-headed)
+Rufous-sided Broadbill
+Smithornis sp.
+Green Broadbill
+Hose's Broadbill
+Whitehead's Broadbill
+
+# Originally sourced from Clements Checklist v2022
+Green Crombec
+Lemon-bellied Crombec
+White-browed Crombec
+White-browed Crombec (White-browed)
+White-browed Crombec (Lendu)
+Northern Crombec
+Northern Crombec (Northern)
+Northern Crombec (Eastern)
+Short-billed Crombec
+Red-capped Crombec
+Red-faced Crombec
+Somali Crombec
+Cape Crombec
+crombec sp.
+Rockrunner
+Moustached Grass-Warbler
+Cape Grassbird
+Victorin's Warbler
+Kemp's Longbill
+Yellow Longbill
+Gray Longbill
+Pulitzer's Longbill
+Kretschmer's Longbill
+longbill sp.
+Grauer's Warbler
+Green Hylia
+Tit-hylia
+
+# Originally sourced from Clements Checklist v2022
+Yellow-billed Barbet
+Yellow-billed Barbet (Western)
+Yellow-billed Barbet (Togo)
+Yellow-billed Barbet (Eastern)
+Crested Barbet
+Red-and-yellow Barbet
+Yellow-breasted Barbet
+D'Arnaud's Barbet
+D'Arnaud's Barbet (D'Arnaud's)
+D'Arnaud's Barbet (Usambiro)
+D'Arnaud's Barbet (Black-capped)
+Gray-throated Barbet
+Gray-throated Barbet (Gray-throated)
+Gray-throated Barbet (Gray-headed)
+Sladen's Barbet
+Bristle-nosed Barbet
+Naked-faced Barbet
+Naked-faced Barbet (Naked-faced)
+Naked-faced Barbet (Pale-throated)
+White-eared Barbet
+White-eared Barbet (White-lined)
+White-eared Barbet (White-eared)
+Whyte's Barbet
+Anchieta's Barbet
+Green Barbet
+Green Barbet (Green)
+Green Barbet (Howell's)
+Green Barbet (Woodward's)
+Green Barbet (Malawi)
+Speckled Tinkerbird
+Green Tinkerbird
+Moustached Tinkerbird
+Western Tinkerbird
+Western Tinkerbird (Western)
+Western Tinkerbird (Eastern)
+Western Tinkerbird (Angola)
+Red-rumped Tinkerbird
+Yellow-throated Tinkerbird
+Yellow-rumped Tinkerbird
+Yellow-rumped Tinkerbird (Yellow-rumped)
+Yellow-rumped Tinkerbird (White-chested)
+Red-fronted Tinkerbird
+Yellow-fronted Tinkerbird
+tinkerbird sp.
+Yellow-spotted Barbet
+Hairy-breasted Barbet
+Hairy-breasted Barbet (Hairy-breasted)
+Hairy-breasted Barbet (Streaky-throated)
+Red-fronted Barbet
+Miombo Barbet
+Pied Barbet
+Miombo x Pied Barbet (hybrid)
+Spot-flanked Barbet
+Black-throated Barbet
+Banded Barbet
+Vieillot's Barbet
+White-headed Barbet
+White-headed Barbet (White-headed)
+White-headed Barbet (Brown-and-white)
+White-headed Barbet (White-bellied)
+Chaplin's Barbet
+Red-faced Barbet
+Black-billed Barbet
+Black-collared Barbet
+Brown-breasted Barbet
+Black-backed Barbet
+Black-backed Barbet (Brown-backed)
+Black-backed Barbet (Black-backed)
+Double-toothed Barbet
+Bearded Barbet
+Black-breasted Barbet
+african barbet sp.
+
+__people/nationalities/east-africa__
+__people/nationalities/southern-africa__
+__people/nationalities/west-africa__
+__people/nationalities/north-africa__
+__people/nationalities/central-africa__
+__people/nationalities/african-islands__
+# North African swords
+Flyssa
+Kaskara
+Khopesh
+Mameluke sword
+Nimcha
+
+# East African swords
+Billao
+Shotel
+
+# West African swords
+Akrafena
+Ida
+Takoba
+
+# Central African swords
+Mambele

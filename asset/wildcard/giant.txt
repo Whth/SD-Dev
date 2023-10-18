@@ -1,0 +1,62 @@
+Cloud Giant
+Cyclops
+Ettin
+Fire Giant
+Fomorian
+Frost Giant
+Half-Ogre
+Hill Giant
+Ogre
+Oni
+Stone Giant
+Storm Giant
+Troll
+__creatures/mtg/giant/giant_berserker__
+__creatures/mtg/giant/giant_druid__
+__creatures/mtg/giant/giant_general__
+__creatures/mtg/giant/giant_knight__
+__creatures/mtg/giant/giant_shaman__
+__creatures/mtg/giant/giant_soldier__
+__creatures/mtg/giant/giant_warrior__
+Calamity Bearer
+Doomskar Titan
+Surtland Flinger
+Cinderheart Giant
+Quakebringer
+Kuldotha Ringleader
+Ondu Giant
+Howling Giant
+Earthshaker Giant
+Nylea's Colossus
+Doomwake Giant
+Nyxborn Colossus
+Goliath Paladin
+Garenbrig Paladin
+Knight of the Last Breath
+Cragganwick Cremator
+Skarrgan Skybreaker
+Valleymaker
+Sunder Shaman
+Thundercloud Shaman
+Bone Shaman
+Giant Harbinger
+Protector of the Crown
+Sentinel of the Eternal Watch
+Oathsworn Giant
+Swathcutter Giant
+Constable of the Realm
+Bulwark Giant
+Akron Legionnaire
+Council Guardian
+Jotun Grunt
+Armory Guard
+Towering Thunderfist
+Kalemne's Captain
+Sunhome Enforcer
+Hammer Dropper
+Palisade Giant
+Watchful Giant
+Gorm the Great
+Brion Stoutarm
+Ruhan of the Fomori
+Bartel Runeaxe

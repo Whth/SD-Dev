@@ -1,0 +1,965 @@
+Adele Younghusband
+Alexis Hunter
+Alice Brusewitz
+Alyson Hunter
+Amy Merania Harper
+Anne Geddes
+Anne Noble
+Ann Shelton
+Ans Westra
+Brian Brake
+Christine Webster
+Claire Harris
+Eileen Olive Deste
+Elizabeth Greenwood
+Elizabeth Pulman
+Emily Florence Cazneau
+Eunice Harriett Garlick
+Fiona Clark
+Fiona Pardington
+Geoff Moon
+Gil Hanley
+Gillian Chaplin
+Harriet Sophia Cobb
+Harvey Benge
+Janet Bayly
+Jane Ussher
+Jessie Buckland
+Judy Darragh
+Ken Griffiths
+Laurence Aberhart
+Mabel Tustin
+Margaret Matilda White
+Margaret Moth
+Marie Shannon
+Marion Kirker
+Mark Adams
+Marti Friedlander
+May and Mina Moore
+Nellie Ferner
+Norah Carter
+Peter Bush
+Rhondda Bosworth
+Roberta Thornley
+Robina Nicol
+Robin Morrison
+Rosaline Margaret Frank
+Ruth McDowall
+Suzanna Clarke
+Thelma Rene Kent
+Yvonne Todd
+
+# Originally sourced from Clements Checklist v2022
+California Condor
+Andean Condor
+King Vulture
+Black Vulture
+Turkey Vulture
+Turkey Vulture (Northern)
+Turkey Vulture (Tropical)
+Turkey Vulture (South Temperate)
+Lesser Yellow-headed Vulture
+Greater Yellow-headed Vulture
+Cathartes sp.
+new world vulture sp.
+
+# Originally sourced from Clements Checklist v2022
+Stone Partridge
+Stone Partridge (Stone)
+Stone Partridge (Ethiopian)
+Nahan's Partridge
+Tawny-faced Quail
+Mountain Quail
+Buffy-crowned Wood-Partridge
+Long-tailed Wood-Partridge
+Bearded Wood-Partridge
+Banded Quail
+Northern Bobwhite
+Northern Bobwhite (Eastern)
+Northern Bobwhite (graysoni/nigripectus)
+Northern Bobwhite (pectoralis Group)
+Northern Bobwhite (Masked)
+Black-throated Bobwhite
+Crested Bobwhite
+Crested Bobwhite (Spot-bellied)
+Crested Bobwhite (Crested)
+Scaled Quail
+Northern Bobwhite x Scaled Quail (hybrid)
+Elegant Quail
+California Quail
+Northern Bobwhite x California Quail (hybrid)
+Scaled x California Quail (hybrid)
+Gambel's Quail
+Scaled x Gambel's Quail (hybrid)
+California x Gambel's Quail (hybrid)
+California/Gambel's Quail
+Montezuma Quail
+Montezuma Quail (Montezuma)
+Montezuma Quail (Salle's)
+Ocellated Quail
+Singing Quail
+Marbled Wood-Quail
+Spot-winged Wood-Quail
+Black-eared Wood-Quail
+Black-fronted Wood-Quail
+Rufous-fronted Wood-Quail
+Chestnut Wood-Quail
+Dark-backed Wood-Quail
+Rufous-breasted Wood-Quail
+Tacarcuna Wood-Quail
+Gorgeted Wood-Quail
+Venezuelan Wood-Quail
+Black-breasted Wood-Quail
+Stripe-faced Wood-Quail
+Starred Wood-Quail
+Spotted Wood-Quail
+wood-quail sp.
+new world quail sp.
+
+# Originally sourced from Clements Checklist v2022
+Tanager Finch
+Yellow-throated Chlorospingus
+Yellow-throated Chlorospingus (Drab-breasted)
+Yellow-throated Chlorospingus (Yellow-throated)
+Short-billed Chlorospingus
+Yellow-throated/Short-billed Chlorospingus
+Ashy-throated Chlorospingus
+Ashy-throated Chlorospingus (Olive-crowned)
+Ashy-throated Chlorospingus (Ashy-throated)
+Sooty-capped Chlorospingus
+Common Chlorospingus
+Common Chlorospingus (Northeast Mexico)
+Common Chlorospingus (Southwest Mexico)
+Common Chlorospingus (Middle America)
+Common Chlorospingus (Central Panama)
+Common Chlorospingus (Venezuela)
+Common Chlorospingus (Northern Andes)
+Common Chlorospingus (cinereocephalus)
+Common Chlorospingus (Southern Peru)
+Common Chlorospingus (Northern Bolivia)
+Common Chlorospingus (Southern Bolivia)
+Common Chlorospingus (Argentina)
+Tacarcuna Chlorospingus
+Pirre Chlorospingus
+Dusky Chlorospingus
+chlorospingus sp.
+Tumbes Sparrow
+Yungas Sparrow
+Chaco Sparrow
+Yungas/Chaco Sparrow
+Rufous-winged Sparrow
+Cinnamon-tailed Sparrow
+Stripe-headed Sparrow
+Black-chested Sparrow
+Bridled Sparrow
+Botteri's Sparrow
+Botteri's Sparrow (Botteri's)
+Botteri's Sparrow (Peten)
+Cassin's Sparrow
+Botteri's/Cassin's Sparrow
+Bachman's Sparrow
+Peucaea sp.
+Grasshopper Sparrow
+Grassland Sparrow
+Yellow-browed Sparrow
+Grassland/Yellow-browed Sparrow
+Olive Sparrow
+Olive Sparrow (Olive)
+Olive Sparrow (Pacific)
+Green-backed Sparrow
+Olive/Green-backed Sparrow
+Black-striped Sparrow
+Tocuyo Sparrow
+Chipping Sparrow
+Clay-colored Sparrow
+Chipping x Clay-colored Sparrow (hybrid)
+Black-chinned Sparrow
+Field Sparrow
+Chipping x Field Sparrow (hybrid)
+Clay-colored x Field Sparrow (hybrid)
+Brewer's Sparrow
+Brewer's Sparrow (breweri)
+Brewer's Sparrow (taverneri)
+Black-chinned x Brewer's Sparrow (hybrid)
+Clay-colored x Brewer's Sparrow (hybrid)
+Worthen's Sparrow
+Spizella sp.
+Five-striped Sparrow
+Black-throated Sparrow
+Lark Sparrow
+Lark Bunting
+Costa Rican Brushfinch
+Sierra Nevada Brushfinch
+Perija Brushfinch
+Black-headed Brushfinch
+Caracas Brushfinch
+Paria Brushfinch
+Gray-browed Brushfinch
+White-browed Brushfinch
+stripe-headed brushfinch sp.
+Orange-billed Sparrow
+Orange-billed Sparrow (aurantiirostris Group)
+Orange-billed Sparrow (erythrorhynchus)
+Orange-billed Sparrow (spectabilis)
+Black-capped Sparrow
+Black-capped Sparrow (Black-capped)
+Black-capped Sparrow (Marañon)
+Golden-winged Sparrow
+Pectoral Sparrow
+Pectoral Sparrow (Yellow-mandibled)
+Pectoral Sparrow (Pectoral)
+Sao Francisco Sparrow
+Half-collared Sparrow
+Moss-backed Sparrow
+Saffron-billed Sparrow
+Saffron-billed Sparrow (Gray-backed)
+Saffron-billed Sparrow (Saffron-billed)
+Green-striped Brushfinch
+Chestnut-capped Brushfinch
+Chestnut-capped Brushfinch (Plain-breasted)
+Chestnut-capped Brushfinch (Chestnut-capped)
+Sooty-faced Finch
+Olive Finch
+American Tree Sparrow
+Spizella sp./American Tree Sparrow
+Fox Sparrow
+Fox Sparrow (Sooty)
+Fox Sparrow (Thick-billed)
+Fox Sparrow (Slate-colored)
+Fox Sparrow (Red)
+Dark-eyed Junco
+Dark-eyed Junco (Slate-colored/cismontanus)
+Dark-eyed Junco (Slate-colored)
+Dark-eyed Junco (cismontanus)
+Dark-eyed Junco (Oregon)
+Dark-eyed Junco (Pink-sided)
+Dark-eyed Junco (Oregon x Pink-sided)
+Dark-eyed Junco (White-winged)
+Dark-eyed Junco (Pink-sided x White-winged)
+Dark-eyed Junco (Gray-headed)
+Dark-eyed Junco (Oregon x Gray-headed)
+Dark-eyed Junco (Pink-sided x Gray-headed)
+Dark-eyed Junco (Red-backed)
+Dark-eyed Junco (Gray-headed x Red-backed)
+Guadalupe Junco
+Yellow-eyed Junco
+Yellow-eyed Junco (Mexican)
+Yellow-eyed Junco (Chiapas)
+Yellow-eyed Junco (Guatemalan)
+Dark-eyed x Yellow-eyed Junco (hybrid)
+Dark-eyed/Yellow-eyed Junco
+Baird's Junco
+Volcano Junco
+Rufous-collared Sparrow
+Rufous-collared Sparrow (Rufous-collared)
+Rufous-collared Sparrow (Patagonian)
+White-crowned Sparrow
+White-crowned Sparrow (Dark-lored)
+White-crowned Sparrow (leucophrys)
+White-crowned Sparrow (oriantha)
+White-crowned Sparrow (Gambel's)
+White-crowned Sparrow (Yellow-billed)
+White-crowned Sparrow (nuttalli)
+White-crowned Sparrow (pugetensis)
+Dark-eyed Junco x White-crowned Sparrow (hybrid)
+Golden-crowned Sparrow
+White-crowned x Golden-crowned Sparrow (hybrid)
+Harris's Sparrow
+American Tree x Harris's Sparrow (hybrid)
+White-crowned x Harris's Sparrow (hybrid)
+White-throated Sparrow
+White-crowned x White-throated Sparrow (hybrid)
+White-crowned/White-throated Sparrow
+Golden-crowned x White-throated Sparrow (hybrid)
+Zonotrichia sp.
+Dark-eyed Junco x White-throated Sparrow (hybrid)
+Sagebrush Sparrow
+Bell's Sparrow
+Bell's Sparrow (belli)
+Bell's Sparrow (canescens)
+Bell's Sparrow (clementeae)
+Bell's Sparrow (cinerea)
+Sagebrush/Bell's Sparrow (Sage Sparrow)
+Striped Sparrow
+Vesper Sparrow
+LeConte's Sparrow
+Seaside Sparrow
+Seaside Sparrow (Atlantic)
+Seaside Sparrow (Dusky)
+Seaside Sparrow (Gulf of Mexico)
+Seaside Sparrow (Cape Sable)
+Nelson's Sparrow
+Nelson's Sparrow (Interior)
+Nelson's Sparrow (Atlantic Coast)
+LeConte's/Nelson's Sparrow
+Saltmarsh Sparrow
+Nelson's x Saltmarsh Sparrow (hybrid)
+Nelson's/Saltmarsh Sparrow (Sharp-tailed Sparrow)
+Ammospiza sp.
+Savannah Sparrow
+Savannah Sparrow (Savannah)
+Savannah Sparrow (Ipswich)
+Savannah Sparrow (Belding's)
+Savannah Sparrow (San Benito)
+Savannah Sparrow (Large-billed)
+Baird's Sparrow
+Henslow's Sparrow
+Grasshopper/Baird's Sparrow
+Grasshopper/Henslow's Sparrow
+Sierra Madre Sparrow
+Song Sparrow
+Song Sparrow (melodia/atlantica)
+Song Sparrow (sanaka/maxima)
+Song Sparrow (rufina Group)
+Song Sparrow (montana/merrilli)
+Song Sparrow (heermanni Group)
+Song Sparrow (samuelsis)
+Song Sparrow (pusillula)
+Song Sparrow (fallax Group)
+Song Sparrow (mexicana Group)
+Lincoln's Sparrow
+Song x Lincoln's Sparrow (hybrid)
+Swamp Sparrow
+Song x Swamp Sparrow (hybrid)
+Lincoln's/Swamp Sparrow
+Large-footed Finch
+Zapata Sparrow
+Rusty-crowned Ground-Sparrow
+Canyon Towhee
+White-throated Towhee
+Abert's Towhee
+Canyon x Abert's Towhee (hybrid)
+Canyon/Abert's Towhee
+California Towhee
+White-eared Ground-Sparrow
+White-eared Ground-Sparrow (Gray-crowned)
+White-eared Ground-Sparrow (White-eared)
+White-faced Ground-Sparrow
+Cabanis's Ground-Sparrow
+Rusty Sparrow
+Rufous-crowned Sparrow
+Oaxaca Sparrow
+Green-tailed Towhee
+Spotted Towhee
+Spotted Towhee (oregonus Group)
+Spotted Towhee (arcticus)
+Spotted Towhee (maculatus Group)
+Spotted Towhee (Olive-backed)
+Spotted Towhee (Socorro)
+Chestnut-capped Brushfinch x Spotted Towhee (hybrid)
+Canyon x Spotted Towhee (hybrid)
+Green-tailed x Spotted Towhee (hybrid)
+Eastern Towhee
+Eastern Towhee (Red-eyed)
+Eastern Towhee (White-eyed)
+Spotted x Eastern Towhee (hybrid)
+Spotted/Eastern Towhee (Rufous-sided Towhee)
+Bermuda Towhee
+Collared Towhee
+Spotted x Collared Towhee (hybrid)
+towhee sp.
+Rufous-capped Brushfinch
+White-naped Brushfinch
+White-naped Brushfinch (White-naped)
+White-naped Brushfinch (Yellow-throated)
+Yellow-thighed Brushfinch
+Yellow-green Brushfinch
+Moustached Brushfinch
+Moustached Brushfinch (Moustached)
+Moustached Brushfinch (Merida)
+Tepui Brushfinch
+Santa Marta Brushfinch
+Ochre-breasted Brushfinch
+Yellow-headed Brushfinch
+Dusky-headed Brushfinch
+White-rimmed Brushfinch
+White-headed Brushfinch
+Rufous-eared Brushfinch
+Tricolored Brushfinch
+Tricolored Brushfinch (Choco)
+Tricolored Brushfinch (Tricolored)
+Slaty Brushfinch
+Slaty Brushfinch (Slaty)
+Slaty Brushfinch (Taczanowski's)
+Pale-naped Brushfinch
+Antioquia Brushfinch
+Yellow-breasted Brushfinch
+Yellow-breasted Brushfinch (nigrifrons)
+Yellow-breasted Brushfinch (Yellow-breasted)
+White-winged Brushfinch
+White-winged Brushfinch (White-winged)
+White-winged Brushfinch (Paynter's)
+Pale-headed Brushfinch
+Bay-crowned Brushfinch
+Rusty-bellied Brushfinch
+Apurimac Brushfinch
+Black-spectacled Brushfinch
+Vilcabamba Brushfinch
+Cuzco Brushfinch
+Black-faced Brushfinch
+Bolivian Brushfinch
+Black-faced x Bolivian Brushfinch (hybrid)
+Fulvous-headed Brushfinch
+Yellow-striped Brushfinch
+Atlapetes sp.
+new world sparrow sp.
+
+# Originally sourced from Clements Checklist v2022
+Ovenbird
+Worm-eating Warbler
+Louisiana Waterthrush
+Northern Waterthrush
+Louisiana/Northern Waterthrush
+Bachman's Warbler
+Golden-winged Warbler
+Blue-winged Warbler
+Golden-winged x Blue-winged Warbler (hybrid)
+Brewster's Warbler (hybrid)
+Lawrence's Warbler (hybrid)
+Golden-winged/Blue-winged Warbler
+Black-and-white Warbler
+Prothonotary Warbler
+Swainson's Warbler
+Crescent-chested Warbler
+Flame-throated Warbler
+Tennessee Warbler
+Orange-crowned Warbler
+Orange-crowned Warbler (Gray-headed)
+Orange-crowned Warbler (celata)
+Orange-crowned Warbler (orestera)
+Orange-crowned Warbler (lutescens)
+Orange-crowned Warbler (sordida)
+Colima Warbler
+Lucy's Warbler
+Nashville Warbler
+Nashville Warbler (ruficapilla)
+Nashville Warbler (ridgwayi)
+Tennessee x Nashville Warbler (hybrid)
+Orange-crowned x Nashville Warbler (hybrid)
+Virginia's Warbler
+Colima x Virginia's Warbler (hybrid)
+Leiothlypis sp.
+Semper's Warbler
+Connecticut Warbler
+Gray-crowned Yellowthroat
+Masked Yellowthroat
+Black-lored Yellowthroat
+Southern Yellowthroat
+masked yellowthroat sp.
+MacGillivray's Warbler
+Mourning Warbler
+Connecticut x Mourning Warbler (hybrid)
+MacGillivray's x Mourning Warbler (hybrid)
+Connecticut/MacGillivray's/Mourning Warbler
+MacGillivray's/Mourning Warbler
+Kentucky Warbler
+Mourning x Kentucky Warbler (hybrid)
+Olive-crowned Yellowthroat
+Olive-crowned Yellowthroat (Baird's)
+Olive-crowned Yellowthroat (Chiriqui)
+Olive-crowned Yellowthroat (Olive-crowned)
+Black-polled Yellowthroat
+Belding's Yellowthroat
+Bahama Yellowthroat
+Altamira Yellowthroat
+Common Yellowthroat
+Common Yellowthroat (arizela Group)
+Common Yellowthroat (melanops Group)
+Common Yellowthroat (trichas Group)
+Common Yellowthroat (insperata)
+Common Yellowthroat (chapalensis)
+Gray-crowned x Common Yellowthroat (hybrid)
+MacGillivray's Warbler x Common Yellowthroat (hybrid)
+Mourning Warbler x Common Yellowthroat (hybrid)
+Kentucky Warbler x Common Yellowthroat (hybrid)
+Hooded Yellowthroat
+yellowthroat sp.
+Whistling Warbler
+Plumbeous Warbler
+Elfin-woods Warbler
+Arrowhead Warbler
+Hooded Warbler
+American Redstart
+Kirtland's Warbler
+Cape May Warbler
+Cerulean Warbler
+Blue-winged x Cerulean Warbler (hybrid)
+Northern Parula
+American Redstart x Northern Parula (hybrid)
+Cerulean Warbler x Northern Parula (hybrid)
+Tropical Parula
+Tropical Parula (Northeast Mexico)
+Tropical Parula (West Mexico)
+Tropical Parula (Tres Marias Is.)
+Tropical Parula (Socorro I.)
+Tropical Parula (Middle American)
+Tropical Parula (Coiba I.)
+Tropical Parula (South American)
+Northern x Tropical Parula (hybrid)
+Northern/Tropical Parula
+Magnolia Warbler
+Nashville x Magnolia Warbler (hybrid)
+Bay-breasted Warbler
+Blackburnian Warbler
+Bay-breasted x Blackburnian Warbler (hybrid)
+Yellow Warbler
+Yellow Warbler (Northern)
+Yellow Warbler (Mangrove)
+Yellow Warbler (Galapagos)
+Yellow Warbler (Golden)
+Yellow Warbler (Mangrove x Golden)
+Common Yellowthroat x Yellow Warbler (hybrid)
+Hooded x Yellow Warbler (hybrid)
+American Redstart x Yellow Warbler (hybrid)
+Chestnut-sided Warbler
+Magnolia x Chestnut-sided Warbler (hybrid)
+Blackpoll Warbler
+Bay-breasted x Blackpoll Warbler (hybrid)
+Bay-breasted/Blackpoll Warbler
+Black-throated Blue Warbler
+Cerulean x Black-throated Blue Warbler (hybrid)
+Magnolia x Black-throated Blue Warbler (hybrid)
+Yellow x Black-throated Blue Warbler (hybrid)
+Chestnut-sided x Black-throated Blue Warbler (hybrid)
+Palm Warbler
+Palm Warbler (Western)
+Palm Warbler (Yellow)
+Magnolia x Palm Warbler (hybrid)
+Olive-capped Warbler
+Pine Warbler
+Yellow-rumped Warbler
+Yellow-rumped Warbler (Myrtle)
+Yellow-rumped Warbler (Audubon's)
+Yellow-rumped Warbler (Myrtle x Audubon's)
+Yellow-rumped Warbler (West Mexico)
+Yellow-rumped Warbler (Goldman's)
+Cape May x Yellow-rumped Warbler (hybrid)
+Magnolia x Yellow-rumped Warbler (hybrid)
+Palm x Yellow-rumped Warbler (hybrid)
+Yellow-throated Warbler
+Yellow-throated Warbler (albilora)
+Yellow-throated Warbler (dominica/stoddardi)
+Northern Parula x Yellow-throated Warbler (hybrid)
+Yellow-rumped x Yellow-throated Warbler (hybrid)
+Bahama Warbler
+Vitelline Warbler
+Prairie Warbler
+Blue-winged x Prairie Warbler (hybrid)
+Yellow x Prairie Warbler (hybrid)
+Adelaide's Warbler
+Barbuda Warbler
+St. Lucia Warbler
+Grace's Warbler
+Yellow-rumped x Grace's Warbler (hybrid)
+Black-throated Gray Warbler
+Yellow-rumped x Black-throated Gray Warbler (hybrid)
+Grace's x Black-throated Gray Warbler (hybrid)
+Townsend's Warbler
+Yellow-rumped x Townsend's Warbler (hybrid)
+Black-throated Gray x Townsend's Warbler (hybrid)
+Black-throated Gray/Townsend's Warbler
+Hermit Warbler
+Townsend's x Hermit Warbler (hybrid)
+Black-throated Gray x Hermit Warbler (hybrid)
+Black-throated Gray/Hermit Warbler
+Townsend's/Hermit Warbler
+Golden-cheeked Warbler
+Black-throated Green Warbler
+Yellow-rumped x Black-throated Green Warbler (hybrid)
+Townsend's x Black-throated Green Warbler (hybrid)
+Setophaga sp.
+Fan-tailed Warbler
+Rufous-capped Warbler
+Rufous-capped Warbler (rufifrons Group)
+Rufous-capped Warbler (salvini)
+Common Yellowthroat x Rufous-capped Warbler (hybrid)
+Chestnut-capped Warbler
+Rufous-capped/Chestnut-capped Warbler
+Black-cheeked Warbler
+Pirre Warbler
+Golden-browed Warbler
+Golden-crowned Warbler
+Golden-crowned Warbler (Stripe-crowned)
+Golden-crowned Warbler (Cabanis's)
+Golden-crowned Warbler (Golden-crowned)
+Golden-crowned Warbler (White-bellied)
+Costa Rican Warbler
+Tacarcuna Warbler
+Three-striped Warbler
+Three-striped Warbler (San Lucas)
+Three-striped Warbler (daedalus)
+Three-striped Warbler (auricularis)
+Three-striped Warbler (Venezuelan)
+Three-striped Warbler (Paria)
+Three-striped Warbler (Three-striped)
+Yungas Warbler
+Three-banded Warbler
+Basileuterus sp.
+Gray-headed Warbler
+Santa Marta Warbler
+Citrine Warbler
+Citrine Warbler (Northern)
+Citrine Warbler (Peruvian)
+Citrine Warbler (Bolivian)
+White-striped Warbler
+Flavescent Warbler
+Golden-crowned x Flavescent Warbler (hybrid)
+White-browed Warbler
+Pale-legged Warbler
+Black-crested Warbler
+Buff-rumped Warbler
+Riverbank Warbler
+Riverbank Warbler (Northern)
+Riverbank Warbler (Bolivian)
+Riverbank Warbler (Southern)
+Two-banded Warbler
+Two-banded Warbler (Roraiman)
+Two-banded Warbler (Two-banded)
+Cuzco Warbler
+Choco Warbler
+Gray-throated Warbler
+White-lored Warbler
+Gray-and-gold Warbler
+Russet-crowned Warbler
+Myiothlypis sp.
+Canada Warbler
+Wilson's Warbler
+Wilson's Warbler (pileolata)
+Wilson's Warbler (pusilla)
+Wilson's Warbler (chryseola)
+Red-faced Warbler
+Red Warbler
+Red Warbler (Gray-cheeked)
+Red Warbler (White-cheeked)
+Pink-headed Warbler
+Painted Redstart
+Slate-throated Redstart
+Painted x Slate-throated Redstart (hybrid)
+Brown-capped Redstart
+Tepui Redstart
+Paria Redstart
+Saffron-breasted Redstart
+White-faced Redstart
+Collared Redstart
+Yellow-crowned Redstart
+Golden-fronted Redstart
+Golden-fronted Redstart (Golden-fronted)
+Golden-fronted Redstart (Yellow-fronted)
+Spectacled Redstart
+Golden-fronted x Spectacled Redstart (hybrid)
+Golden-fronted/Spectacled Redstart
+White-fronted Redstart
+Myioborus sp.
+new world warbler sp.
+
+# Originally sourced from Clements Checklist v2022
+Stephens Island Wren
+Rifleman
+Bush Wren
+South Island Wren
+
+# Originally sourced from Clements Checklist v2022
+Scarlet-crowned Barbet
+Black-girdled Barbet
+Spot-crowned Barbet
+Orange-fronted Barbet
+White-mantled Barbet
+Scarlet-banded Barbet
+Sira Barbet
+Five-colored Barbet
+Brown-chested Barbet
+Black-spotted Barbet
+Gilded Barbet
+Capito sp.
+Lemon-throated Barbet
+Lemon-throated Barbet (Lemon-throated)
+Lemon-throated Barbet (Flame-throated)
+Scarlet-hooded Barbet
+Red-headed Barbet
+Versicolored Barbet
+Versicolored Barbet (Blue-cowled)
+Versicolored Barbet (Blue-chinned)
+Versicolored Barbet (Blue-moustached)
+new world barbet sp.
+
+# Originally sourced from Clements Checklist v2022
+Gray Parrot
+Gray Parrot (Timneh)
+Gray Parrot (Gray)
+Brown-necked Parrot
+Brown-necked Parrot (Brown-necked)
+Brown-necked Parrot (Gray-headed)
+Cape Parrot
+Red-fronted Parrot
+Red-fronted Parrot (Guinean)
+Red-fronted Parrot (Red-fronted)
+Meyer's Parrot
+Rüppell's Parrot
+Brown-headed Parrot
+Niam-Niam Parrot
+Red-bellied Parrot
+Senegal Parrot
+Yellow-fronted Parrot
+Poicephalus sp.
+Lilac-tailed Parrotlet
+Scarlet-shouldered Parrotlet
+Red-fronted Parrotlet
+Blue-fronted Parrotlet
+Sapphire-rumped Parrotlet
+Brown-backed Parrotlet
+Golden-tailed Parrotlet
+Spot-winged Parrotlet
+Touit sp.
+Gray-hooded Parakeet
+Mountain Parakeet
+Barred Parakeet
+Rufous-fronted Parakeet
+Andean Parakeet
+Barred/Andean Parakeet
+Tepui Parrotlet
+Amazonian Parrotlet
+Monk Parakeet
+Monk Parakeet (Monk)
+Monk Parakeet (Cliff)
+Tui Parakeet
+Plain Parakeet
+White-winged Parakeet
+Yellow-chevroned Parakeet
+White-winged x Yellow-chevroned Parakeet (hybrid)
+White-winged/Yellow-chevroned Parakeet
+Gray-cheeked Parakeet
+Orange-chinned Parakeet
+Cobalt-winged Parakeet
+Golden-winged Parakeet
+Brotogeris sp.
+Pileated Parrot
+Blue-bellied Parrot
+Rusty-faced Parrot
+Indigo-winged Parrot
+Red-faced Parrot
+Black-winged Parrot
+Brown-hooded Parrot
+Rose-faced Parrot
+Saffron-headed Parrot
+Orange-cheeked Parrot
+Caica Parrot
+Bald Parrot
+Vulturine Parrot
+Pyrilia sp.
+Dusky Parrot
+Red-billed Parrot
+Scaly-headed Parrot
+Speckle-faced Parrot
+Speckle-faced Parrot (White-capped)
+Speckle-faced Parrot (Plum-crowned)
+Blue-headed Parrot
+Blue-headed Parrot (Blue-headed)
+Blue-headed Parrot (Reichenow's)
+White-crowned Parrot
+Bronze-winged Parrot
+Pionus sp.
+Short-tailed Parrot
+Yellow-faced Parrot
+Festive Parrot
+Festive Parrot (Northern)
+Festive Parrot (Southern)
+Vinaceous-breasted Parrot
+Tucuman Parrot
+Red-spectacled Parrot
+Red-crowned Parrot
+Lilac-crowned Parrot
+Red-crowned x Lilac-crowned Parrot (hybrid)
+Red-lored Parrot
+Red-lored Parrot (Red-lored)
+Red-lored Parrot (Lilacine)
+Red-lored Parrot (Diademed)
+Red-crowned x Red-lored Parrot (hybrid)
+Blue-cheeked Parrot
+Red-browed Parrot
+Red-necked Parrot
+Martinique Parrot
+St. Lucia Parrot
+Yellow-naped Parrot
+Yellow-headed Parrot
+Yellow-headed Parrot (Tres Marias Is.)
+Yellow-headed Parrot (Mainland)
+Yellow-naped x Yellow-headed Parrot (hybrid)
+Yellow-naped/Yellow-headed Parrot
+Yellow-crowned Parrot
+Yellow-shouldered Parrot
+Turquoise-fronted Parrot
+Black-billed Parrot
+White-fronted Parrot
+Yellow-lored Parrot
+Yellow-billed Parrot
+Black-billed/Yellow-billed Parrot
+Cuban Parrot
+Cuban Parrot (Cuban)
+Cuban Parrot (Bahamas)
+Cuban Parrot (Cayman Is.)
+Hispaniolan Parrot
+Puerto Rican Parrot
+Mealy Parrot
+Mealy Parrot (Northern)
+Mealy Parrot (Southern)
+Kawall's Parrot
+Imperial Parrot
+Guadeloupe Parrot
+Red-tailed Parrot
+St. Vincent Parrot
+Orange-winged Parrot
+Scaly-naped Parrot
+Amazona sp.
+Dusky-billed Parrotlet
+Dusky-billed Parrotlet (Schomburgk's)
+Dusky-billed Parrotlet (Dusky-billed)
+Mexican Parrotlet
+Mexican Parrotlet (Mexican)
+Mexican Parrotlet (Tres Marias Is.)
+Turquoise-winged Parrotlet
+Riparian Parrotlet
+Cobalt-rumped Parrotlet
+Green-rumped Parrotlet
+Spectacled Parrotlet
+Pacific Parrotlet
+Yellow-faced Parrotlet
+Forpus sp.
+Black-headed Parrot
+White-bellied Parrot
+White-bellied Parrot (Black-legged)
+White-bellied Parrot (Yellow-tailed)
+White-bellied Parrot (Green-thighed)
+Red-fan Parrot
+Ochre-marked Parakeet
+Blaze-winged Parakeet
+Maroon-bellied Parakeet
+Maroon-bellied Parakeet (Maroon-tailed)
+Maroon-bellied Parakeet (Green-tailed)
+Pearly Parakeet
+Pearly Parakeet (lepida)
+Pearly Parakeet (anerythra)
+Pearly Parakeet (coerulescens)
+Crimson-bellied Parakeet
+Green-cheeked Parakeet
+Pfrimer's Parakeet
+Gray-breasted Parakeet
+Maroon-faced Parakeet
+Gray-breasted/Maroon-faced Parakeet
+Painted Parakeet
+Painted Parakeet (Azuero)
+Painted Parakeet (Sinu)
+Painted Parakeet (Todd's)
+Painted Parakeet (Venezuelan)
+Painted Parakeet (Painted)
+Santarem Parakeet
+Santarem Parakeet (Santarem)
+Santarem Parakeet (Madeira)
+Santarem Parakeet (Cristalino)
+Bonaparte's Parakeet
+Rose-fronted Parakeet
+Rose-fronted Parakeet (Wavy-breasted)
+Rose-fronted Parakeet (Garlepp's)
+Rose-fronted Parakeet (Rose-fronted)
+Santa Marta Parakeet
+Fiery-shouldered Parakeet
+Maroon-tailed Parakeet
+Maroon-tailed Parakeet (Choco)
+Maroon-tailed Parakeet (Huila)
+Maroon-tailed Parakeet (Maroon-tailed)
+El Oro Parakeet
+Black-capped Parakeet
+White-necked Parakeet
+Brown-breasted Parakeet
+Red-eared Parakeet
+Rose-headed Parakeet
+Sulphur-winged Parakeet
+Pyrrhura sp.
+Austral Parakeet
+Slender-billed Parakeet
+Austral/Slender-billed Parakeet
+Burrowing Parakeet
+Burrowing Parakeet (Olive)
+Burrowing Parakeet (Burrowing)
+Burrowing Parakeet (Chilean)
+Hyacinth Macaw
+Glaucous Macaw
+Indigo Macaw
+Thick-billed Parrot
+Maroon-fronted Parrot
+Olive-throated Parakeet
+Olive-throated Parakeet (Aztec)
+Olive-throated Parakeet (Jamaican)
+Orange-fronted Parakeet
+Peach-fronted Parakeet
+Brown-throated Parakeet
+Brown-throated Parakeet (Veraguas)
+Brown-throated Parakeet (Brown-throated)
+Cactus Parakeet
+Carolina Parakeet
+Dusky-headed Parakeet
+Nanday Parakeet
+Sun Parakeet
+Sulphur-breasted Parakeet
+Jandaya Parakeet
+Golden-capped Parakeet
+Spix's Macaw
+Red-bellied Macaw
+Blue-winged Macaw
+Blue-headed Macaw
+Yellow-collared Macaw
+Blue-and-yellow Macaw
+Blue-throated Macaw
+Chestnut-fronted Macaw
+Cuban Macaw
+Red-fronted Macaw
+Military Macaw
+Great Green Macaw
+Scarlet Macaw
+Blue-and-yellow x Scarlet Macaw (hybrid)
+Great Green x Scarlet Macaw (hybrid)
+Red-and-green Macaw
+Blue-and-yellow x Red-and-green Macaw (hybrid)
+Scarlet/Red-and-green Macaw
+large macaw sp.
+Golden-plumed Parakeet
+Yellow-eared Parrot
+Golden Parakeet
+Blue-crowned Parakeet
+Blue-crowned Parakeet (Blue-crowned)
+Blue-crowned Parakeet (Blue-headed)
+Red-shouldered Macaw
+Red-shouldered Macaw (Northern)
+Red-shouldered Macaw (Southern)
+small macaw sp.
+Green Parakeet
+Green Parakeet (Green)
+Green Parakeet (Red-throated)
+Socorro Parakeet
+Pacific Parakeet
+Green x Pacific Parakeet (hybrid)
+Green/Pacific Parakeet
+Crimson-fronted Parakeet
+Green x Crimson-fronted Parakeet (hybrid)
+Scarlet-fronted Parakeet
+Scarlet-fronted Parakeet (Scarlet-fronted)
+Scarlet-fronted Parakeet (Cordilleran)
+Mitred Parakeet
+Mitred Parakeet (Mitred)
+Mitred Parakeet (Chapman's)
+Scarlet-fronted/Mitred Parakeet
+Red-masked Parakeet
+Mitred/Red-masked Parakeet
+White-eyed Parakeet
+Cuban Parakeet
+Hispaniolan Parakeet
+Puerto Rican Parakeet
+Guadeloupe Parakeet
+Psittacara sp.
+large parakeet sp. (former Aratinga sp.)
+
+# Originally sourced from Clements Checklist v2022
+Kea
+Norfolk Island Kaka
+New Zealand Kaka
+Kakapo
+

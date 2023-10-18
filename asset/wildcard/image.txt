@@ -1,0 +1,333 @@
+atmospheric perspective
+dutch angle
+fisheye
+from above
+from behind
+from below
+panorama
+perspective
+pov
+rotated
+sideways
+upside-down
+vanishing point
+afterimage
+border
+framed
+outside border
+fading border
+rounded corners
+viewfinder
+chart
+bust chart
+character chart
+reference sheet
+diagram
+move chart
+relationship graph
+seating chart
+stats
+collage
+column lineup
+cropped
+fake scrollbar
+head out of frame
+out-of-frame censoring
+outside border
+glitch
+isometric
+letterboxed
+pillarboxed
+lineup
+mosaic art
+photomosaic
+negative space
+omake
+partially underwater shot
+social media composition
+symmetry
+polar opposites
+rotational symmetry
+tachi-e
+trim marks
+zoom layer
+projected inset
+Artifacts
+gif artifacts
+jpeg artifacts
+aliasing
+scan artifacts
+bleed through
+crease
+vhs artifacts
+bad aspect ratio
+blurry
+censored
+uncensored
+decensored
+derivative work
+photo-referenced
+reference photo
+reference work
+screencap redraw
+duplicate
+pixel-perfect duplicate
+error
+bad reflection
+extra digits
+typo
+lossless-lossy
+lossy-lossless
+image macro
+md5 mismatch
+moire
+third-party edit
+detexted
+hard translated
+nude filter
+poorly drawn
+anatomical nonsense
+bad anatomy
+bad feet
+bad hands
+bad proportions
+quality
+ranguage
+resized
+downscaled
+image sample
+upscaled
+waifu2x
+reversed
+solid color thumbnail
+unmoving pattern
+watermark
+third-party watermark
+web address
+extraction
+animal focus
+armpit focus
+ass focus
+back focus
+book focus
+breast focus
+cloud focus
+eye focus
+food focus
+foot focus
+hand focus
+hip focus
+male focus
+navel focus
+other focus
+pectoral focus
+solo focus
+tank focus
+text focus
+thigh focus
+weapon focus
+vehicle focus
+wind chime focus
+3d
+animated
+animated png
+flash
+video
+music video
+animated gif
+easytoon
+non-repeating animation
+looping animation
+roulette animation
+live2d
+archived file
+artbook
+calendar (medium)
+card (medium)
+comic
+1koma
+2koma
+3koma
+4koma
+multiple 4koma
+5koma
+borderless panels
+manga
+eromanga
+left-to-right manga
+right-to-left comic
+silent comic
+corrupted file
+cover
+album cover
+character single
+cover page
+doujin cover
+dvd cover
+fake cover
+video game cover
+magazine cover
+manga cover
+fake screenshot
+game cg
+gyotaku (medium)
+highres
+absurdres
+incredibly absurdres
+lowres
+icon
+logo
+kirigami
+lineart
+no lineart
+outline
+tall image
+wide image
+mosaic art
+photomosaic
+oekaki
+official art
+phonecard
+photo
+papercraft
+paper child
+paper cutout
+pixel art
+postcard
+poster
+revision
+has bad revision
+has artifacted revision
+has censored revision
+has cropped revision
+has downscaled revision
+has lossy revision
+has watermarked revision
+scan
+anime screencap
+shitajiki
+tegaki
+transparent background
+triptych (art)
+vector trace
+tileable
+wallpaper forced
+widescreen
+official wallpaper
+face
+portrait
+upper body
+lower body
+cowboy shot
+feet out of frame
+full body
+wide shot
+very wide shot
+close-up
+cut-in
+cropped legs
+head out of frame
+cropped torso
+cropped arms
+cropped shoulders
+profile
+group profile
+animal print
+cow print
+leopard print
+tiger print
+zebra print
+shark print
+argyle
+checkered
+fleur de lis
+floral print
+gingham
+houndstooth
+meandros
+paisley
+plaid
+polka dot
+striped
+abstract
+art deco
+art nouveau
+fine art parody
+flame painter
+impressionism
+ligne claire
+nihonga
+sumi-e
+ukiyo-e
+minimalism
+realistic
+photorealistic
+sketch
+style parody
+List of style parodies
+surreal
+traditional media
+* (medium)
+faux traditional media
+unfinished
+cityscape
+everyone
+absolutely everyone
+landscape
+nature
+no humans
+off-topic
+scenery
+still life
+backlighting
+blending
+bloom
+bokeh
+caustics
+chiaroscuro
+chromatic aberration
+chromatic aberration abuse
+diffraction spikes
+depth of field
+dithering
+drop shadow
+emphasis lines
+film grain
+foreshortening
+gradient
+halftone
+image fill
+lens flare
+lens flare abuse
+motion blur
+motion lines
+multiple monochrome
+optical illusion
+anaglyph
+exif thumbnail surprise
+open in internet explorer
+open in winamp
+stereogram
+scanlines
+silhouette
+speed lines
+vignetting
+asa no ha (pattern)
+egasumi
+genjiguruma
+goshoguruma
+igeta (pattern)
+kagome (pattern)
+kanoko (pattern)
+karakusa (pattern)
+kikumon
+kikkoumon
+kojitsunagi (pattern)
+sakuramon
+sayagata
+seigaiha
+shima (pattern)
+shippou (pattern)
+uchiwa design
+uroko (pattern)
+yagasuri

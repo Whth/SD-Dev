@@ -1,0 +1,992 @@
+# Originally sourced from Clements Checklist v2022
+Brown-rumped Bunting
+Crested Bunting
+Black-headed Bunting
+Red-headed Bunting
+Black-headed x Red-headed Bunting (hybrid)
+Black-headed/Red-headed Bunting
+Corn Bunting
+Chestnut-eared Bunting
+Tibetan Bunting
+Rufous-backed Bunting
+Rock Bunting
+Godlewski's Bunting
+Godlewski's Bunting (godlewskii Group)
+Godlewski's Bunting (yunnanensis/khamensis)
+Meadow Bunting
+Cirl Bunting
+White-capped Bunting
+Yellowhammer
+Pine Bunting
+Yellowhammer x Pine Bunting (hybrid)
+Gray-necked Bunting
+Cinereous Bunting
+Cinereous Bunting (Gray-bellied)
+Cinereous Bunting (Yellow-bellied)
+Ortolan Bunting
+Gray-necked/Ortolan Bunting
+Cretzschmar's Bunting
+Ortolan/Cretzschmar's Bunting
+Cabanis's Bunting
+Cabanis's Bunting (Cabanis's)
+Cabanis's Bunting (Three-streaked)
+Golden-breasted Bunting
+Somali Bunting
+Cape Bunting
+Vincent's Bunting
+Lark-like Bunting
+Socotra Bunting
+Cinnamon-breasted Bunting
+Gosling's Bunting
+Cinnamon-breasted x Gosling's Bunting (hybrid)
+House Bunting
+Striolated Bunting
+Slaty Bunting
+Yellow-throated Bunting
+Ochre-rumped Bunting
+Pallas's Bunting
+Reed Bunting
+Pallas's/Reed Bunting
+Yellow-breasted Bunting
+Little Bunting
+Rustic Bunting
+Yellow Bunting
+Black-faced Bunting
+Masked Bunting
+Black-faced/Masked Bunting
+Chestnut Bunting
+Yellow-browed Bunting
+Tristram's Bunting
+Gray Bunting
+Emberiza sp.
+
+# Originally sourced from Clements Checklist v2022
+Gray-streaked Flycatcher
+Dark-sided Flycatcher
+Gray-streaked/Dark-sided Flycatcher
+Ferruginous Flycatcher
+Asian Brown Flycatcher
+Asian Brown Flycatcher (Northern)
+Asian Brown Flycatcher (Siamese)
+Ashy-breasted Flycatcher
+Sumba Brown Flycatcher
+Brown-breasted Flycatcher
+Sulawesi Brown Flycatcher
+Brown-streaked Flycatcher
+Brown-streaked Flycatcher (Brown-streaked)
+Brown-streaked Flycatcher (Umber)
+Asian Brown/Brown-streaked Flycatcher
+African Dusky Flycatcher
+Little Flycatcher
+Yellow-footed Flycatcher
+Spotted Flycatcher
+Spotted Flycatcher (Spotted)
+Spotted Flycatcher (Mediterranean)
+Gambaga Flycatcher
+Swamp Flycatcher
+Cassin's Flycatcher
+Muscicapa sp.
+Böhm's Flycatcher
+Ussher's Flycatcher
+Sooty Flycatcher
+Dusky-blue Flycatcher
+Mariqua Flycatcher
+African Gray Flycatcher
+African Gray Flycatcher (Ethiopian)
+African Gray Flycatcher (African Gray)
+Bradornis sp.
+Muscicapa/Bradornis sp.
+Pale Flycatcher
+Pale Flycatcher (Pale)
+Pale Flycatcher (Wajir)
+Pale Flycatcher (East Coast)
+Chat Flycatcher
+White-browed Forest-Flycatcher
+African Forest-Flycatcher
+African Forest-Flycatcher (Western)
+African Forest-Flycatcher (Eastern)
+Gray-throated Tit-Flycatcher
+Gray Tit-Flycatcher
+Olivaceous Flycatcher
+Olivaceous Flycatcher (Olivaceous)
+Olivaceous Flycatcher (Mt. Nimba)
+Chapin's Flycatcher
+Chapin's Flycatcher (Chapin's)
+Chapin's Flycatcher (Itombwe)
+Tessmann's Flycatcher
+Ashy Flycatcher
+Herero Chat
+Silverbird
+Fiscal Flycatcher
+Yellow-eyed Black-Flycatcher
+Nimba Flycatcher
+Northern Black-Flycatcher
+Southern Black-Flycatcher
+White-eyed Slaty-Flycatcher
+Angola Slaty-Flycatcher
+Abyssinian Slaty-Flycatcher
+Grand Comoro Flycatcher
+White-tailed Alethe
+Fire-crested Alethe
+Karoo Scrub-Robin
+Forest Scrub-Robin
+Forest Scrub-Robin (Forest)
+Forest Scrub-Robin (Huila)
+Brown Scrub-Robin
+Bearded Scrub-Robin
+Bearded Scrub-Robin (Bearded)
+Bearded Scrub-Robin (Zanzibar)
+Miombo Scrub-Robin
+Black Scrub-Robin
+Rufous-tailed Scrub-Robin
+Rufous-tailed Scrub-Robin (Rufous-tailed)
+Rufous-tailed Scrub-Robin (African)
+Kalahari Scrub-Robin
+Brown-backed Scrub-Robin
+Red-backed Scrub-Robin
+Red-backed Scrub-Robin (White-winged)
+Red-backed Scrub-Robin (Red-backed)
+scrub-robin sp.
+Indian Robin
+Oriental Magpie-Robin
+Oriental Magpie-Robin (Oriental)
+Oriental Magpie-Robin (Black)
+Rufous-tailed Shama
+Madagascar Magpie-Robin
+Madagascar Magpie-Robin (Black-bellied)
+Madagascar Magpie-Robin (White-bellied)
+Madagascar Magpie-Robin (White-winged)
+Seychelles Magpie-Robin
+Philippine Magpie-Robin
+White-rumped Shama
+White-rumped Shama (White-rumped)
+White-rumped Shama (Long-tailed)
+White-rumped Shama (Barusan)
+White-crowned Shama
+Andaman Shama
+White-browed Shama
+Visayan Shama
+White-vented Shama
+Black Shama
+White-gorgeted Flycatcher
+Rufous-browed Flycatcher
+Nilgiri Sholakili
+White-bellied Sholakili
+White-tailed Flycatcher
+Rück's Blue Flycatcher
+Blue-breasted Blue Flycatcher
+Rufous-breasted Blue Flycatcher
+Blue-breasted/Rufous-breasted Blue Flycatcher
+Hainan Blue Flycatcher
+White-bellied Blue Flycatcher
+Pale-chinned Blue Flycatcher
+Pale Blue Flycatcher
+Pale Blue Flycatcher (Unicolored)
+Pale Blue Flycatcher (Diao Luo)
+Pale Blue Flycatcher (Hartert's)
+Blue-throated Flycatcher
+Blue-throated Flycatcher (Blue-throated)
+Blue-throated Flycatcher (Notch-throated)
+Chinese Blue Flycatcher
+Blue-throated/Chinese Blue Flycatcher
+Large Blue Flycatcher
+Hill Blue Flycatcher
+Large/Hill Blue Flycatcher
+Javan Blue Flycatcher
+Dayak Blue Flycatcher
+Meratus Blue Flycatcher
+Sunda Blue Flycatcher
+Malaysian Blue Flycatcher
+Palawan Blue Flycatcher
+Bornean Blue Flycatcher
+Tickell's Blue Flycatcher
+Pale-chinned x Tickell's Blue Flycatcher (hybrid)
+Blue-throated/Tickell's Blue Flycatcher
+Indochinese Blue Flycatcher
+Mangrove Blue Flycatcher
+Mangrove Blue Flycatcher (Mangrove)
+Mangrove Blue Flycatcher (Philippine)
+Sulawesi Blue Flycatcher
+Sulawesi Blue Flycatcher (Sulawesi)
+Sulawesi Blue Flycatcher (Tanahjampea)
+Kalao Blue Flycatcher
+Brown-chested Jungle Flycatcher
+Nicobar Jungle Flycatcher
+Gray-chested Jungle Flycatcher
+Fulvous-chested Jungle Flycatcher
+Chestnut-tailed Jungle Flycatcher
+Chestnut-tailed Jungle Flycatcher (Philippine)
+Chestnut-tailed Jungle Flycatcher (Sulu)
+Chestnut-tailed Jungle Flycatcher (Crocker)
+Banggai Jungle Flycatcher
+Sula Jungle Flycatcher
+blue flycatcher sp.
+Large Niltava
+Small Niltava
+Fujian Niltava
+Rufous-bellied Niltava
+Rufous-vented Niltava
+Chinese Vivid Niltava
+Taiwan Vivid Niltava
+niltava sp.
+Blue-and-white Flycatcher
+Zappey's Flycatcher
+Blue-and-white/Zappey's Flycatcher
+Matinan Flycatcher
+Blue-fronted Flycatcher
+Timor Blue Flycatcher
+Flores Jungle Flycatcher
+Sumba Jungle Flycatcher
+Dull-blue Flycatcher
+Nilgiri Flycatcher
+Indigo Flycatcher
+Indigo Flycatcher (Rufous-vented)
+Indigo Flycatcher (Javan)
+Verditer Flycatcher
+Nilgiri/Verditer Flycatcher
+Buru Jungle Flycatcher
+Turquoise Flycatcher
+White-bellied Robin-Chat
+White-bellied Robin-Chat (White-bellied)
+White-bellied Robin-Chat (Albertine)
+Mountain Robin-Chat
+Mountain Robin-Chat (Highland)
+Mountain Robin-Chat (Mountain)
+Archer's Robin-Chat
+Archer's Robin-Chat (Archer's)
+Archer's Robin-Chat (Kabobo)
+Olive-flanked Robin-Chat
+Olive-flanked Robin-Chat (White-bellied)
+Olive-flanked Robin-Chat (Black)
+Olive-flanked Robin-Chat (Olive-flanked)
+Cape Robin-Chat
+White-throated Robin-Chat
+Blue-shouldered Robin-Chat
+Rüppell's Robin-Chat
+White-browed Robin-Chat
+Red-capped Robin-Chat
+Chorister Robin-Chat
+White-headed Robin-Chat
+Snowy-crowned Robin-Chat
+White-crowned Robin-Chat
+robin-chat sp.
+Angola Cave-Chat
+Collared Palm-Thrush
+Rufous-tailed Palm-Thrush
+Spotted Morning-Thrush
+European Robin
+White-starred Robin
+Swynnerton's Robin
+Swynnerton's Robin (Udzungwa)
+Swynnerton's Robin (Swynnerton's)
+Brown-chested Alethe
+Brown-chested Alethe (Gray-headed)
+Brown-chested Alethe (Gabela)
+Brown-chested Alethe (Chestnut-backed)
+Brown-chested Alethe (Brown-chested)
+Red-throated Alethe
+Cholo Alethe
+White-chested Alethe
+Olive-backed Forest Robin
+Orange-breasted Forest Robin
+Yellow-breasted Forest Robin
+Gray-winged Robin-Chat
+Gray-winged Robin-Chat (Black-capped)
+Gray-winged Robin-Chat (Gray-winged)
+Short-tailed Akalat
+Short-tailed Akalat (Grant's)
+Short-tailed Akalat (Bioko)
+Short-tailed Akalat (Short-tailed)
+Bocage's Akalat
+Lowland Akalat
+Equatorial Akalat
+Sharpe's Akalat
+East Coast Akalat
+East Coast Akalat (East Coast)
+East Coast Akalat (Montane)
+East Coast Akalat (Benson's)
+East Coast Akalat (Gunning's)
+Gabela Akalat
+Usambara Akalat
+Iringa Akalat
+Rubeho Akalat
+Bagobo Robin
+Eyebrowed Jungle Flycatcher
+Rusty-flanked Jungle Flycatcher
+Negros Jungle Flycatcher
+Mindanao Jungle Flycatcher
+Great Shortwing
+Great Shortwing (Minahasa)
+Great Shortwing (Great)
+Rusty-bellied Shortwing
+Lesser Shortwing
+Himalayan Shortwing
+Chinese Shortwing
+Himalayan/Chinese Shortwing
+Taiwan Shortwing
+Philippine Shortwing
+Bornean Shortwing
+Sumatran Shortwing
+Javan Shortwing
+Flores Shortwing
+Mindanao Shortwing (undescribed form)
+Brachypteryx sp.
+Gould's Shortwing
+Rufous-tailed Robin
+Rufous-headed Robin
+Japanese Robin
+Izu Robin
+Japanese/Izu Robin
+Ryukyu Robin
+Okinawa Robin
+Ryukyu/Okinawa Robin
+Indian Blue Robin
+Siberian Blue Robin
+White-throated Robin
+Thrush Nightingale
+Common Nightingale
+Common Nightingale (megarhynchos/africana)
+Common Nightingale (golzii)
+Thrush x Common Nightingale (hybrid)
+Thrush/Common Nightingale
+White-bellied Redstart
+Bluethroat
+Bluethroat (Red-spotted)
+Bluethroat (Iberian)
+Bluethroat (White-spotted)
+Bluethroat (Caucasian)
+Sri Lanka Whistling-Thrush
+Shiny Whistling-Thrush
+Javan Whistling-Thrush
+Sumatran Whistling-Thrush
+Bornean Whistling-Thrush
+Malayan Whistling-Thrush
+Malabar Whistling-Thrush
+Taiwan Whistling-Thrush
+Blue Whistling-Thrush
+Blue Whistling-Thrush (Black-billed)
+Blue Whistling-Thrush (Yellow-billed)
+whistling-thrush sp.
+Little Forktail
+White-crowned Forktail
+White-crowned Forktail (Northern)
+White-crowned Forktail (Malaysian)
+White-crowned Forktail (Javan)
+Bornean Forktail
+White-crowned/Bornean Forktail
+Spotted Forktail
+Sunda Forktail
+Chestnut-naped Forktail
+Black-backed Forktail
+Slaty-backed Forktail
+forktail sp.
+Firethroat
+Blackthroat
+Siberian Rubythroat
+Himalayan Rubythroat
+Chinese Rubythroat
+Himalayan/Chinese Rubythroat (White-tailed Rubythroat)
+White-tailed Robin
+White-tailed Robin (White-tailed)
+White-tailed Robin (Cambodian)
+Sunda Robin
+Sunda Robin (Sumatran)
+Sunda Robin (Javan)
+Blue-fronted Robin
+Red-flanked Bluetail
+Red-flanked Bluetail (Red-flanked)
+Red-flanked Bluetail (Qilian)
+Himalayan Bluetail
+Red-flanked/Himalayan Bluetail
+Rufous-breasted Bush-Robin
+White-browed Bush-Robin
+White-browed Bush-Robin (White-browed)
+White-browed Bush-Robin (Taiwan)
+Golden Bush-Robin
+Collared Bush-Robin
+White-browed/Collared Bush-Robin
+Tarsiger sp.
+Yellow-rumped Flycatcher
+Green-backed Flycatcher
+Narcissus Flycatcher
+Ryukyu Flycatcher
+Yellow-rumped/Green-backed/Narcissus/Ryukyu Flycatcher
+Narcissus/Ryukyu Flycatcher
+Mugimaki Flycatcher
+Slaty-backed Flycatcher
+Black-and-orange Flycatcher
+Slaty-blue Flycatcher
+Snowy-browed Flycatcher
+Pygmy Flycatcher
+Rufous-gorgeted Flycatcher
+Sapphire Flycatcher
+Little Pied Flycatcher
+Ultramarine Flycatcher
+Rusty-tailed Flycatcher
+Taiga Flycatcher
+Kashmir Flycatcher
+Red-breasted Flycatcher
+Taiga/Red-breasted Flycatcher
+Semicollared Flycatcher
+European Pied Flycatcher
+Semicollared x European Pied Flycatcher (hybrid)
+Atlas Flycatcher
+European Pied/Atlas Flycatcher
+Collared Flycatcher
+Semicollared x Collared Flycatcher (hybrid)
+European Pied x Collared Flycatcher (hybrid)
+European Pied/Collared Flycatcher
+European Pied/Collared/Semicollared Flycatcher
+Tanimbar Flycatcher
+Rufous-chested Flycatcher
+Palawan Flycatcher
+Furtive Flycatcher
+Rufous-throated Flycatcher
+Damar Flycatcher
+Cinnamon-chested Flycatcher
+Lompobattang Flycatcher
+Sumba Flycatcher
+Black-banded Flycatcher
+Little Slaty Flycatcher
+Little Slaty Flycatcher (samarensis)
+Little Slaty Flycatcher (basilanica)
+Cryptic Flycatcher
+Bundok Flycatcher
+Ficedula sp.
+Blue-fronted Redstart
+Plumbeous Redstart
+Luzon Redstart
+Rufous-backed Redstart
+White-capped Redstart
+Ala Shan Redstart
+Blue-capped Redstart
+Moussier's Redstart
+Common Redstart
+Common Redstart (Common)
+Common Redstart (Ehrenberg's)
+Hodgson's Redstart
+White-throated Redstart
+White-winged Redstart
+Black Redstart
+Black Redstart (Western)
+Black Redstart (Eastern)
+Common x Black Redstart (hybrid)
+Common/Black Redstart
+Daurian Redstart
+redstart sp.
+Little Rock-Thrush
+Chestnut-bellied Rock-Thrush
+White-throated Rock-Thrush
+Blue-capped Rock-Thrush
+Short-toed Rock-Thrush
+Short-toed Rock-Thrush (White-crowned)
+Short-toed Rock-Thrush (Short-toed)
+Sentinel Rock-Thrush
+Littoral Rock-Thrush
+Amber Mountain Rock-Thrush
+Forest Rock-Thrush
+Forest Rock-Thrush (Forest)
+Forest Rock-Thrush (Benson's)
+Rufous-tailed Rock-Thrush
+Blue Rock-Thrush
+Blue Rock-Thrush (solitarius/longirostris)
+Blue Rock-Thrush (pandoo)
+Blue Rock-Thrush (philippensis)
+Blue Rock-Thrush (pandoo x philippensis)
+Blue Rock-Thrush (madoci)
+Miombo Rock-Thrush
+Cape Rock-Thrush
+rock-thrush sp.
+Whinchat
+Common Redstart x Whinchat (hybrid)
+White-browed Bushchat
+White-throated Bushchat
+Fuerteventura Stonechat
+European Stonechat
+Whinchat/European Stonechat
+Siberian Stonechat
+Siberian Stonechat (Caspian)
+Siberian Stonechat (Siberian)
+Siberian Stonechat (Przevalski's)
+White-browed Bushchat/Siberian Stonechat
+White-throated Bushchat/Siberian Stonechat
+European/Siberian Stonechat
+Amur Stonechat
+Siberian/Amur Stonechat
+African Stonechat
+African Stonechat (African)
+African Stonechat (Ethiopian)
+African Stonechat (Madagascar)
+Reunion Stonechat
+White-tailed Stonechat
+Siberian/White-tailed Stonechat
+Pied Bushchat
+Jerdon's Bushchat
+Gray Bushchat
+Timor Bushchat
+Saxicola sp.
+Buff-streaked Chat
+Sickle-winged Chat
+Karoo Chat
+Tractrac Chat
+Moorland Chat
+Moorland Chat (Abyssinian)
+Moorland Chat (Mt. Kenya)
+Moorland Chat (Ngorongoro)
+Moorland Chat (Mt. Kilimanjaro)
+Mocking Cliff-Chat
+White-winged Cliff-Chat
+Sooty Chat
+Northern Anteater-Chat
+Southern Anteater-Chat
+Congo Moor Chat
+Mountain Wheatear
+Rüppell's Chat
+Arnot's Chat
+Arnot's Chat (Angola)
+Arnot's Chat (Arnot's)
+Arnot's Chat (Ruaha)
+Northern Wheatear
+Northern Wheatear (Greenland)
+Northern Wheatear (Eurasian)
+Atlas Wheatear
+Northern/Atlas Wheatear
+Capped Wheatear
+Buff-breasted Wheatear
+Rusty-breasted Wheatear
+Isabelline Wheatear
+Heuglin's Wheatear
+Hooded Wheatear
+Desert Wheatear
+Western Black-eared Wheatear
+Cyprus Wheatear
+Eastern Black-eared Wheatear
+Northern/Western Black-eared/Eastern Black-eared Wheatear
+Western/Eastern Black-eared Wheatear
+Pied Wheatear
+Pied Wheatear (vittata)
+Cyprus/Pied Wheatear
+Eastern Black-eared x Pied Wheatear (hybrid)
+Eastern Black-eared/Pied Wheatear
+White-fronted Black-Chat
+Somali Wheatear
+Red-rumped Wheatear
+Blackstart
+Familiar Chat
+Sombre Rock Chat
+Brown-tailed Chat
+Brown-tailed Chat (Brown-tailed)
+Brown-tailed Chat (Pale)
+Brown Rock Chat
+Variable Wheatear
+Variable Wheatear (Blyth's)
+Variable Wheatear (Gould's)
+Variable Wheatear (Strickland's)
+Black Wheatear
+Hume's Wheatear
+White-crowned Wheatear
+Arabian Wheatear
+Abyssinian Wheatear
+Finsch's Wheatear
+Mourning Wheatear
+Mourning Wheatear (Mourning)
+Mourning Wheatear (Maghreb)
+Mourning Wheatear (Basalt)
+Kurdish Wheatear
+Persian Wheatear
+Kurdish/Persian Wheatear (Red-tailed Wheatear)
+wheatear sp.
+Boulder Chat
+Muscicapid sp.
+
+# Originally sourced from Clements Checklist v2022
+Hooded Pitohui
+Raja Ampat Pitohui
+Northern Variable Pitohui
+Southern Variable Pitohui
+Northern/Southern Variable Pitohui
+Timor Oriole
+Timor Oriole (Timor)
+Timor Oriole (Wetar)
+Buru Oriole
+Tanimbar Oriole
+Seram Oriole
+Halmahera Oriole
+Brown Oriole
+Olive-backed Oriole
+Green Oriole
+Dark-throated Oriole
+Dark-throated Oriole (Dark-throated)
+Dark-throated Oriole (Ventriloquial)
+White-lored Oriole
+Philippine Oriole
+Isabela Oriole
+Eurasian Golden Oriole
+Indian Golden Oriole
+Eurasian/Indian Golden Oriole
+African Golden Oriole
+Eurasian/African Golden Oriole
+Black-naped Oriole
+Black-naped Oriole (East Asian)
+Black-naped Oriole (Sunda)
+Black-naped Oriole (Philippine)
+Black-naped Oriole (Talaud)
+Black-naped Oriole (Sulawesi)
+Black-naped Oriole (Tenggara)
+Indian Golden/Black-naped Oriole
+Slender-billed Oriole
+Green-headed Oriole
+Green-headed Oriole (Green-headed)
+Green-headed Oriole (Gorongosa)
+Sao Tome Oriole
+Western Black-headed Oriole
+Ethiopian Black-headed Oriole
+African Black-headed Oriole
+Black-tailed Oriole
+Black-winged Oriole
+Black-hooded Oriole
+Black Oriole
+Black-and-crimson Oriole
+Black-and-crimson Oriole (Black-and-crimson)
+Black-and-crimson Oriole (Javan)
+Maroon Oriole
+Maroon Oriole (Maroon)
+Maroon Oriole (Crimson)
+Silver Oriole
+old world oriole sp.
+Wetar Figbird
+Green Figbird
+Australasian Figbird
+Australasian Figbird (flaviventris Group)
+Australasian Figbird (salvadorii)
+Australasian Figbird (vieilloti)
+North Island Piopio
+South Island Piopio
+
+# Originally sourced from Clements Checklist v2022
+Cinnamon Ibon
+Saxaul Sparrow
+House Sparrow
+House Sparrow (Gray-cheeked)
+House Sparrow (Indian)
+Italian Sparrow
+House x Italian Sparrow (hybrid)
+House/Italian Sparrow
+Spanish Sparrow
+House x Spanish Sparrow (hybrid)
+Italian x Spanish Sparrow (hybrid)
+House/Spanish Sparrow
+Italian/Spanish Sparrow
+Sind Sparrow
+Somali Sparrow
+House x Somali Sparrow (hybrid)
+Russet Sparrow
+Plain-backed Sparrow
+Dead Sea Sparrow
+Dead Sea Sparrow (Dead Sea)
+Dead Sea Sparrow (Sistan Scrub)
+Cape Verde Sparrow
+Abd al Kuri Sparrow
+Socotra Sparrow
+Great Rufous Sparrow
+Kenya Rufous Sparrow
+Shelley's Rufous Sparrow
+Kordofan Rufous Sparrow
+Cape Sparrow
+Northern Gray-headed Sparrow
+Swainson's Sparrow
+Parrot-billed Sparrow
+Swahili Sparrow
+Southern Gray-headed Sparrow
+Desert Sparrow
+Zarudny's Sparrow
+Eurasian Tree Sparrow
+House x Eurasian Tree Sparrow (hybrid)
+House/Eurasian Tree Sparrow
+Spanish x Eurasian Tree Sparrow (hybrid)
+Sudan Golden Sparrow
+Arabian Golden Sparrow
+Chestnut Sparrow
+Passer sp.
+Yellow-spotted Bush Sparrow
+Yellow-throated Sparrow
+Yellow-throated Bush Sparrow
+Sahel Bush Sparrow
+Rock Sparrow
+Pale Rockfinch
+White-winged Snowfinch
+Tibetan Snowfinch
+Black-winged Snowfinch
+White-rumped Snowfinch
+Pere David's Snowfinch
+Rufous-necked Snowfinch
+Blanford's Snowfinch
+Afghan Snowfinch
+
+# Originally sourced from Clements Checklist v2022
+Pesquet's Parrot
+Greater Vasa Parrot
+Lesser Vasa Parrot
+Lesser Vasa Parrot (Comoro)
+Lesser Vasa Parrot (Black)
+Greater/Lesser Vasa Parrot
+Seychelles Parrot
+Yellow-capped Pygmy-Parrot
+Geelvink Pygmy-Parrot
+Buff-faced Pygmy-Parrot
+Red-breasted Pygmy-Parrot
+Meek's Pygmy-Parrot
+Finsch's Pygmy-Parrot
+pygmy-parrot sp.
+Superb Parrot
+Regent Parrot
+Princess Parrot
+Australian King-Parrot
+Moluccan King-Parrot
+Papuan King-Parrot
+Olive-shouldered Parrot
+Red-winged Parrot
+Australian King-Parrot x Red-winged Parrot (hybrid)
+Buru Racquet-tail
+Golden-mantled Racquet-tail
+Mindanao Racquet-tail
+Luzon Racquet-tail
+Blue-headed Racquet-tail
+Mindoro Racquet-tail
+Blue-winged Racquet-tail
+Yellow-breasted Racquet-tail
+Green Racquet-tail
+Blue-crowned Racquet-tail
+Blue-crowned Racquet-tail (Blue-crowned)
+Blue-crowned Racquet-tail (Blue-capped)
+racquet-tail sp.
+Eclectus Parrot
+Eclectus Parrot (Moluccan)
+Eclectus Parrot (Sumba)
+Eclectus Parrot (Tanimbar)
+Eclectus Parrot (Papuan)
+Oceanic Parrot
+Red-cheeked Parrot
+Blue-collared Parrot
+Singing Parrot
+Singing Parrot (Northern)
+Singing Parrot (Rennell)
+Blue-rumped Parrot
+Blue-rumped Parrot (Blue-rumped)
+Blue-rumped Parrot (Simeulue)
+Mascarene Parrot
+Alexandrine Parakeet
+Seychelles Parakeet
+Rose-ringed Parakeet
+Alexandrine/Rose-ringed Parakeet
+Echo Parakeet
+Slaty-headed Parakeet
+Gray-headed Parakeet
+Plum-headed Parakeet
+Rose-ringed x Plum-headed Parakeet (hybrid)
+Slaty-headed x Plum-headed Parakeet (hybrid)
+Blossom-headed Parakeet
+Malabar Parakeet
+Layard's Parakeet
+Derbyan Parakeet
+Red-breasted Parakeet
+Nicobar Parakeet
+Newton's Parakeet
+Long-tailed Parakeet
+Long-tailed Parakeet (Andaman)
+Long-tailed Parakeet (Nicobar)
+Long-tailed Parakeet (Long-tailed)
+Long-tailed Parakeet (Enggano)
+Psittacula sp.
+Mauritius Gray Parrot
+Broad-billed Parrot
+Rodrigues Parrot
+Painted Tiger-Parrot
+Painted Tiger-Parrot (Snow Mountains)
+Painted Tiger-Parrot (Eastern)
+Brehm's Tiger-Parrot
+Modest Tiger-Parrot
+Madarasz's Tiger-Parrot
+tiger-parrot sp.
+Black-lored Parrot
+Great-billed Parrot
+Blue-naped Parrot
+Azure-rumped Parrot
+Azure-rumped Parrot (Blue-backed)
+Azure-rumped Parrot (Azure-rumped)
+Ground Parrot
+Ground Parrot (Western)
+Ground Parrot (Eastern)
+Night Parrot
+Bourke's Parrot
+Blue-winged Parrot
+Elegant Parrot
+Rock Parrot
+Orange-bellied Parrot
+Turquoise Parrot
+Scarlet-chested Parrot
+Neophema sp.
+Swift Parrot
+Crimson Shining-Parrot
+Red Shining-Parrot
+Masked Shining-Parrot
+Horned Parakeet
+Ouvea Parakeet
+Raiatea Parakeet
+Black-fronted Parakeet
+Antipodes Parakeet
+Red-crowned Parakeet
+Reischek's Parakeet
+New Caledonian Parakeet
+Norfolk Island Parakeet
+Yellow-crowned Parakeet
+Chatham Islands Parakeet
+Malherbe's Parakeet
+Cyanoramphus sp.
+Australian Ringneck
+Australian Ringneck (Twenty-eight)
+Australian Ringneck (Port Lincoln)
+Australian Ringneck (Mallee)
+Australian Ringneck (Cloncurry)
+Australian Ringneck (Twenty-eight x Port Lincoln)
+Green Rosella
+Crimson Rosella
+Crimson Rosella (Crimson)
+Crimson Rosella (Yellow)
+Crimson Rosella (Crimson x Yellow)
+Crimson Rosella (Adelaide)
+Northern Rosella
+Eastern Rosella
+Green x Eastern Rosella (hybrid)
+Crimson x Eastern Rosella (hybrid)
+Pale-headed Rosella
+Eastern x Pale-headed Rosella (hybrid)
+Crimson x Pale-headed Rosella (hybrid)
+Western Rosella
+Greater Bluebonnet
+Greater Bluebonnet (Yellow-vented)
+Greater Bluebonnet (Red-vented)
+Naretha Bluebonnet
+Red-rumped Parrot
+Mulga Parrot
+Hooded Parrot
+Golden-shouldered Parrot
+Paradise Parrot
+Red-capped Parrot
+Orange-breasted Fig-Parrot
+Orange-breasted Fig-Parrot (Dusky-cheeked)
+Orange-breasted Fig-Parrot (Blue-fronted)
+Orange-breasted Fig-Parrot (Black-fronted)
+Orange-breasted Fig-Parrot (Creamy-breasted)
+Double-eyed Fig-Parrot
+Double-eyed Fig-Parrot (Double-eyed)
+Double-eyed Fig-Parrot (Coxen's)
+Large Fig-Parrot
+Large Fig-Parrot (Large)
+Large Fig-Parrot (Yellow-naped)
+Large Fig-Parrot (Red-faced)
+Edwards's Fig-Parrot
+Salvadori's Fig-Parrot
+Guaiabero
+Budgerigar
+Budgerigar (Domestic type)
+Plum-faced Lorikeet
+Pygmy Lorikeet
+Red-fronted Lorikeet
+Red-flanked Lorikeet
+Blue-fronted Lorikeet
+Fairy Lorikeet
+Striated Lorikeet
+Josephine's Lorikeet
+Papuan Lorikeet
+Papuan Lorikeet (Vogelkop)
+Papuan Lorikeet (Stella's)
+Duchess Lorikeet
+Meek's Lorikeet
+New Caledonian Lorikeet
+Red-chinned Lorikeet
+Palm Lorikeet
+Red-throated Lorikeet
+Collared Lory
+Blue-crowned Lorikeet
+Ultramarine Lorikeet
+Stephen's Lorikeet
+Kuhl's Lorikeet
+Blue Lorikeet
+Yellow-billed Lorikeet
+Orange-billed Lorikeet
+Yellow-billed/Orange-billed Lorikeet
+White-naped Lory
+Yellow-bibbed Lory
+Chattering Lory
+Purple-naped Lory
+Purple-bellied Lory
+Black-capped Lory
+Varied Lorikeet
+Little Lorikeet
+Purple-crowned Lorikeet
+Dusky Lory
+Cardinal Lory
+Brown Lory
+Black Lory
+Yellow-streaked Lory
+Goldie's Lorikeet
+Musk Lorikeet
+Mindanao Lorikeet
+Iris Lorikeet
+Ornate Lorikeet
+Yellow-cheeked Lorikeet
+Sula Lorikeet
+Blue-streaked Lory
+Blue-eared Lory
+Red Lory
+Black-winged Lory
+Red-and-blue Lory
+Violet-necked Lory
+Pohnpei Lorikeet
+Scaly-breasted Lorikeet
+Coconut Lorikeet
+Coconut Lorikeet (Biak)
+Coconut Lorikeet (Coconut)
+Rainbow Lorikeet
+Musk x Rainbow Lorikeet (hybrid)
+Scaly-breasted x Rainbow Lorikeet (hybrid)
+Scaly-breasted/Rainbow Lorikeet
+lorikeet sp. (Musk/Rainbow/Scaly-breasted Lorikeet hybrid)
+Red-collared Lorikeet
+Rainbow x Red-collared Lorikeet (hybrid)
+Rainbow/Red-collared Lorikeet
+rainbow lorikeet sp.
+Olive-headed Lorikeet
+Marigold Lorikeet
+Leaf Lorikeet
+Sunset Lorikeet
+lorikeet sp.
+Vernal Hanging-Parrot
+Sri Lanka Hanging-Parrot
+Philippine Hanging-Parrot
+Camiguin Hanging-Parrot
+Blue-crowned Hanging-Parrot
+Sulawesi Hanging-Parrot
+Sula Hanging-Parrot
+Moluccan Hanging-Parrot
+Sangihe Hanging-Parrot
+Papuan Hanging-Parrot
+Green-fronted Hanging-Parrot
+Pygmy Hanging-Parrot
+Yellow-throated Hanging-Parrot
+Wallace's Hanging-Parrot
+hanging-parrot sp.
+Black-collared Lovebird
+Gray-headed Lovebird
+Red-headed Lovebird
+Black-winged Lovebird
+Rosy-faced Lovebird
+Fischer's Lovebird
+Yellow-collared Lovebird
+Fischer's x Yellow-collared Lovebird (hybrid)
+Fischer's/Yellow-collared Lovebird
+Lilian's Lovebird
+Black-cheeked Lovebird
+lovebird sp.
+
