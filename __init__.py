@@ -66,11 +66,11 @@ class StableDiffusionPlugin(AbstractPlugin):
 
     @classmethod
     def get_plugin_name(cls) -> str:
-        return "stable_diffusion"
+        return "StableDiffusionDev"
 
     @classmethod
     def get_plugin_description(cls) -> str:
-        return "stable diffusion plugin"
+        return "a stable diffusion plugin"
 
     @classmethod
     def get_plugin_version(cls) -> str:
