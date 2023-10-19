@@ -135,6 +135,7 @@ class DiffusionParser(BaseModel):
     use to parse config_registry
     """
 
+    batch_size: int = 1
     prompt: str = Field(default_factory=get_default_pos_prompt)
     negative_prompt: str = Field(default_factory=get_default_neg_prompt)
     styles: List[str] = Field(default_factory=list)

@@ -1,6 +1,5 @@
 import os
-import re
-from typing import Tuple, List, Optional, Callable, Any, Union
+from typing import Tuple, List, Optional, Callable, Union
 
 from modules.file_manager import download_file, get_pwd
 from modules.plugin_base import AbstractPlugin
@@ -22,7 +21,7 @@ class CMD:
     POS_PROMPT = "pos"
     NEG_PROMPT = "neg"
     SHOT_SIZE = "shot"
-
+    TEST = "test"
     CONTROLNET_CMD = "cn"
     CONTROLNET_MODELS_CMD = "models"
     CONTROLNET_MODULES_CMD = "modules"
@@ -93,7 +92,7 @@ class StableDiffusionPlugin(AbstractPlugin):
 
     @classmethod
     def get_plugin_version(cls) -> str:
-        return "0.1.1"
+        return "0.1.2"
 
     @classmethod
     def get_plugin_author(cls) -> str:
@@ -122,6 +121,8 @@ class StableDiffusionPlugin(AbstractPlugin):
             get_default_neg_prompt,
             get_default_pos_prompt,
         )
+
+        from .utils import extract_prompts, PromptProcessorRegistry
 
         cmd_builder = CmdBuilder(
             config_setter=self._config_registry.set_config, config_getter=self._config_registry.get_config
@@ -180,6 +181,22 @@ class StableDiffusionPlugin(AbstractPlugin):
         async def diffusion_favorite_i(index: int = None) -> Image:
             images = await SD_app.img2img_favorite(output_dir_path, index)
             return Image(path=images[0])
+
+        def _test_process(pos_prompt: Optional[str] = None, neg_prompt: Optional[str] = None) -> str:
+            """
+            Process the positive and negative prompts using the provided prompts or default prompts.
+
+            Args:
+                pos_prompt (Optional[str]): The positive prompt. Defaults to None.
+                neg_prompt (Optional[str]): The negative prompt. Defaults to None.
+
+            Returns:
+                str: A string containing the processed positive and negative prompts.
+            """
+            pos_prompt = pos_prompt or get_default_pos_prompt()
+            neg_prompt = neg_prompt or get_default_neg_prompt()
+            pos_prompt, neg_prompt = processor.process(pos_prompt, neg_prompt)
+            return f"Pos prompt\n----------------\n{pos_prompt}\n\nNeg prompt\n----------------\n{neg_prompt}"
 
         tree = NameSpaceNode(
             name=self._config_registry.get_config(self.CONFIG_CONFIG_CLIENT_KEYWORD),
@@ -313,6 +330,11 @@ class StableDiffusionPlugin(AbstractPlugin):
                         ),
                     ],
                 ),
+                ExecutableNode(
+                    name=CMD.TEST,
+                    help_message=_test_process.__doc__,
+                    source=_test_process,
+                ),
             ],
         )
         self._auth_manager.add_perm_from_req(req_perm)
@@ -395,7 +417,7 @@ class StableDiffusionPlugin(AbstractPlugin):
                 None
             """
             # Extract positive and negative prompts from the message
-            pos_prompt, neg_prompt = de_assembly(str(message))
+            pos_prompt, neg_prompt, batch_count = extract_prompts(str(message), specify_batch_count=True)
             pos_prompt = ",".join(pos_prompt) if pos_prompt else get_default_pos_prompt()
             neg_prompt = ",".join(neg_prompt) if neg_prompt else get_default_neg_prompt()
             pos_prompt, neg_prompt = processor.process(pos_prompt, neg_prompt)
@@ -406,19 +428,26 @@ class StableDiffusionPlugin(AbstractPlugin):
                 styles=self._config_registry.get_config(self.CONFIG_STYLES),
             )
 
-            image_url = await _get_image_url(app, message, message_event)
+            image_url = await _get_image_url(app, message_event)
+            send_result = []
             if image_url:
-                send_result = await _make_img2img(diffusion_paser, image_url)
+                for _ in range(batch_count):
+                    send_result.extend(await _make_img2img(diffusion_paser, image_url))
             else:
                 # Generate the image using the diffusion parser
-                send_result = await SD_app.txt2img(
-                    diffusion_parameters=diffusion_paser,
-                    HiRes_parameters=HiResParser(enable_hr=self._config_registry.get_config(self.CONFIG_ENABLE_HR)),
-                    output_dir=output_dir_path,
-                )
+                for _ in range(batch_count):
+                    send_result.extend(
+                        await SD_app.txt2img(
+                            diffusion_parameters=diffusion_paser,
+                            HiRes_parameters=HiResParser(
+                                enable_hr=self._config_registry.get_config(self.CONFIG_ENABLE_HR)
+                            ),
+                            output_dir=output_dir_path,
+                        )
+                    )
 
             # Send the image as a message in the group
-            await app.send_message(target, MessageChain("") + Image(path=send_result[0]))
+            await app.send_message(target, [Image(path=path) for path in send_result])
 
         from graia.ariadne.event.message import FriendMessage
 
@@ -431,17 +460,34 @@ class StableDiffusionPlugin(AbstractPlugin):
             decorators=[ContainKeyword(keyword=self._config_registry.get_config(self.CONFIG_POS_KEYWORD))],
         )(diffusion)
 
-        async def _get_image_url(
-            app: Ariadne, message: MessageChain, message_event: Union[GroupMessage, FriendMessage]
-        ):
-            if Image in message:
-                image_url = message[Image, 1][0].url
-            elif hasattr(message_event.quote, "origin"):
-                origin_message: MessageChain = (await app.get_message_from_id(message_event.quote.id)).message_chain
-                # check if the message contains a picture
-                image_url = origin_message[Image, 1][0].url if origin_message[Image, 1] else None
-            else:
-                image_url = None
+        async def _get_image_url(app: Ariadne, message_event: Union[GroupMessage, FriendMessage]) -> str:
+            """
+            Retrieves the URL of an image from the given message event.
+
+            Args:
+                app (Ariadne): The Ariadne instance.
+                message_event (Union[GroupMessage, FriendMessage]): The message event.
+
+            Returns:
+                str: The URL of the image, or None if no image is found.
+            """
+            image_url = ""
+            if Image in message_event.message_chain:
+                image_url = message_event.message_chain[Image, 1][0].url
+            elif message_event.quote:
+                target_to_query: List[int] = []
+                target_to_query.append(message_event.quote.group_id) if message_event.quote.group_id else None
+                target_to_query.extend([message_event.quote.target_id, message_event.quote.sender_id])
+
+                for target in target_to_query:
+                    origin_message: MessageChain = (
+                        await app.get_message_from_id(message_event.quote.id, target=target)
+                    ).message_chain
+                    # check if the message contains a picture
+                    image_url = origin_message[Image, 1][0].url if origin_message[Image, 1] else None
+                    break
+                    # FIXME cant get the quote message sent by the bot in the friend channel
+
             return image_url
 
         async def _make_img2img(diffusion_paser, image_url):
@@ -467,110 +513,3 @@ class StableDiffusionPlugin(AbstractPlugin):
                 controlnet_parameters=cn_unit,
             )
             return send_result
-
-
-def de_assembly(
-    message: str, specify_batch_size: bool = False, pos_keyword: List[str] = ("+",), neg_keyword: List[str] = ("-",)
-) -> Tuple[List[str], List[str], int] | Tuple[List[str], List[str]]:
-    """
-    De-assembles a given message into positive and negative prompts.
-
-    Args:
-        message (str): The message to be de-assembled.
-        specify_batch_size (bool, optional): Specifies whether to specify a batch size. Defaults to False.
-        pos_keyword (List[str], optional): List of positive keywords. Defaults to ["+"].
-        neg_keyword (List[str], optional): List of negative keywords. Defaults to ["-"].
-
-    Returns:
-        Tuple[List[str], List[str], int] | Tuple[List[str], List[str]]: A tuple containing the positive prompts, negative prompts, and the batch size (if specified).
-
-    Raises:
-        None
-    """
-    if message == "":
-        return [""], [""]
-    pos_regx = "".join(pos_keyword)
-    neg_regx = "".join(neg_keyword)
-    pat = re.compile(rf"(?:([{pos_regx}])(.*?)\1)?(?:([{neg_regx}])(.*?)\3)?")
-    matched_list = pat.findall(string=message)
-    pos_prompt = list(map(lambda match: match[1], filter(lambda match: match[1], matched_list)))
-    neg_prompt = list(map(lambda match: match[2], filter(lambda match: match[2], matched_list)))
-    if specify_batch_size:
-        batch_size_pattern = r"(\d+[pP])?"
-        temp = re.findall(pattern=batch_size_pattern, string=message)
-        batch_sizes = [int(match[0].strip(match[1])) for match in temp if match[0] != ""]
-        if batch_sizes:
-            return pos_prompt, neg_prompt, batch_sizes[0]
-        return pos_prompt, neg_prompt, 1
-
-    return pos_prompt, neg_prompt
-
-
-class PromptProcessorRegistry(object):
-    def __init__(self):
-        self._registry_list: List[Tuple[Callable[[], Any], Callable[[str, str], Tuple[str, str]]]] = []
-        self._process_name: List[str] = []
-
-    def process(self, pos_prompt: str, neg_prompt: str) -> Tuple[str, str]:
-        from colorama import Fore
-
-        """
-        Process the given positive and negative prompts using the registered processors.
-
-        Args:
-            pos_prompt (str): The positive prompt to be processed.
-            neg_prompt (str): The negative prompt to be processed.
-
-        Returns:
-            Tuple[str, str]: A tuple containing the processed positive prompt and the processed negative prompt.
-        """
-        for processor, name in zip(self._registry_list, self._process_name):
-            if processor[0]():
-                pos_prompt, neg_prompt = processor[1](pos_prompt, neg_prompt)
-                print(
-                    f"\n{Fore.YELLOW}Executing {name}\n"
-                    f"{self.prompt_string_constructor(pos_prompt=pos_prompt, neg_prompt=neg_prompt)}"
-                )
-
-        return pos_prompt, neg_prompt
-
-    def register(
-        self, judge: Callable[[], Any], processor: Callable[[str, str], Tuple[str, str]], process_name: str = None
-    ) -> None:
-        """
-        Register a new judge and processor pair to the registry list.
-
-        Args:
-            judge: A callable that takes no arguments and returns any value.
-            processor: A callable that takes two strings as arguments and returns a tuple of two strings.
-            process_name: (optional) A string representing the process name.
-                If not provided, a default process name will be generated.
-
-        Returns:
-            None
-        """
-        self._registry_list.append((judge, processor))
-        if not process_name:
-            process_name = f"Process-{len(self._registry_list)}"
-        self._process_name.append(process_name)
-
-    @staticmethod
-    def prompt_string_constructor(pos_prompt: str, neg_prompt: str) -> str:
-        """
-        Generate a formatted string containing positive and negative prompts.
-
-        Args:
-            pos_prompt (str): The positive prompt.
-            neg_prompt (str): The negative prompt.
-
-        Returns:
-            str: A formatted string containing the positive and negative prompts.
-        """
-        from colorama import Fore
-
-        return (
-            f"{Fore.MAGENTA}___________________________________________\n"
-            f"{Fore.GREEN}POSITIVE PROMPT:\n\t{pos_prompt}\n"
-            f"{Fore.RED}NEGATIVE PROMPT:\n\t{neg_prompt}\n"
-            f"{Fore.MAGENTA}___________________________________________\n{Fore.RESET}"
-        )

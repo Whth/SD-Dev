@@ -1,30 +1,21 @@
-import base64
 import copy
-import io
 import json
-import os.path
 import pathlib
 from random import choice
 from typing import List, Dict, Optional
 
 import aiohttp
-import requests
-from PIL import Image, PngImagePlugin
-from pydantic import BaseModel, Field, validator
-from slugify import slugify
+from pydantic import BaseModel, Field, validator, AnyUrl
 
-from modules.file_manager import rename_image_with_hash, img_to_base64
+from modules.file_manager import img_to_base64
 from .api import (
-    API_PNG_INFO,
     API_TXT2IMG,
     INIT_IMAGES_KEY,
-    IMAGE_KEY,
-    IMAGES_KEY,
-    PNG_INFO_KEY,
     ALWAYSON_SCRIPTS_KEY,
 )
 from .controlnet import ControlNetUnit, make_cn_payload
 from .parser import DiffusionParser, HiResParser
+from .utils import save_base64_img_with_hash, extract_png_from_payload
 
 
 class RetrievedData(BaseModel):
@@ -102,35 +93,27 @@ I2I_HISTORY_SAVE_PATH = "i2i_history.json"
 T2I_HISTORY_SAVE_PATH = "t2i_history.json"
 
 
-class StableDiffusionApp(object):
+class StableDiffusionApp(BaseModel):
     """
     class that implements the basic diffusion api
     """
 
-    def __init__(self, host_url: str, cache_dir: str):
-        self._host_url: str = host_url
-        self._cache_dir: str = cache_dir
-        self._img2img_params: PersistentManager = PersistentManager(
-            save_path=f"{self._cache_dir}/{I2I_HISTORY_SAVE_PATH}"
-        )
-        self._txt2img_params: PersistentManager = PersistentManager(
-            save_path=f"{self._cache_dir}/{T2I_HISTORY_SAVE_PATH}"
-        )
+    host_url: AnyUrl
+    cache_dir: str
+    img2img_params: Optional[PersistentManager]
+    txt2img_params: Optional[PersistentManager]
 
-    @property
-    def img2img_params(self) -> PersistentManager:
-        return self._img2img_params
-
-    @property
-    def txt2img_params(self) -> PersistentManager:
-        return self._txt2img_params
+    def __init__(self, **data):
+        super().__init__(**data)
+        self.txt2img_params = PersistentManager(save_path=f"{self.cache_dir}/{T2I_HISTORY_SAVE_PATH}")
+        self.img2img_params = PersistentManager(save_path=f"{self.cache_dir}/{I2I_HISTORY_SAVE_PATH}")
 
     def add_favorite_i(self) -> bool:
-        self._img2img_params.add_favorite()
+        self.img2img_params.add_favorite()
         return True
 
     def add_favorite_t(self) -> bool:
-        self._txt2img_params.add_favorite()
+        self.txt2img_params.add_favorite()
         return True
 
     async def txt2img(
@@ -159,18 +142,18 @@ class StableDiffusionApp(object):
             List[str]: A list of paths to the generated images.
         """
 
-        self._txt2img_params.payload_init()
+        self.txt2img_params.payload_init()
         alwayson_scripts: Dict = {ALWAYSON_SCRIPTS_KEY: {}}
-        self._txt2img_params.add_payload(diffusion_parameters.dict())
-        self._txt2img_params.add_payload(HiRes_parameters.dict())
+        self.txt2img_params.add_payload(diffusion_parameters.dict())
+        self.txt2img_params.add_payload(HiRes_parameters.dict())
 
         if controlnet_parameters:
             alwayson_scripts[ALWAYSON_SCRIPTS_KEY].update(make_cn_payload([controlnet_parameters]))
 
-        self._txt2img_params.add_payload(alwayson_scripts)
-        images_paths = await self._make_request(output_dir, self._txt2img_params.current)
+        self.txt2img_params.add_payload(alwayson_scripts)
+        images_paths = await self._make_request(output_dir, self.txt2img_params.current)
 
-        self._txt2img_params.store()
+        self.txt2img_params.store()
 
         return images_paths
 
@@ -199,13 +182,13 @@ class StableDiffusionApp(object):
         """
 
         # Create the payload dictionary to be sent in the request
-        self._img2img_params.payload_init()
+        self.img2img_params.payload_init()
 
         # Create a dictionary to store the alwayson scripts
         alwayson_scripts: Dict = {ALWAYSON_SCRIPTS_KEY: {}}
 
         # Add the diffusion parameters to the payload
-        self._img2img_params.add_payload(diffusion_parameters.dict())
+        self.img2img_params.add_payload(diffusion_parameters.dict())
 
         if image_path:
             # Convert the input image to base64 and add it to the payload
@@ -214,18 +197,18 @@ class StableDiffusionApp(object):
             png_payload: Dict = {INIT_IMAGES_KEY: [image_base64]}
         else:
             raise ValueError("one of image_path and image_base64 must be specified!")
-        self._img2img_params.add_payload(png_payload)
+        self.img2img_params.add_payload(png_payload)
 
         # If controlnet parameters are provided, update the alwayson scripts with them
         if controlnet_parameters:
             alwayson_scripts[ALWAYSON_SCRIPTS_KEY].update(make_cn_payload([controlnet_parameters]))
 
         # Add the alwayson scripts to the payload
-        self._img2img_params.add_payload(alwayson_scripts)
+        self.img2img_params.add_payload(alwayson_scripts)
 
-        images_paths = await self._make_request(output_dir, self._img2img_params.current)
+        images_paths = await self._make_request(output_dir, self.img2img_params.current)
 
-        self._img2img_params.store()
+        self.img2img_params.store()
 
         return images_paths
 
@@ -233,12 +216,12 @@ class StableDiffusionApp(object):
         self,
         output_dir: str,
     ) -> List[str]:
-        return await self._make_request(output_dir, self._img2img_params.history[-1])
+        return await self._make_request(output_dir, self.img2img_params.history[-1])
 
     async def txt2img_history(self, output_dir: str) -> List[str]:
-        return await self._make_request(output_dir, self._txt2img_params.history[-1])
+        return await self._make_request(output_dir, self.txt2img_params.history[-1])
 
-    async def _make_request(self, output_dir, payload: Dict) -> List[str]:
+    async def _make_request(self, output_dir: str, payload: Dict) -> List[str]:
         """
         Makes a request to the API and saves the generated images to the output directory.
 
@@ -251,93 +234,18 @@ class StableDiffusionApp(object):
         """
         # Send a POST request to the API with the payload and get the response
         async with aiohttp.ClientSession() as session:
-            response_payload: Dict = await (await session.post(f"{self._host_url}/{API_TXT2IMG}", json=payload)).json()
+            response_payload: Dict = await (await session.post(f"{self.host_url}/{API_TXT2IMG}", json=payload)).json()
         # Extract the generated images from the response payload
         img_base64: List[str] = extract_png_from_payload(response_payload)
         # Save the generated images to the output directory and return the list of file paths
-        return save_base64_img_with_hash(img_base64_list=img_base64, output_dir=output_dir, host_url=self._host_url)
+        return save_base64_img_with_hash(img_base64_list=img_base64, output_dir=output_dir, host_url=self.host_url)
 
     async def txt2img_favorite(self, output_dir: str, index: Optional[int] = None) -> List[str]:
         return await self._make_request(
-            output_dir, self._txt2img_params.favorite[index] if index else choice(self._txt2img_params.favorite)
+            output_dir, self.txt2img_params.favorite[index] if index else choice(self.txt2img_params.favorite)
         )
 
     async def img2img_favorite(self, output_dir: str, index: Optional[int] = None) -> List[str]:
         return await self._make_request(
-            output_dir, self._img2img_params.favorite[index] if index else choice(self._img2img_params.favorite)
+            output_dir, self.img2img_params.favorite[index] if index else choice(self.img2img_params.favorite)
         )
-
-
-def extract_png_from_payload(payload: Dict) -> List[str]:
-    """
-    Should extract a list of png encoded of base64
-
-    Args:
-        payload (Dict): the response payload
-
-    Returns:
-
-    """
-
-    if IMAGES_KEY not in payload:
-        raise KeyError(f"{IMAGES_KEY} not found in payload")
-    img_base64 = payload.get(IMAGES_KEY)
-    return img_base64
-
-
-def save_base64_img_with_hash(
-    img_base64_list: List[str], output_dir: str, host_url: str, max_file_name_length: int = 34
-) -> List[str]:
-    """
-    Process a list of base64-encoded images and save them as PNG files in the specified output directory.
-
-    :param img_base64_list: A list of base64-encoded images.
-    :param output_dir: The directory where the output images will be saved.
-    :param host_url: The URL of the host where the API is running.
-    :param max_file_name_length: The maximum length of the file name.
-    :return: A list of paths to the saved images.
-    """
-
-    output_img_paths: List[str] = []
-
-    for img_base64 in img_base64_list:
-        # Decode the base64-encoded image
-
-        # Make a POST request to get PNG info
-        response = requests.post(url=f"{host_url}/{API_PNG_INFO}", json={IMAGE_KEY: img_base64})
-
-        req_png_info = response.json().get(PNG_INFO_KEY)
-
-        # Create a label for the saved image
-        label = slugify(
-            req_png_info[:max_file_name_length] if len(req_png_info) > max_file_name_length else req_png_info
-        )
-
-        # Create the output directory if it doesn't exist
-        os.makedirs(output_dir, exist_ok=True)
-        # Save the image with the PNG info
-        saved_path = f"{output_dir}/{label}.png"
-        png_info = PngImagePlugin.PngInfo()
-        png_info.add_text("parameters", req_png_info)
-        image = Image.open(io.BytesIO(base64.b64decode(img_base64)))
-        image.save(saved_path, pnginfo=png_info)
-
-        # Rename the saved image with a hash
-        saved_path_with_hash = rename_image_with_hash(saved_path)
-
-        # Add the path to the list of output image paths
-        output_img_paths.append(saved_path_with_hash)
-
-    return output_img_paths
-
-
-def get_image_ratio(image_path):
-    """
-    获取图片长宽比
-    :param image_path: 图片路径
-    :return: 图片长宽比
-    """
-
-    img = Image.open(image_path)
-    width, height = img.size
-    return width / height
