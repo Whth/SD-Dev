@@ -8,6 +8,7 @@ __all__ = ["StableDiffusionPlugin"]
 
 
 class CMD:
+    ROOT = "sd"
     AGAIN = "ag"
     IMG2IMG = "i"
     TXT2IMG = "t"
@@ -25,7 +26,7 @@ class CMD:
     CONTROLNET_CMD = "cn"
     CONTROLNET_MODELS_CMD = "models"
     CONTROLNET_MODULES_CMD = "modules"
-
+    CONTROLNET_DETECT_CMD = "d"
     # TODO add cn detect cmd
 
 
@@ -57,7 +58,6 @@ class StableDiffusionPlugin(AbstractPlugin):
     CONFIG_ENABLE_CONTROLNET = "enable_controlnet"
     CONFIG_ENABLE_SHUFFLE_PROMPT = "enable_shuffle_prompt"
     CONFIG_ENABLE_DYNAMIC_PROMPT = "enable_dynamic_prompt"
-    CONFIG_CONFIG_CLIENT_KEYWORD = "config_client_keyword"
 
     CONFIG_SEND_BATCH_SIZE = "send_batch_size"
     DefaultConfig = {
@@ -75,7 +75,6 @@ class StableDiffusionPlugin(AbstractPlugin):
         CONFIG_ENABLE_CONTROLNET: 0,
         CONFIG_ENABLE_SHUFFLE_PROMPT: 0,
         CONFIG_ENABLE_DYNAMIC_PROMPT: 1,
-        CONFIG_CONFIG_CLIENT_KEYWORD: "sd",
         CONFIG_SEND_BATCH_SIZE: 20,  # in current version of QQ, 20 is the maximum of the pictures that can be sent in a single message
     }
 
@@ -94,7 +93,7 @@ class StableDiffusionPlugin(AbstractPlugin):
 
     @classmethod
     def get_plugin_version(cls) -> str:
-        return "0.1.2"
+        return "0.1.3"
 
     @classmethod
     def get_plugin_author(cls) -> str:
@@ -102,7 +101,7 @@ class StableDiffusionPlugin(AbstractPlugin):
 
     def install(self):
         from graia.ariadne.message.chain import MessageChain, Image
-        from graia.ariadne.message.parser.base import ContainKeyword
+        from graia.ariadne.message.parser.base import ContainKeyword, MatchRegex
         from graia.ariadne.event.message import GroupMessage
         from graia.ariadne.event.lifecycle import ApplicationLaunch
         from graia.ariadne.model import Group
@@ -114,7 +113,7 @@ class StableDiffusionPlugin(AbstractPlugin):
 
         from modules.cmd import CmdBuilder
         from modules.file_manager import img_to_base64
-        from .controlnet import ControlNetUnit, Controlnet
+        from .controlnet import ControlNetUnit, Controlnet, ControlNetDetect
         from .stable_diffusion import StableDiffusionApp, DiffusionParser, HiResParser
         from .parser import (
             set_default_pos_prompt,
@@ -201,7 +200,7 @@ class StableDiffusionPlugin(AbstractPlugin):
             return f"Pos prompt\n----------------\n{pos_prompt}\n\nNeg prompt\n----------------\n{neg_prompt}"
 
         tree = NameSpaceNode(
-            name=self._config_registry.get_config(self.CONFIG_CONFIG_CLIENT_KEYWORD),
+            name=CMD.ROOT,
             required_permissions=req_perm,
             help_message=self.get_plugin_description(),
             children_node=[
@@ -234,6 +233,11 @@ class StableDiffusionPlugin(AbstractPlugin):
                             name=CMD.CONTROLNET_MODULES_CMD,
                             required_permissions=req_perm,
                             source=lambda: "CN_Modules:\n" + "\n".join(controlnet.modules),
+                        ),
+                        ExecutableNode(
+                            name=CMD.CONTROLNET_DETECT_CMD,
+                            help_message="Detect a image use controlnet",
+                            source=lambda: None,
                         ),
                     ],
                 ),
@@ -400,6 +404,14 @@ class StableDiffusionPlugin(AbstractPlugin):
 
         from graia.ariadne.event.message import FriendMessage
 
+        @self.receiver(
+            FriendMessage,
+            decorators=[ContainKeyword(keyword=self._config_registry.get_config(self.CONFIG_POS_KEYWORD))],
+        )
+        @self.receiver(
+            GroupMessage,
+            decorators=[ContainKeyword(keyword=self._config_registry.get_config(self.CONFIG_POS_KEYWORD))],
+        )
         async def diffusion(
             app: Ariadne,
             target: Union[Group, Friend],
@@ -456,16 +468,37 @@ class StableDiffusionPlugin(AbstractPlugin):
                     await app.send_message(target, [Image(path=path) for path in send_result])
                     send_result.clear()
 
-        from graia.ariadne.event.message import FriendMessage
-
-        self.receiver(
-            GroupMessage,
-            decorators=[ContainKeyword(keyword=self._config_registry.get_config(self.CONFIG_POS_KEYWORD))],
-        )(diffusion)
-        self.receiver(
+        @self.receiver(
             FriendMessage,
-            decorators=[ContainKeyword(keyword=self._config_registry.get_config(self.CONFIG_POS_KEYWORD))],
-        )(diffusion)
+            decorators=[MatchRegex(regex=f"^{CMD.ROOT}\s+{CMD.CONTROLNET_CMD}\s+{CMD.CONTROLNET_DETECT_CMD}.*")],
+        )
+        @self.receiver(
+            GroupMessage,
+            decorators=[MatchRegex(regex=f"^{CMD.ROOT}\s+{CMD.CONTROLNET_CMD}\s+{CMD.CONTROLNET_DETECT_CMD}.*")],
+        )
+        async def cn_detect(
+            app: Ariadne,
+            target: Union[Group, Friend],
+            message: MessageChain,
+        ) -> None:
+            """
+            Detects the controlnet in the given message.
+            """
+            if Image not in message:
+                return
+            images = message.get(Image)
+            print(f"Detecting images count: {len(images)}\n")
+            pay_load = ControlNetDetect(
+                controlnet_module=self._config_registry.get_config(self.CONFIG_CONTROLNET_MODULE),
+                controlnet_input_images=[
+                    img_to_base64(await download_file(save_dir=temp_dir_path, url=img.url)) for img in images
+                ],
+            )
+            img_base64_list = await controlnet.detect(payload=pay_load)
+
+            await app.send_message(target, [Image(base64=img_base64) for img_base64 in img_base64_list])
+
+        from graia.ariadne.event.message import FriendMessage
 
         async def _get_image_url(app: Ariadne, message_event: Union[GroupMessage, FriendMessage]) -> str:
             """

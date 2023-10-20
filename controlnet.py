@@ -3,6 +3,7 @@ from typing import NamedTuple, Dict, List
 
 import aiohttp
 from aiohttp import ClientConnectorError
+from pydantic import BaseModel
 
 from .api import (
     API_CONTROLNET_MODEL_LIST,
@@ -48,7 +49,7 @@ class ControlNetUnit(NamedTuple):
     """
 
 
-class ControlNetDetect(NamedTuple):
+class ControlNetDetect(BaseModel):
     """
     Represents a controlnet detection configuration.
 
@@ -168,7 +169,7 @@ class Controlnet(object):
 
         if payload.controlnet_module not in self._module_list:
             raise KeyError("invalid controlnet module,please check")
-        return (await self.__async_post(f"{self._host_url}/{API_CONTROLNET_DETECT}", payload=payload._asdict())).get(
+        return (await self.__async_post(f"{self._host_url}/{API_CONTROLNET_DETECT}", payload=payload.dict())).get(
             IMAGES_KEY
         )
 
