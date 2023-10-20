@@ -59,6 +59,7 @@ class StableDiffusionPlugin(AbstractPlugin):
     CONFIG_ENABLE_DYNAMIC_PROMPT = "enable_dynamic_prompt"
     CONFIG_CONFIG_CLIENT_KEYWORD = "config_client_keyword"
 
+    CONFIG_SEND_BATCH_SIZE = "send_batch_size"
     DefaultConfig = {
         CONFIG_POS_KEYWORD: "+",
         CONFIG_NEG_KEYWORD: "-",
@@ -75,6 +76,7 @@ class StableDiffusionPlugin(AbstractPlugin):
         CONFIG_ENABLE_SHUFFLE_PROMPT: 0,
         CONFIG_ENABLE_DYNAMIC_PROMPT: 1,
         CONFIG_CONFIG_CLIENT_KEYWORD: "sd",
+        CONFIG_SEND_BATCH_SIZE: 20,  # in current version of QQ, 20 is the maximum of the pictures that can be sent in a single message
     }
 
     # TODO this should be removed, use pos prompt keyword and neg prompt keyword
@@ -347,7 +349,7 @@ class StableDiffusionPlugin(AbstractPlugin):
         temp_dir_path = self._config_registry.get_config(self.CONFIG_IMG_TEMP_DIR_PATH)
 
         SD_app = StableDiffusionApp(
-            host_url=self._config_registry.get_config(self.CONFIG_SD_HOST), cache_dir=temp_dir_path
+            host_url=(self._config_registry.get_config(self.CONFIG_SD_HOST)), cache_dir=temp_dir_path
         )
         self.receiver(ApplicationLaunch)(controlnet.fetch_resources)
 
@@ -430,12 +432,13 @@ class StableDiffusionPlugin(AbstractPlugin):
 
             image_url = await _get_image_url(app, message_event)
             send_result = []
-            if image_url:
-                for _ in range(batch_count):
+            for _ in range(batch_count):
+                if image_url:
                     send_result.extend(await _make_img2img(diffusion_paser, image_url))
-            else:
-                # Generate the image using the diffusion parser
-                for _ in range(batch_count):
+
+                else:
+                    # Generate the image using the diffusion parser
+
                     send_result.extend(
                         await SD_app.txt2img(
                             diffusion_parameters=diffusion_paser,
@@ -445,9 +448,13 @@ class StableDiffusionPlugin(AbstractPlugin):
                             output_dir=output_dir_path,
                         )
                     )
-
-            # Send the image as a message in the group
-            await app.send_message(target, [Image(path=path) for path in send_result])
+                if (
+                    len(send_result) >= self.config_registry.get_config(self.CONFIG_SEND_BATCH_SIZE)
+                    or _ + 1 == batch_count
+                ):
+                    # Send the image as a message in the group
+                    await app.send_message(target, [Image(path=path) for path in send_result])
+                    send_result.clear()
 
         from graia.ariadne.event.message import FriendMessage
 

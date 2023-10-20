@@ -5,7 +5,7 @@ from random import choice
 from typing import List, Dict, Optional
 
 import aiohttp
-from pydantic import BaseModel, Field, validator, AnyUrl
+from pydantic import BaseModel, Field, validator
 
 from modules.file_manager import img_to_base64
 from .api import (
@@ -98,7 +98,7 @@ class StableDiffusionApp(BaseModel):
     class that implements the basic diffusion api
     """
 
-    host_url: AnyUrl
+    host_url: str
     cache_dir: str
     img2img_params: Optional[PersistentManager]
     txt2img_params: Optional[PersistentManager]
