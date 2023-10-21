@@ -3,6 +3,7 @@ import io
 import os.path
 import os.path
 import re
+from random import shuffle
 from typing import List, Dict, Tuple, Callable, Any
 
 import requests
@@ -168,24 +169,41 @@ class PromptProcessorRegistry(object):
         return pos_prompt, neg_prompt
 
     def register(
-        self, judge: Callable[[], Any], processor: Callable[[str, str], Tuple[str, str]], process_name: str = None
+        self,
+        judge: Callable[[], Any],
+        process_name: str = None,
+        processor: Callable[[str, str], Tuple[str, str]] = None,
+        process_engine: Callable[[str], str] = None,
     ) -> None:
         """
-        Register a new judge and processor pair to the registry list.
+        Register a judge and processor for the given process.
 
         Args:
-            judge: A callable that takes no arguments and returns any value.
-            processor: A callable that takes two strings as arguments and returns a tuple of two strings.
-            process_name: (optional) A string representing the process name.
-                If not provided, a default process name will be generated.
+            judge (Callable[[], Any]): A callable that takes no arguments and returns a value.
+            process_name (str, optional): The name of the process. Defaults to None.
+            processor (Callable[[str, str], Tuple[str, str]], optional): A callable that takes two strings as arguments and returns a tuple of two strings. Defaults to None.
+            process_engine (Callable[[str], str], optional): A callable that takes a string as argument and returns a string. Defaults to None.
+
+        Raises:
+            ValueError: If neither a processor nor an engine is provided.
 
         Returns:
-            None
+            None: This function does not return any value.
         """
+        if not processor and not process_engine:
+            raise ValueError("Either a processor or an engine must be provided.")
+        processor = processor or self._make_processor_from_engine(process_engine)
         self._registry_list.append((judge, processor))
         if not process_name:
             process_name = f"Process-{len(self._registry_list)}"
         self._process_name.append(process_name)
+
+    @staticmethod
+    def _make_processor_from_engine(process_engine: Callable[[str], str]) -> Callable[[str, str], Tuple[str, str]]:
+        def processor(pos_prompt: str, neg_prompt: str) -> Tuple[str, str]:
+            return process_engine(pos_prompt), process_engine(neg_prompt)
+
+        return processor
 
     @staticmethod
     def prompt_string_constructor(pos_prompt: str, neg_prompt: str) -> str:
@@ -207,3 +225,9 @@ class PromptProcessorRegistry(object):
             f"{Fore.RED}NEGATIVE PROMPT:\n\t{neg_prompt}\n"
             f"{Fore.MAGENTA}___________________________________________\n{Fore.RESET}"
         )
+
+
+def shuffle_prompt(prompt: str) -> str:
+    temp = prompt.split(",")
+    shuffle(temp)
+    return ",".join(temp)

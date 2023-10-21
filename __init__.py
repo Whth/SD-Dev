@@ -1,8 +1,36 @@
-import os
-from typing import Tuple, List, Optional, Callable, Union
+import pathlib
+from functools import partial
+from typing import List, Optional, Callable, Union
 
+from dynamicprompts.generators import RandomPromptGenerator
+from dynamicprompts.wildcards import WildcardManager
+from graia.ariadne import Ariadne
+from graia.ariadne.event.lifecycle import ApplicationLaunch
+from graia.ariadne.event.message import GroupMessage, FriendMessage
+from graia.ariadne.message.chain import MessageChain, Image
+from graia.ariadne.message.parser.base import ContainKeyword, MatchRegex
+from graia.ariadne.model import Group, Friend
+
+from modules.auth.permissions import Permission, PermissionCode
+from modules.auth.resources import required_perm_generator
+from modules.cmd import CmdBuilder
+from modules.cmd import RequiredPermission, ExecutableNode, NameSpaceNode
 from modules.file_manager import download_file, get_pwd
+from modules.file_manager import img_to_base64
 from modules.plugin_base import AbstractPlugin
+from .api import API_GET_CONFIG
+from .controlnet import ControlNetUnit, Controlnet, ControlNetDetect
+from .extractors import get_image_url, make_image_form_paths
+from .parser import (
+    set_default_pos_prompt,
+    set_default_neg_prompt,
+    set_shot_size,
+    get_default_neg_prompt,
+    get_default_pos_prompt,
+    Options,
+)
+from .stable_diffusion import StableDiffusionApp, DiffusionParser, HiResParser
+from .utils import extract_prompts, PromptProcessorRegistry, shuffle_prompt
 
 __all__ = ["StableDiffusionPlugin"]
 
@@ -19,15 +47,19 @@ class CMD:
     CONFIG = "config"
     LIST_OUT = "list"
 
+    MODELS = "models"
+    MODULES = "modules"
+
+    NORMAL_MODEL = "sd"
+    LORA_MODEL = "lora"
+
     POS_PROMPT = "pos"
     NEG_PROMPT = "neg"
     SHOT_SIZE = "shot"
     TEST = "test"
-    CONTROLNET_CMD = "cn"
-    CONTROLNET_MODELS_CMD = "models"
-    CONTROLNET_MODULES_CMD = "modules"
-    CONTROLNET_DETECT_CMD = "d"
-    # TODO add cn detect cmd
+
+    CONTROLNET = "cn"
+    CONTROLNET_DETECT = "d"
 
 
 class StableDiffusionPlugin(AbstractPlugin):
@@ -75,13 +107,14 @@ class StableDiffusionPlugin(AbstractPlugin):
         CONFIG_ENABLE_CONTROLNET: 0,
         CONFIG_ENABLE_SHUFFLE_PROMPT: 0,
         CONFIG_ENABLE_DYNAMIC_PROMPT: 1,
-        CONFIG_SEND_BATCH_SIZE: 20,  # in current version of QQ, 20 is the maximum of the pictures that can be sent in a single message
+        CONFIG_SEND_BATCH_SIZE: 20,  # in the current version of QQ, 20 is the maximum of the pictures that can be sent
+        # in a single message
     }
 
     # TODO this should be removed, use pos prompt keyword and neg prompt keyword
     @classmethod
     def _get_config_dir(cls) -> str:
-        return os.path.abspath(os.path.dirname(__file__))
+        return str(pathlib.Path(__file__).parent)
 
     @classmethod
     def get_plugin_name(cls) -> str:
@@ -93,50 +126,37 @@ class StableDiffusionPlugin(AbstractPlugin):
 
     @classmethod
     def get_plugin_version(cls) -> str:
-        return "0.1.3"
+        return "0.1.4"
 
     @classmethod
     def get_plugin_author(cls) -> str:
         return "whth"
 
     def install(self):
-        from graia.ariadne.message.chain import MessageChain, Image
-        from graia.ariadne.message.parser.base import ContainKeyword, MatchRegex
-        from graia.ariadne.event.message import GroupMessage, FriendMessage
-        from graia.ariadne.event.lifecycle import ApplicationLaunch
-        from graia.ariadne.model import Group, Friend
-        from dynamicprompts.wildcards import WildcardManager
-        from dynamicprompts.generators import RandomPromptGenerator
-        from modules.cmd import RequiredPermission, ExecutableNode, NameSpaceNode
-        from modules.auth.resources import required_perm_generator
-        from modules.auth.permissions import Permission, PermissionCode
-        from graia.ariadne import Ariadne
+        # region local utils
+        translater: Optional[AbstractPlugin] = self._plugin_view.get(self.__TRANSLATE_PLUGIN_NAME, None)
+        translate: Optional[StableDiffusionPlugin.__TRANSLATE_METHOD_TYPE] = None
+        if translater:
+            translate = getattr(translater, self.__TRANSLATE_METHOD_NAME)
+        output_dir_path = self._config_registry.get_config(self.CONFIG_OUTPUT_DIR_PATH)
+        temp_dir_path = self._config_registry.get_config(self.CONFIG_IMG_TEMP_DIR_PATH)
 
-        from modules.cmd import CmdBuilder
-        from modules.file_manager import img_to_base64
-        from .controlnet import ControlNetUnit, Controlnet, ControlNetDetect
-        from .stable_diffusion import StableDiffusionApp, DiffusionParser, HiResParser
-        from .parser import (
-            set_default_pos_prompt,
-            set_default_neg_prompt,
-            set_shot_size,
-            get_default_neg_prompt,
-            get_default_pos_prompt,
-            Options,
+        SD_app = StableDiffusionApp(
+            host_url=(self._config_registry.get_config(self.CONFIG_SD_HOST)),
+            cache_dir=temp_dir_path,
+            output_dir=output_dir_path,
         )
-        from .api import API_GET_CONFIG
-        from .utils import extract_prompts, PromptProcessorRegistry
-
         cmd_builder = CmdBuilder(
             config_setter=self._config_registry.set_config, config_getter=self._config_registry.get_config
         )
-        controlnet: Controlnet = Controlnet(host_url=self._config_registry.get_config(self.CONFIG_SD_HOST))
+        controlnet_app: Controlnet = Controlnet(host_url=self._config_registry.get_config(self.CONFIG_SD_HOST))
 
         gen = RandomPromptGenerator(
             wildcard_manager=WildcardManager(path=self._config_registry.get_config(self.CONFIG_WILDCARD_DIR_PATH))
         )
         sd_options = Options()
         processor = PromptProcessorRegistry()
+
         configurable_options: List[str] = [
             self.CONFIG_ENABLE_HR,
             self.CONFIG_ENABLE_TRANSLATE,
@@ -151,40 +171,54 @@ class StableDiffusionPlugin(AbstractPlugin):
         req_perm: RequiredPermission = required_perm_generator(
             target_resource_name=self.get_plugin_name(), super_permissions=[su_perm]
         )
+        # endregion
 
-        async def diffusion_history_t() -> Image:
+        # region std cmds
+        async def diffusion_history_t() -> List[Image]:
             """
             Retrieves the diffusion history and converts it into an image.
 
             Returns:
                 Image: The image representation of the diffusion history.
             """
-            # Retrieve the diffusion history and store the result
-            send_result = await SD_app.txt2img_history(output_dir_path)
 
-            # Create an Image object with the path to the result
-            return Image(path=send_result[0])
+            return make_image_form_paths(await SD_app.txt2img_history())
 
-        async def diffusion_history_i() -> Image:
+        async def diffusion_history_i() -> List[Image]:
             """
             Retrieves the diffusion history and converts it into an image.
 
             Returns:
                 Image: The image representation of the diffusion history.
             """
-            # Retrieve the diffusion history and store the result
-            send_result = await SD_app.img2img_history(output_dir_path)
+            return make_image_form_paths(await SD_app.img2img_history())
 
-            # Create an Image object with the path to the result
-            return Image(path=send_result[0])
+        async def diffusion_favorite_t(index: int = None) -> List[Image]:
+            """
+            An asynchronous function that retrieves a favorite image from the SD_app based on the given index.
 
-        async def diffusion_favorite_t(index: int = None) -> Image:
-            images = await SD_app.txt2img_favorite(output_dir_path, index)
-            return Image(path=images[0])
+            Parameters:
+                index (int, optional): The index of the favorite image to retrieve. Defaults to None.
 
-        async def diffusion_favorite_i(index: int = None) -> Image:
-            images = await SD_app.img2img_favorite(output_dir_path, index)
-            return Image(path=images[0])
+            Returns:
+                List[Image]: A list of Image objects containing the retrieved favorite image.
+
+            Example:
+                favorite_images = await diffusion_favorite_t(5)
+            """
+            return make_image_form_paths(await SD_app.img2img_favorite(index))
+
+        async def diffusion_favorite_i(index: int = None) -> List[Image]:
+            """
+            Asynchronously retrieves the favorite image at a given index from the diffusion app.
+
+            Args:
+                index (int, optional): The index of the favorite image to retrieve. Defaults to None.
+
+            Returns:
+                List[Image]: A list of Image objects representing the favorite image(s) retrieved.
+            """
+            return make_image_form_paths(await SD_app.img2img_favorite(index))
 
         def _test_process(pos_prompt: Optional[str] = None, neg_prompt: Optional[str] = None) -> str:
             """
@@ -201,6 +235,8 @@ class StableDiffusionPlugin(AbstractPlugin):
             neg_prompt = neg_prompt or get_default_neg_prompt()
             pos_prompt, neg_prompt = processor.process(pos_prompt, neg_prompt)
             return f"Pos prompt\n----------------\n{pos_prompt}\n\nNeg prompt\n----------------\n{neg_prompt}"
+
+        # endregion
 
         tree = NameSpaceNode(
             name=CMD.ROOT,
@@ -224,21 +260,21 @@ class StableDiffusionPlugin(AbstractPlugin):
                     ],
                 ),
                 NameSpaceNode(
-                    name=CMD.CONTROLNET_CMD,
+                    name=CMD.CONTROLNET,
                     required_permissions=req_perm,
                     children_node=[
                         ExecutableNode(
-                            name=CMD.CONTROLNET_MODELS_CMD,
+                            name=CMD.MODELS,
                             required_permissions=req_perm,
-                            source=lambda: "CN_Models:\n" + "\n".join(controlnet.models),
+                            source=lambda: "CN_Models:\n" + "\n".join(controlnet_app.models),
                         ),
                         ExecutableNode(
-                            name=CMD.CONTROLNET_MODULES_CMD,
+                            name=CMD.MODULES,
                             required_permissions=req_perm,
-                            source=lambda: "CN_Modules:\n" + "\n".join(controlnet.modules),
+                            source=lambda: "CN_Modules:\n" + "\n".join(controlnet_app.modules),
                         ),
                         ExecutableNode(
-                            name=CMD.CONTROLNET_DETECT_CMD,
+                            name=CMD.CONTROLNET_DETECT,
                             help_message="Detect a image use controlnet",
                             source=lambda: None,
                         ),
@@ -252,11 +288,13 @@ class StableDiffusionPlugin(AbstractPlugin):
                         ExecutableNode(
                             name=CMD.TXT2IMG,
                             required_permissions=req_perm,
+                            help_message=diffusion_history_t.__doc__,
                             source=diffusion_history_t,
                         ),
                         ExecutableNode(
                             name=CMD.IMG2IMG,
                             required_permissions=req_perm,
+                            help_message=diffusion_history_i.__doc__,
                             source=diffusion_history_i,
                         ),
                     ],
@@ -303,11 +341,13 @@ class StableDiffusionPlugin(AbstractPlugin):
                                 ExecutableNode(
                                     name=CMD.TXT2IMG,
                                     required_permissions=req_perm,
+                                    help_message=diffusion_favorite_t.__doc__,
                                     source=diffusion_favorite_t,
                                 ),
                                 ExecutableNode(
                                     name=CMD.IMG2IMG,
                                     required_permissions=req_perm,
+                                    help_message=diffusion_favorite_i.__doc__,
                                     source=diffusion_favorite_i,
                                 ),
                             ],
@@ -344,69 +384,55 @@ class StableDiffusionPlugin(AbstractPlugin):
                     help_message=_test_process.__doc__,
                     source=_test_process,
                 ),
+                NameSpaceNode(
+                    name=CMD.MODELS,
+                    help_message="get available models,StableDiffusion/Lora",
+                    children_node=[
+                        ExecutableNode(
+                            name=CMD.LORA_MODEL,
+                            help_message="get available lora models",
+                            source=lambda: f"SD Lora Models\n{len(SD_app.available_lora_models)} models in total\n"
+                            + "\n".join(SD_app.available_lora_models),
+                        ),
+                        ExecutableNode(
+                            name=CMD.NORMAL_MODEL,
+                            help_message="get available stable diffusion models",
+                            source=lambda: f"SD Stable Diffusion Models\n{len(SD_app.available_sd_models)} models in total\n"
+                            + "\n".join(SD_app.available_sd_models),
+                        ),
+                    ],
+                ),
             ],
         )
         self._auth_manager.add_perm_from_req(req_perm)
         self._root_namespace_node.add_node(tree)
 
-        translater: Optional[AbstractPlugin] = self._plugin_view.get(self.__TRANSLATE_PLUGIN_NAME, None)
-        if translater:
-            translate: StableDiffusionPlugin.__TRANSLATE_METHOD_TYPE = getattr(translater, self.__TRANSLATE_METHOD_NAME)
-        output_dir_path = self._config_registry.get_config(self.CONFIG_OUTPUT_DIR_PATH)
-        temp_dir_path = self._config_registry.get_config(self.CONFIG_IMG_TEMP_DIR_PATH)
-
-        SD_app = StableDiffusionApp(
-            host_url=(self._config_registry.get_config(self.CONFIG_SD_HOST)), cache_dir=temp_dir_path
-        )
-        self.receiver(ApplicationLaunch)(controlnet.fetch_resources)
-        self.receiver(ApplicationLaunch)(SD_app.fetch_sd_models)
-
-        async def _fetch_config():
-            await sd_options.fetch_config(f"{SD_app.host_url}/{API_GET_CONFIG}")
-
-        self.receiver(ApplicationLaunch)(_fetch_config)
-
-        def _dynamic_process(pos_prompt: str, neg_prompt: str) -> Tuple[str, str]:
-            pos_interpreted = gen.generate(template=pos_prompt)
-            neg_interpreted = gen.generate(template=neg_prompt)
-            pos_prompt = pos_interpreted[0] if pos_interpreted else pos_prompt
-            neg_prompt = neg_interpreted[0] if neg_interpreted else neg_prompt
-            return pos_prompt, neg_prompt
-
         processor.register(
             judge=lambda: self._config_registry.get_config(self.CONFIG_ENABLE_DYNAMIC_PROMPT),
-            processor=_dynamic_process,
+            process_engine=lambda prompt: gen.generate(template=prompt)[0] or prompt,
             process_name="DYNAMIC_PROMPT_INTERPRET",
         )
 
-        def _translate_process(pos_prompt: str, neg_prompt: str) -> Tuple[str, str]:
-            pos_prompt = translate("en", pos_prompt, "auto")
-            neg_prompt = translate("en", neg_prompt, "auto")
-            return pos_prompt, neg_prompt
-
         processor.register(
-            judge=lambda: self._config_registry.get_config(self.CONFIG_ENABLE_TRANSLATE) and translate,
-            processor=_translate_process,
+            judge=lambda: self._config_registry.get_config(self.CONFIG_ENABLE_TRANSLATE),
+            process_engine=partial(translate, tolang="en", fromlang="auto"),
             process_name="TRANSLATE",
-        )
-
-        def _shuffle_process(pos_prompt: str, neg_prompt: str) -> Tuple[str, str]:
-            from random import shuffle
-
-            pos_tokens = pos_prompt.split(",")
-            shuffle(pos_tokens)
-            pos_prompt: str = ",".join(pos_tokens)
-            neg_tokens = neg_prompt.split(",")
-            shuffle(neg_tokens)
-            neg_prompt: str = ",".join(neg_tokens)
-            return pos_prompt, neg_prompt
+        ) if translate else None
 
         processor.register(
             judge=lambda: self._config_registry.get_config(self.CONFIG_ENABLE_SHUFFLE_PROMPT),
-            processor=_shuffle_process,
+            process_engine=shuffle_prompt,
             process_name="SHUFFLE",
         )
 
+        @self.receiver(ApplicationLaunch)
+        async def fetch_resources():
+            await controlnet_app.fetch_resources()
+            await sd_options.fetch_config(f"{SD_app.host_url}/{API_GET_CONFIG}")
+            await SD_app.fetch_sd_models()
+            await SD_app.fetch_lora_models()
+
+        # region castings
         @self.receiver(
             FriendMessage,
             decorators=[ContainKeyword(keyword=self._config_registry.get_config(self.CONFIG_POS_KEYWORD))],
@@ -437,17 +463,17 @@ class StableDiffusionPlugin(AbstractPlugin):
             pos_prompt, neg_prompt, batch_count = extract_prompts(str(message), specify_batch_count=True)
             pos_prompt = ",".join(pos_prompt) if pos_prompt else get_default_pos_prompt()
             neg_prompt = ",".join(neg_prompt) if neg_prompt else get_default_neg_prompt()
-            pos_prompt, neg_prompt = processor.process(pos_prompt, neg_prompt)
-            # Create a diffusion parser with the prompts
-            diffusion_paser = DiffusionParser(
-                prompt=pos_prompt,
-                negative_prompt=neg_prompt,
-                styles=self._config_registry.get_config(self.CONFIG_STYLES),
-            )
 
-            image_url = await _get_image_url(app, message_event)
+            image_url = await get_image_url(app, message_event)
             send_result = []
             for _ in range(batch_count):
+                pos_prompt, neg_prompt = processor.process(pos_prompt, neg_prompt)
+                # Create a diffusion parser with the prompts
+                diffusion_paser = DiffusionParser(
+                    prompt=pos_prompt,
+                    negative_prompt=neg_prompt,
+                    styles=self._config_registry.get_config(self.CONFIG_STYLES),
+                )
                 if image_url:
                     send_result.extend(await _make_img2img(diffusion_paser, image_url))
 
@@ -460,7 +486,6 @@ class StableDiffusionPlugin(AbstractPlugin):
                             HiRes_parameters=HiResParser(
                                 enable_hr=self._config_registry.get_config(self.CONFIG_ENABLE_HR)
                             ),
-                            output_dir=output_dir_path,
                         )
                     )
                 if (
@@ -473,11 +498,11 @@ class StableDiffusionPlugin(AbstractPlugin):
 
         @self.receiver(
             FriendMessage,
-            decorators=[MatchRegex(regex=f"^{CMD.ROOT}\s+{CMD.CONTROLNET_CMD}\s+{CMD.CONTROLNET_DETECT_CMD}.*")],
+            decorators=[MatchRegex(regex=rf"^{CMD.ROOT}\s+{CMD.CONTROLNET}\s+{CMD.CONTROLNET_DETECT}.*")],
         )
         @self.receiver(
             GroupMessage,
-            decorators=[MatchRegex(regex=f"^{CMD.ROOT}\s+{CMD.CONTROLNET_CMD}\s+{CMD.CONTROLNET_DETECT_CMD}.*")],
+            decorators=[MatchRegex(regex=rf"^{CMD.ROOT}\s+{CMD.CONTROLNET}\s+{CMD.CONTROLNET_DETECT}.*")],
         )
         async def cn_detect(
             app: Ariadne,
@@ -497,39 +522,13 @@ class StableDiffusionPlugin(AbstractPlugin):
                     img_to_base64(await download_file(save_dir=temp_dir_path, url=img.url)) for img in images
                 ],
             )
-            img_base64_list = await controlnet.detect(payload=pay_load)
+            img_base64_list = await controlnet_app.detect(payload=pay_load)
 
             await app.send_message(target, [Image(base64=img_base64) for img_base64 in img_base64_list])
 
-        async def _get_image_url(app: Ariadne, message_event: Union[GroupMessage, FriendMessage]) -> str:
-            """
-            Retrieves the URL of an image from the given message event.
+        # endregion
 
-            Args:
-                app (Ariadne): The Ariadne instance.
-                message_event (Union[GroupMessage, FriendMessage]): The message event.
-
-            Returns:
-                str: The URL of the image, or None if no image is found.
-            """
-            image_url = ""
-            if Image in message_event.message_chain:
-                image_url = message_event.message_chain[Image, 1][0].url
-            elif message_event.quote:
-                target_to_query: List[int] = []
-                target_to_query.append(message_event.quote.group_id) if message_event.quote.group_id else None
-                target_to_query.extend([message_event.quote.sender_id, message_event.quote.target_id])
-
-                for target in target_to_query:
-                    origin_message: MessageChain = (
-                        await app.get_message_from_id(message_event.quote.id, target=target)
-                    ).message_chain
-                    # check if the message contains a picture
-                    image_url = origin_message[Image, 1][0].url if origin_message[Image, 1] else None
-                    break
-                    # FIXME cant get the quote message sent by the bot in the friend channel
-
-            return image_url
+        # region internal tools
 
         async def _make_img2img(diffusion_paser, image_url):
             # Download the first image in the chain
@@ -541,16 +540,15 @@ class StableDiffusionPlugin(AbstractPlugin):
                 module: str = self._config_registry.get_config(self.CONFIG_CONTROLNET_MODULE)
                 model: str = self._config_registry.get_config(self.CONFIG_CONTROLNET_MODEL)
 
-                if module in controlnet.modules and model in controlnet.models:
+                if module in controlnet_app.modules and model in controlnet_app.models:
                     cn_unit = ControlNetUnit(
                         input_image=img_base64,
                         module=module,
                         model=model,
                     )
             send_result = await SD_app.img2img(
-                image_base64=img_base64,
-                output_dir=output_dir_path,
-                diffusion_parameters=diffusion_paser,
-                controlnet_parameters=cn_unit,
+                diffusion_parameters=diffusion_paser, controlnet_parameters=cn_unit, image_base64=img_base64
             )
             return send_result
+
+        # endregion

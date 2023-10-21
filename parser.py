@@ -137,7 +137,7 @@ class DiffusionParser(BaseModel):
     styles: List[str] = Field(default_factory=list)
     seed: int = -1
     sampler_name: str = "UniPC"
-    steps: int = 18
+    steps: int = 20
     cfg_scale: float = 7.0
     width: int = Field(default_factory=get_shot_width)
     height: int = Field(default_factory=get_shot_height)
@@ -154,9 +154,9 @@ class HiResParser(BaseModel):
     """
 
     enable_hr: bool = False
-    denoising_strength: float = 0.69
-    hr_scale: float = 1.3
-    hr_upscaler: str = "Latent"
+    denoising_strength: float = 0.57
+    hr_scale: float = 1.56
+    hr_upscaler: str = "Latent (antialiased)"
     # hr_checkpoint_name: string
     # hr_sampler_name: string
     # hr_prompt:

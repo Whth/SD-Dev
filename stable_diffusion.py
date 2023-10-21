@@ -103,10 +103,11 @@ class StableDiffusionApp(BaseModel):
 
     host_url: str
     cache_dir: str
+    output_dir: str
     img2img_params: Optional[PersistentManager]
     txt2img_params: Optional[PersistentManager]
-    available_sd_models: List[Dict] = Field(default_factory=list, const=True)
-    available_lora_models: List[Dict] = Field(default_factory=list, const=True)
+    available_sd_models: List[str] = Field(default_factory=list, const=True)
+    available_lora_models: List[str] = Field(default_factory=list, const=True)
 
     def __init__(self, **data):
         super().__init__(**data)
@@ -123,7 +124,6 @@ class StableDiffusionApp(BaseModel):
 
     async def txt2img(
         self,
-        output_dir: str,
         diffusion_parameters: DiffusionParser = DiffusionParser(),
         HiRes_parameters: HiResParser = HiResParser(),
         controlnet_parameters: Optional[ControlNetUnit] = None,
@@ -132,7 +132,6 @@ class StableDiffusionApp(BaseModel):
         Generates images from text files and saves them to the specified output directory.
 
         Args:
-            output_dir (str): The path to the directory where the generated images will be saved.
             diffusion_parameters (DiffusionParser, optional): An instance of the DiffusionParser class
                 that contains the parameters for the diffusion process.
                 Defaults to DiffusionParser().
@@ -156,7 +155,7 @@ class StableDiffusionApp(BaseModel):
             alwayson_scripts[ALWAYSON_SCRIPTS_KEY].update(make_cn_payload([controlnet_parameters]))
 
         self.txt2img_params.add_payload(alwayson_scripts)
-        images_paths = await self._make_image_gen_request(output_dir, self.txt2img_params.current, API_TXT2IMG)
+        images_paths = await self._make_image_gen_request(self.txt2img_params.current, API_TXT2IMG)
 
         self.txt2img_params.store()
 
@@ -164,7 +163,6 @@ class StableDiffusionApp(BaseModel):
 
     async def img2img(
         self,
-        output_dir: str,
         diffusion_parameters: DiffusionParser = DiffusionParser(),
         controlnet_parameters: Optional[ControlNetUnit] = None,
         image_path: Optional[str] = None,
@@ -178,7 +176,6 @@ class StableDiffusionApp(BaseModel):
         Args:
             image_base64 ():
             image_path: The path of the input image file.
-            output_dir: The directory where the generated images will be saved.
             diffusion_parameters: An instance of DiffusionParser class containing the diffusion parameters.
             controlnet_parameters: An optional instance of ControlNetUnit class containing the controlnet parameters.
 
@@ -211,7 +208,7 @@ class StableDiffusionApp(BaseModel):
         # Add the alwayson scripts to the payload
         self.img2img_params.add_payload(alwayson_scripts)
 
-        images_paths = await self._make_image_gen_request(output_dir, self.img2img_params.current, API_IMG2IMG)
+        images_paths = await self._make_image_gen_request(self.img2img_params.current, API_IMG2IMG)
 
         self.img2img_params.store()
 
@@ -219,19 +216,17 @@ class StableDiffusionApp(BaseModel):
 
     async def img2img_history(
         self,
-        output_dir: str,
     ) -> List[str]:
-        return await self._make_image_gen_request(output_dir, self.img2img_params.history[-1], API_IMG2IMG)
+        return await self._make_image_gen_request(self.img2img_params.history[-1], API_IMG2IMG)
 
-    async def txt2img_history(self, output_dir: str) -> List[str]:
-        return await self._make_image_gen_request(output_dir, self.txt2img_params.history[-1], API_TXT2IMG)
+    async def txt2img_history(self) -> List[str]:
+        return await self._make_image_gen_request(self.txt2img_params.history[-1], API_TXT2IMG)
 
-    async def _make_image_gen_request(self, output_dir: str, payload: Dict, image_gen_api) -> List[str]:
+    async def _make_image_gen_request(self, payload: Dict, image_gen_api) -> List[str]:
         """
         Makes a request to the image generation API with the given payload and saves the generated images to the output directory.
 
         Args:
-            output_dir (str): The directory where the generated images will be saved.
             payload (Dict): The payload to be sent in the request.
             image_gen_api: The API endpoint for image generation.
 
@@ -247,7 +242,7 @@ class StableDiffusionApp(BaseModel):
         img_base64: List[str] = extract_png_from_payload(response_payload)
 
         # Save the generated images to the output directory and return the list of file paths
-        return save_base64_img_with_hash(img_base64_list=img_base64, output_dir=output_dir, host_url=self.host_url)
+        return save_base64_img_with_hash(img_base64_list=img_base64, output_dir=self.output_dir, host_url=self.host_url)
 
     async def _make_query_request(self, query_api: str) -> Any:
         """
@@ -263,18 +258,14 @@ class StableDiffusionApp(BaseModel):
             response_payload: Dict = await (await session.get(f"{self.host_url}/{query_api}")).json()
         return response_payload
 
-    async def txt2img_favorite(self, output_dir: str, index: Optional[int] = None) -> List[str]:
+    async def txt2img_favorite(self, index: Optional[int] = None) -> List[str]:
         return await self._make_image_gen_request(
-            output_dir,
-            self.txt2img_params.favorite[index] if index else choice(self.txt2img_params.favorite),
-            API_TXT2IMG,
+            self.txt2img_params.favorite[index] if index else choice(self.txt2img_params.favorite), API_TXT2IMG
         )
 
-    async def img2img_favorite(self, output_dir: str, index: Optional[int] = None) -> List[str]:
+    async def img2img_favorite(self, index: Optional[int] = None) -> List[str]:
         return await self._make_image_gen_request(
-            output_dir,
-            self.img2img_params.favorite[index] if index else choice(self.img2img_params.favorite),
-            API_IMG2IMG,
+            self.img2img_params.favorite[index] if index else choice(self.img2img_params.favorite), API_IMG2IMG
         )
 
     async def fetch_sd_models(self) -> List[Dict]:
@@ -284,6 +275,6 @@ class StableDiffusionApp(BaseModel):
 
     async def fetch_lora_models(self) -> List[Dict]:
         models_detail_list: List[Dict] = await self._make_query_request(API_LORAS)
-        self.available_lora_models.extend(map(lambda x: x["title"], models_detail_list))
+        self.available_lora_models.extend(map(lambda x: x["name"], models_detail_list))
 
         return models_detail_list
