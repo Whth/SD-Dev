@@ -517,7 +517,7 @@ class StableDiffusionPlugin(AbstractPlugin):
             elif message_event.quote:
                 target_to_query: List[int] = []
                 target_to_query.append(message_event.quote.group_id) if message_event.quote.group_id else None
-                target_to_query.extend([message_event.quote.target_id, message_event.quote.sender_id])
+                target_to_query.extend([message_event.quote.sender_id, message_event.quote.target_id])
 
                 for target in target_to_query:
                     origin_message: MessageChain = (
