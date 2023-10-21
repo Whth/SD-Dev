@@ -4,25 +4,20 @@ from typing import List, Tuple
 from pydantic import BaseModel, Field
 
 __DEFAULT_NEGATIVE_PROMPT__ = (
-    "loathed,low resolution,porn,NSFW,strange shaped finger,cropped,panties visible,"
-    "pregnant,ugly,vore,duplicate,extra fingers,fused fingers,too many fingers,mutated hands,"
-    "poorly drawn face,mutation,bad anatomy,blurry,malformed limbs,disfigured,extra limbs,"
-    "missing arms,missing legs,extra arms,deformed legs, bad anatomy, bad hands, "
-    "text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, "
-    "low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, "
-    "bad feet,,poorly drawn asymmetric eyes,cloned face,limbs,mutilated,deformed,malformed,"
-    "multiple breasts,missing fingers,poorly drawn,poorly drawn hands,extra legs,"
-    "mutated hands and fingers,bad anatomy disfigured malformed mutated,worst quality,"
-    "too many fingers,malformed hands,Missing limbs,long neck,blurry,missing arms,three arms,"
-    "long body,more than 2 thighs,more than 2 nipples,missing legs,mutated hands and fingers ,"
-    "low quality,jpeg artifacts,signature,extra digit,fewer digits,lowres,bad anatomy,extra limbs,"
+    "poorly drawn face,mutation,blurry,malformed limbs,disfigured,missing arms,missing legs,deformed legs,"
+    "bad anatomy,bad hands,text,error,missing fingers,worst quality,normal quality,jpeg artifacts,signature,"
+    "watermark,username,bad feet,poorly drawn asymmetric eyes,cloned face,mutilated,multiple breasts,"
+    "poorly drawn hands,extra legs,malformed hands,long neck,three arms,long body,more than 2 thighs,"
+    "more than 2 nipples,lowres,__low__"
 )
 
 __DEFAULT_POSITIVE_PROMPT__ = (
-    "modern art,student uniform,white shirt,short blue skirt,white tights,joshi,JK,1girl:1.2,solo,upper body,"
-    "shy,extremely cute,lovely,fish eye,outside,on street"
-    "beautiful,expressionless,cool girl,medium breasts,water color,oil,see through"
-    "thighs,thin torso,masterpiece,wonderful art,high resolution,hair ornament,strips,body curve,hair,SFW:1.3,"
+    "modern art,student uniform,white OR blue shirt,short blue skirt,white tights,"
+    "high school girl,one girl,solo,upper body,shy,extremely cute,lovely,outside,"
+    "on street,beautiful,expressionless,cool girl,medium breasts,watercolor,oil,"
+    "see through,thighs,thin torso,masterpiece,wonderful art,high resolution,"
+    "hair ornament,stripes,body curve,suitable for all viewers,"
+    "__high__,__breasts__,__perspective__,__haircolor__,__hairstyle__,"
 )
 __R_GEN__ = random.SystemRandom()
 
@@ -142,7 +137,7 @@ class DiffusionParser(BaseModel):
     seed: int = -1
     sampler_name: str = "UniPC"
     steps: int = 18
-    cfg_scale: float = 6.9
+    cfg_scale: float = 7.0
     width: int = Field(default_factory=get_shot_width)
     height: int = Field(default_factory=get_shot_height)
 
