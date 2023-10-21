@@ -102,14 +102,15 @@ class StableDiffusionPlugin(AbstractPlugin):
     def install(self):
         from graia.ariadne.message.chain import MessageChain, Image
         from graia.ariadne.message.parser.base import ContainKeyword, MatchRegex
-        from graia.ariadne.event.message import GroupMessage
+        from graia.ariadne.event.message import GroupMessage, FriendMessage
         from graia.ariadne.event.lifecycle import ApplicationLaunch
-        from graia.ariadne.model import Group
+        from graia.ariadne.model import Group, Friend
         from dynamicprompts.wildcards import WildcardManager
         from dynamicprompts.generators import RandomPromptGenerator
         from modules.cmd import RequiredPermission, ExecutableNode, NameSpaceNode
         from modules.auth.resources import required_perm_generator
         from modules.auth.permissions import Permission, PermissionCode
+        from graia.ariadne import Ariadne
 
         from modules.cmd import CmdBuilder
         from modules.file_manager import img_to_base64
@@ -121,8 +122,9 @@ class StableDiffusionPlugin(AbstractPlugin):
             set_shot_size,
             get_default_neg_prompt,
             get_default_pos_prompt,
+            Options,
         )
-
+        from .api import API_GET_CONFIG
         from .utils import extract_prompts, PromptProcessorRegistry
 
         cmd_builder = CmdBuilder(
@@ -133,6 +135,7 @@ class StableDiffusionPlugin(AbstractPlugin):
         gen = RandomPromptGenerator(
             wildcard_manager=WildcardManager(path=self._config_registry.get_config(self.CONFIG_WILDCARD_DIR_PATH))
         )
+        sd_options = Options()
         processor = PromptProcessorRegistry()
         configurable_options: List[str] = [
             self.CONFIG_ENABLE_HR,
@@ -356,6 +359,12 @@ class StableDiffusionPlugin(AbstractPlugin):
             host_url=(self._config_registry.get_config(self.CONFIG_SD_HOST)), cache_dir=temp_dir_path
         )
         self.receiver(ApplicationLaunch)(controlnet.fetch_resources)
+        self.receiver(ApplicationLaunch)(SD_app.fetch_sd_models)
+
+        async def _fetch_config():
+            await sd_options.fetch_config(f"{SD_app.host_url}/{API_GET_CONFIG}")
+
+        self.receiver(ApplicationLaunch)(_fetch_config)
 
         def _dynamic_process(pos_prompt: str, neg_prompt: str) -> Tuple[str, str]:
             pos_interpreted = gen.generate(template=pos_prompt)
@@ -397,12 +406,6 @@ class StableDiffusionPlugin(AbstractPlugin):
             processor=_shuffle_process,
             process_name="SHUFFLE",
         )
-
-        from graia.ariadne import Ariadne
-
-        from graia.ariadne.model import Friend
-
-        from graia.ariadne.event.message import FriendMessage
 
         @self.receiver(
             FriendMessage,
@@ -497,8 +500,6 @@ class StableDiffusionPlugin(AbstractPlugin):
             img_base64_list = await controlnet.detect(payload=pay_load)
 
             await app.send_message(target, [Image(base64=img_base64) for img_base64 in img_base64_list])
-
-        from graia.ariadne.event.message import FriendMessage
 
         async def _get_image_url(app: Ariadne, message_event: Union[GroupMessage, FriendMessage]) -> str:
             """
