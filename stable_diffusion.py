@@ -2,7 +2,7 @@ import copy
 import json
 import pathlib
 from random import choice
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any
 
 import aiohttp
 from pydantic import BaseModel, Field, validator
@@ -12,6 +12,9 @@ from .api import (
     API_TXT2IMG,
     INIT_IMAGES_KEY,
     ALWAYSON_SCRIPTS_KEY,
+    API_IMG2IMG,
+    API_MODELS,
+    API_LORAS,
 )
 from .controlnet import ControlNetUnit, make_cn_payload
 from .parser import DiffusionParser, HiResParser
@@ -102,6 +105,8 @@ class StableDiffusionApp(BaseModel):
     cache_dir: str
     img2img_params: Optional[PersistentManager]
     txt2img_params: Optional[PersistentManager]
+    available_sd_models: List[Dict] = Field(default_factory=list, const=True)
+    available_lora_models: List[Dict] = Field(default_factory=list, const=True)
 
     def __init__(self, **data):
         super().__init__(**data)
@@ -151,7 +156,7 @@ class StableDiffusionApp(BaseModel):
             alwayson_scripts[ALWAYSON_SCRIPTS_KEY].update(make_cn_payload([controlnet_parameters]))
 
         self.txt2img_params.add_payload(alwayson_scripts)
-        images_paths = await self._make_request(output_dir, self.txt2img_params.current)
+        images_paths = await self._make_image_gen_request(output_dir, self.txt2img_params.current, API_TXT2IMG)
 
         self.txt2img_params.store()
 
@@ -206,7 +211,7 @@ class StableDiffusionApp(BaseModel):
         # Add the alwayson scripts to the payload
         self.img2img_params.add_payload(alwayson_scripts)
 
-        images_paths = await self._make_request(output_dir, self.img2img_params.current)
+        images_paths = await self._make_image_gen_request(output_dir, self.img2img_params.current, API_IMG2IMG)
 
         self.img2img_params.store()
 
@@ -216,36 +221,69 @@ class StableDiffusionApp(BaseModel):
         self,
         output_dir: str,
     ) -> List[str]:
-        return await self._make_request(output_dir, self.img2img_params.history[-1])
+        return await self._make_image_gen_request(output_dir, self.img2img_params.history[-1], API_IMG2IMG)
 
     async def txt2img_history(self, output_dir: str) -> List[str]:
-        return await self._make_request(output_dir, self.txt2img_params.history[-1])
+        return await self._make_image_gen_request(output_dir, self.txt2img_params.history[-1], API_TXT2IMG)
 
-    async def _make_request(self, output_dir: str, payload: Dict) -> List[str]:
+    async def _make_image_gen_request(self, output_dir: str, payload: Dict, image_gen_api) -> List[str]:
         """
-        Makes a request to the API and saves the generated images to the output directory.
+        Makes a request to the image generation API with the given payload and saves the generated images to the output directory.
 
         Args:
-            output_dir: The directory where the generated images will be saved.
-            payload: The payload to be sent in the request.
+            output_dir (str): The directory where the generated images will be saved.
+            payload (Dict): The payload to be sent in the request.
+            image_gen_api: The API endpoint for image generation.
 
         Returns:
-            A list of paths to the saved images.
+            List[str]: The list of file paths for the saved images.
         """
+
         # Send a POST request to the API with the payload and get the response
         async with aiohttp.ClientSession() as session:
-            response_payload: Dict = await (await session.post(f"{self.host_url}/{API_TXT2IMG}", json=payload)).json()
+            response_payload: Dict = await (await session.post(f"{self.host_url}/{image_gen_api}", json=payload)).json()
+
         # Extract the generated images from the response payload
         img_base64: List[str] = extract_png_from_payload(response_payload)
+
         # Save the generated images to the output directory and return the list of file paths
         return save_base64_img_with_hash(img_base64_list=img_base64, output_dir=output_dir, host_url=self.host_url)
 
+    async def _make_query_request(self, query_api: str) -> Any:
+        """
+        Makes a query request to the specified query API.
+
+        Args:
+            query_api (str): The query API to make the request to.
+
+        Returns:
+            Any: The response payload from the query request.
+        """
+        async with aiohttp.ClientSession() as session:
+            response_payload: Dict = await (await session.get(f"{self.host_url}/{query_api}")).json()
+        return response_payload
+
     async def txt2img_favorite(self, output_dir: str, index: Optional[int] = None) -> List[str]:
-        return await self._make_request(
-            output_dir, self.txt2img_params.favorite[index] if index else choice(self.txt2img_params.favorite)
+        return await self._make_image_gen_request(
+            output_dir,
+            self.txt2img_params.favorite[index] if index else choice(self.txt2img_params.favorite),
+            API_TXT2IMG,
         )
 
     async def img2img_favorite(self, output_dir: str, index: Optional[int] = None) -> List[str]:
-        return await self._make_request(
-            output_dir, self.img2img_params.favorite[index] if index else choice(self.img2img_params.favorite)
+        return await self._make_image_gen_request(
+            output_dir,
+            self.img2img_params.favorite[index] if index else choice(self.img2img_params.favorite),
+            API_IMG2IMG,
         )
+
+    async def fetch_sd_models(self) -> List[Dict]:
+        models_detail_list: List[Dict] = await self._make_query_request(API_MODELS)
+        self.available_sd_models.extend(map(lambda x: x["title"], models_detail_list))
+        return models_detail_list
+
+    async def fetch_lora_models(self) -> List[Dict]:
+        models_detail_list: List[Dict] = await self._make_query_request(API_LORAS)
+        self.available_lora_models.extend(map(lambda x: x["title"], models_detail_list))
+
+        return models_detail_list
