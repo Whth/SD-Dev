@@ -8,7 +8,7 @@ from graia.ariadne import Ariadne
 from graia.ariadne.event.lifecycle import ApplicationLaunch
 from graia.ariadne.event.message import GroupMessage, FriendMessage
 from graia.ariadne.message.chain import MessageChain, Image
-from graia.ariadne.message.parser.base import ContainKeyword, MatchRegex
+from graia.ariadne.message.parser.base import MatchRegex, ContainKeyword
 from graia.ariadne.model import Group, Friend
 
 from modules.auth.permissions import Permission, PermissionCode
@@ -66,7 +66,6 @@ class StableDiffusionPlugin(AbstractPlugin):
     __TRANSLATE_PLUGIN_NAME: str = "BaiduTranslater"
     __TRANSLATE_METHOD_NAME: str = "translate"
     __TRANSLATE_METHOD_TYPE = Callable[[str, str, str], str]  # [tolang, query, fromlang] -> str
-    # TODO deal with this super high coupling
 
     TXT2IMG_DIRNAME = "txt2img"
     IMG2IMG_DIRNAME = "img2img"
@@ -111,7 +110,6 @@ class StableDiffusionPlugin(AbstractPlugin):
         # in a single message
     }
 
-    # TODO this should be removed, use pos prompt keyword and neg prompt keyword
     @classmethod
     def _get_config_dir(cls) -> str:
         return str(pathlib.Path(__file__).parent)
@@ -126,7 +124,7 @@ class StableDiffusionPlugin(AbstractPlugin):
 
     @classmethod
     def get_plugin_version(cls) -> str:
-        return "0.1.4"
+        return "0.1.5"
 
     @classmethod
     def get_plugin_author(cls) -> str:
@@ -434,12 +432,10 @@ class StableDiffusionPlugin(AbstractPlugin):
 
         # region castings
         @self.receiver(
-            FriendMessage,
-            decorators=[ContainKeyword(keyword=self._config_registry.get_config(self.CONFIG_POS_KEYWORD))],
-        )
-        @self.receiver(
-            GroupMessage,
-            decorators=[ContainKeyword(keyword=self._config_registry.get_config(self.CONFIG_POS_KEYWORD))],
+            [FriendMessage, GroupMessage],
+            decorators=[
+                ContainKeyword(keyword=keyword) for keyword in self._config_registry.get_config(self.CONFIG_POS_KEYWORD)
+            ],
         )
         async def diffusion(
             app: Ariadne,
@@ -460,18 +456,28 @@ class StableDiffusionPlugin(AbstractPlugin):
                 None
             """
             # Extract positive and negative prompts from the message
-            pos_prompt, neg_prompt, batch_count = extract_prompts(str(message), specify_batch_count=True)
-            pos_prompt = ",".join(pos_prompt) if pos_prompt else get_default_pos_prompt()
-            neg_prompt = ",".join(neg_prompt) if neg_prompt else get_default_neg_prompt()
+            try:
+                extracted_pos_prompt, extracted_neg_prompt, batch_count = extract_prompts(
+                    str(message),
+                    pos_keyword=self._config_registry.get_config(self.CONFIG_POS_KEYWORD),
+                    neg_keyword=self._config_registry.get_config(self.CONFIG_NEG_KEYWORD),
+                    raise_settings=(True, False, False),
+                )
+            except ValueError as e:
+                print(e)
+                return
+
+            pos_prompt = extracted_pos_prompt or get_default_pos_prompt()
+            neg_prompt = extracted_neg_prompt or get_default_neg_prompt()
 
             image_url = await get_image_url(app, message_event)
             send_result = []
             for _ in range(batch_count):
-                pos_prompt, neg_prompt = processor.process(pos_prompt, neg_prompt)
+                final_pos_prompt, final_neg_prompt = processor.process(pos_prompt, neg_prompt)
                 # Create a diffusion parser with the prompts
                 diffusion_paser = DiffusionParser(
-                    prompt=pos_prompt,
-                    negative_prompt=neg_prompt,
+                    prompt=final_pos_prompt,
+                    negative_prompt=final_neg_prompt,
                     styles=self._config_registry.get_config(self.CONFIG_STYLES),
                 )
                 if image_url:
@@ -497,11 +503,7 @@ class StableDiffusionPlugin(AbstractPlugin):
                     send_result.clear()
 
         @self.receiver(
-            FriendMessage,
-            decorators=[MatchRegex(regex=rf"^{CMD.ROOT}\s+{CMD.CONTROLNET}\s+{CMD.CONTROLNET_DETECT}.*")],
-        )
-        @self.receiver(
-            GroupMessage,
+            [FriendMessage, GroupMessage],
             decorators=[MatchRegex(regex=rf"^{CMD.ROOT}\s+{CMD.CONTROLNET}\s+{CMD.CONTROLNET_DETECT}.*")],
         )
         async def cn_detect(
@@ -530,7 +532,7 @@ class StableDiffusionPlugin(AbstractPlugin):
 
         # region internal tools
 
-        async def _make_img2img(diffusion_paser, image_url):
+        async def _make_img2img(diffusion_paser: DiffusionParser, image_url: str) -> List[str]:
             # Download the first image in the chain
             print(f"Downloading image from: {image_url}\n")
             img_path = await download_file(save_dir=temp_dir_path, url=image_url)
