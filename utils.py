@@ -1,14 +1,12 @@
 import base64
 import io
-import os.path
-import os.path
+import os
 import re
 from random import shuffle
-from typing import List, Dict, Tuple, Callable, Any
+from typing import List, Dict, Callable, Any, Tuple
 
 import requests
-from PIL import Image
-from PIL import PngImagePlugin
+from PIL import Image, PngImagePlugin
 from slugify import slugify
 
 from modules.file_manager import rename_image_with_hash
@@ -99,45 +97,53 @@ def save_base64_img_with_hash(
 
 
 def extract_prompts(
-    message: str,
-    specify_batch_count: bool = False,
-    pos_keyword: List[str] = ("+",),
-    neg_keyword: List[str] = ("-",),
-    batch_count_keyword: List[str] = ("p", "P"),
-) -> Tuple[List[str], List[str], int] | Tuple[List[str], List[str]]:
+    string: str,
+    pos_keyword: str = "+",
+    neg_keyword: str = "-",
+    batch_count_keyword: str = "pP",
+    raise_settings: Tuple[bool, bool, bool] = (False, False, False),
+) -> Tuple[str, str, int]:
     """
-    Extracts prompts from a given message.
+    Extracts prompts from a given string.
 
     Args:
-        message (str): The input message from which prompts are extracted.
-        specify_batch_count (bool, optional): Specifies whether to specify the batch size. Defaults to False.
-        pos_keyword (List[str], optional): The positive keywords used for prompt extraction. Defaults to ["+"].
-        neg_keyword (List[str], optional): The negative keywords used for prompt extraction. Defaults to ["-"].
-        batch_count_keyword (List[str], optional): The keywords used for batch size extraction. Defaults to ["p", "P"].
+        string (str): The input string to extract prompts from.
+        pos_keyword (str, optional): The positive prompt keyword. Defaults to "+".
+        neg_keyword (str, optional): The negative prompt keyword. Defaults to "-".
+        batch_count_keyword (str, optional): The batch count keyword. Defaults to "pP".
+        raise_settings (Tuple[bool, bool, bool], optional): A tuple of booleans indicating whether to raise an exception if a prompt is not found. Defaults to (False, False, False).
 
     Returns:
-        Tuple[List[str], List[str], int] or Tuple[List[str], List[str]]: A tuple containing the lists of positive
-            prompts and negative prompts extracted from the message.
-            If `specify_batch_size` is True, it also returns the batch size as an integer.
+        Tuple[str, str, int]: A tuple containing the positive prompt, negative prompt, and batch count extracted from the string.
     """
-    if message == "":
-        return [""], [""]
-    pos_regx = "".join(pos_keyword)
-    neg_regx = "".join(neg_keyword)
-    pat = re.compile(rf"(?:([{pos_regx}])(.*?)\1)?(?:([{neg_regx}])(.*?)\3)?")
-    matched_list = pat.findall(string=message)
-    pos_prompt = list(map(lambda match: match[1], filter(lambda match: match[1], matched_list)))
-    neg_prompt = list(map(lambda match: match[2], filter(lambda match: match[2], matched_list)))
-    if specify_batch_count:
-        batch_count_regx = "".join(batch_count_keyword)
-        batch_count_pattern = re.compile(rf"(?:(\d+)[{batch_count_regx}])?")
-        matched: List[str] = list(filter(bool, batch_count_pattern.findall(message)))
-        if matched:
-            return pos_prompt, neg_prompt, int(matched[0])
 
-        return pos_prompt, neg_prompt, 1
+    # Match positive prompt
+    pos_matched = re.compile(rf".*?([{pos_keyword}])(.*?)\1").match(string=string)
 
-    return pos_prompt, neg_prompt
+    # Match negative prompt
+    neg_matched = re.compile(rf".*?([{neg_keyword}])(.*?)\1").match(string=string)
+
+    # Match batch count
+    count_matched = re.compile(rf".*?(\d+)[{batch_count_keyword}]").match(string=string)
+
+    # Check if positive prompt is required and not found
+    if raise_settings[0] and not pos_matched:
+        raise ValueError(f"Positive prompt not found in string: {string}")
+
+    # Check if negative prompt is required and not found
+    if raise_settings[1] and not neg_matched:
+        raise ValueError(f"Negative prompt not found in string: {string}")
+
+    # Check if batch count is required and not found
+    if raise_settings[2] and not count_matched:
+        raise ValueError(f"Batch count not found in string: {string}")
+
+    # Return the extracted prompts and batch count
+    return (
+        (pos_matched.group(2) if pos_matched else ""),
+        (neg_matched.group(2) if neg_matched else ""),
+        int(count_matched.group(1)) if count_matched else 1,
+    )
 
 
 class PromptProcessorRegistry(object):
