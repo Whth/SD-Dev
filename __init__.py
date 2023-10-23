@@ -30,7 +30,7 @@ from .parser import (
     Options,
 )
 from .stable_diffusion import StableDiffusionApp, DiffusionParser, HiResParser
-from .utils import extract_prompts, PromptProcessorRegistry, shuffle_prompt
+from .utils import extract_prompts, PromptProcessorRegistry, shuffle_prompt, split_list
 
 __all__ = ["StableDiffusionPlugin"]
 
@@ -106,8 +106,9 @@ class StableDiffusionPlugin(AbstractPlugin):
         CONFIG_ENABLE_CONTROLNET: 0,
         CONFIG_ENABLE_SHUFFLE_PROMPT: 0,
         CONFIG_ENABLE_DYNAMIC_PROMPT: 1,
-        CONFIG_SEND_BATCH_SIZE: 20,  # in the current version of QQ, 20 is the maximum of the pictures that can be sent
-        # in a single message
+        CONFIG_SEND_BATCH_SIZE: 18,
+        # in the current version of QQ transmitting protocol,
+        # 20 is the maximum of the pictures that can be sent at once
     }
 
     @classmethod
@@ -156,6 +157,7 @@ class StableDiffusionPlugin(AbstractPlugin):
         processor = PromptProcessorRegistry()
 
         configurable_options: List[str] = [
+            self.CONFIG_SEND_BATCH_SIZE,
             self.CONFIG_ENABLE_HR,
             self.CONFIG_ENABLE_TRANSLATE,
             self.CONFIG_ENABLE_DYNAMIC_PROMPT,
@@ -432,19 +434,23 @@ class StableDiffusionPlugin(AbstractPlugin):
 
         # region castings
         @self.receiver(
-            [FriendMessage, GroupMessage],
+            [FriendMessage, GroupMessage],  # List of message types that this function can handle
             decorators=[
-                ContainKeyword(keyword=keyword) for keyword in self._config_registry.get_config(self.CONFIG_POS_KEYWORD)
+                ContainKeyword(keyword=keyword)
+                for keyword in self._config_registry.get_config(
+                    self.CONFIG_POS_KEYWORD
+                )  # List comprehension to generate decorators based on configuration
             ],
         )
         async def diffusion(
-            app: Ariadne,
-            target: Union[Group, Friend],
-            message: MessageChain,
-            message_event: Union[GroupMessage, FriendMessage],
+            app: Ariadne,  # The Ariadne instance
+            target: Union[Group, Friend],  # The target group or friend to send the image to
+            message: MessageChain,  # The message containing the prompts for diffusion
+            message_event: Union[GroupMessage, FriendMessage],  # The message event
         ):
             """
-            Asynchronously performs diffusion on the given message and sends the resulting image as a message in the group or to a friend.
+            Asynchronously performs diffusion on the given message and sends the resulting image as a message
+            in the group or to a friend.
 
             Args:
                 app (Ariadne): The Ariadne instance.
@@ -459,48 +465,63 @@ class StableDiffusionPlugin(AbstractPlugin):
             try:
                 extracted_pos_prompt, extracted_neg_prompt, batch_count = extract_prompts(
                     str(message),
-                    pos_keyword=self._config_registry.get_config(self.CONFIG_POS_KEYWORD),
-                    neg_keyword=self._config_registry.get_config(self.CONFIG_NEG_KEYWORD),
+                    pos_keyword=self._config_registry.get_config(
+                        self.CONFIG_POS_KEYWORD
+                    ),  # Get positive keyword from configuration
+                    neg_keyword=self._config_registry.get_config(
+                        self.CONFIG_NEG_KEYWORD
+                    ),  # Get negative keyword from configuration
                     raise_settings=(True, False, False),
                 )
             except ValueError as e:
                 print(e)
                 return
 
-            pos_prompt = extracted_pos_prompt or get_default_pos_prompt()
-            neg_prompt = extracted_neg_prompt or get_default_neg_prompt()
+            pos_prompt = extracted_pos_prompt or get_default_pos_prompt()  # Get positive prompt or use default prompt
+            neg_prompt = extracted_neg_prompt or get_default_neg_prompt()  # Get negative prompt or use default prompt
 
-            image_url = await get_image_url(app, message_event)
+            image_url = await get_image_url(app, message_event)  # Get image URL from message event
             send_result = []
+            send_batch_size = self.config_registry.get_config(
+                self.CONFIG_SEND_BATCH_SIZE
+            )  # Get send batch size from configuration
             for _ in range(batch_count):
-                final_pos_prompt, final_neg_prompt = processor.process(pos_prompt, neg_prompt)
+                final_pos_prompt, final_neg_prompt = processor.process(pos_prompt, neg_prompt)  # Process prompts
                 # Create a diffusion parser with the prompts
-                diffusion_paser = DiffusionParser(
+                diffusion_parser = DiffusionParser(
                     prompt=final_pos_prompt,
                     negative_prompt=final_neg_prompt,
-                    styles=self._config_registry.get_config(self.CONFIG_STYLES),
+                    styles=self._config_registry.get_config(self.CONFIG_STYLES),  # Get styles from configuration
                 )
                 if image_url:
-                    send_result.extend(await _make_img2img(diffusion_paser, image_url))
-
+                    send_result.extend(
+                        await _make_img2img(diffusion_parser, image_url)
+                    )  # Make image-to-image diffusion
                 else:
                     # Generate the image using the diffusion parser
-
                     send_result.extend(
                         await SD_app.txt2img(
-                            diffusion_parameters=diffusion_paser,
+                            diffusion_parameters=diffusion_parser,
                             HiRes_parameters=HiResParser(
-                                enable_hr=self._config_registry.get_config(self.CONFIG_ENABLE_HR)
+                                enable_hr=self._config_registry.get_config(
+                                    self.CONFIG_ENABLE_HR
+                                )  # Get enable HR flag from configuration
                             ),
                         )
                     )
-                if (
-                    len(send_result) >= self.config_registry.get_config(self.CONFIG_SEND_BATCH_SIZE)
-                    or _ + 1 == batch_count
-                ):
+
+                # Split the send_result into batches, whose size is send_batch_size
+                split_batch = split_list(
+                    input_list=send_result, sublist_size=send_batch_size, strip_remains=False
+                )  # Split send_result into batches
+                send_batches, send_result = split_batch[:-1], split_batch[-1]
+                for batch in send_batches:
                     # Send the image as a message in the group
-                    await app.send_message(target, [Image(path=path) for path in send_result])
-                    send_result.clear()
+                    await app.send_message(target, [Image(path=path) for path in batch])
+
+            if send_result:
+                # deal with the remains
+                await app.send_message(target, [Image(path=path) for path in send_result])
 
         @self.receiver(
             [FriendMessage, GroupMessage],
@@ -528,9 +549,9 @@ class StableDiffusionPlugin(AbstractPlugin):
 
             await app.send_message(target, [Image(base64=img_base64) for img_base64 in img_base64_list])
 
-        # endregion
+            # endregion
 
-        # region internal tools
+            # region internal tools
 
         async def _make_img2img(diffusion_paser: DiffusionParser, image_url: str) -> List[str]:
             # Download the first image in the chain

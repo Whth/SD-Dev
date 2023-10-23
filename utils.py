@@ -7,6 +7,7 @@ from typing import List, Dict, Callable, Any, Tuple
 
 import requests
 from PIL import Image, PngImagePlugin
+from colorama import Fore
 from slugify import slugify
 
 from modules.file_manager import rename_image_with_hash
@@ -152,8 +153,6 @@ class PromptProcessorRegistry(object):
         self._process_name: List[str] = []
 
     def process(self, pos_prompt: str, neg_prompt: str) -> Tuple[str, str]:
-        from colorama import Fore
-
         """
         Process the given positive and negative prompts using the registered processors.
 
@@ -223,7 +222,6 @@ class PromptProcessorRegistry(object):
         Returns:
             str: A formatted string containing the positive and negative prompts.
         """
-        from colorama import Fore
 
         return (
             f"{Fore.MAGENTA}___________________________________________\n"
@@ -237,3 +235,25 @@ def shuffle_prompt(prompt: str) -> str:
     temp = prompt.split(",")
     shuffle(temp)
     return ",".join(temp)
+
+
+def split_list(input_list: List, sublist_size: int, strip_remains: bool = False) -> List[List]:
+    """
+    Splits a given list into sublist of a specified size.
+
+    Args:
+        input_list (List): The list to be split.
+        sublist_size (int): The size of each sublist.
+        strip_remains (bool, optional): Determines whether to strip any remaining elements. Defaults to False.
+
+    Returns:
+        List[List]: The list of sublist.
+    """
+    # Create sublist of the specified size
+    result = [input_list[i : i + sublist_size] for i in range(0, len(input_list), sublist_size)]
+
+    # Check if remains should be stripped
+    if strip_remains:
+        result = result[:-1]
+
+    return result
