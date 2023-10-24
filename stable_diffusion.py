@@ -149,7 +149,7 @@ class StableDiffusionApp(BaseModel):
         self.txt2img_params.payload_init()
         alwayson_scripts: Dict = {ALWAYSON_SCRIPTS_KEY: {}}
         self.txt2img_params.add_payload(diffusion_parameters.dict())
-        self.txt2img_params.add_payload(HiRes_parameters.dict())
+        self.txt2img_params.add_payload(HiRes_parameters.dict(exclude_none=True))
 
         if controlnet_parameters:
             alwayson_scripts[ALWAYSON_SCRIPTS_KEY].update(make_cn_payload([controlnet_parameters]))

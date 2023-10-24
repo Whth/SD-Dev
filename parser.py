@@ -157,13 +157,17 @@ class HiResParser(BaseModel):
     denoising_strength: float = 0.57
     hr_scale: float = 1.56
     hr_upscaler: str = "Latent (antialiased)"
-    # hr_checkpoint_name: string
-    # hr_sampler_name: string
-    # hr_prompt:
-    # hr_negative_prompt:
+    hr_checkpoint_name: str = Field(default=None)
+    hr_sampler_name: str = Field(default=None)
+    hr_prompt: str = Field(default=None)
+    hr_negative_prompt: str = Field(default=None)
 
 
 class OverRideSettings(BaseModel):
+    class Config:
+        allow_mutation = False
+        validate_assignment = True
+
     override_settings: Dict = Field(default_factory=dict)
     override_settings_restore_afterwards: bool = False
 

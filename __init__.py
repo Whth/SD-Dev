@@ -84,7 +84,8 @@ class StableDiffusionPlugin(AbstractPlugin):
     CONFIG_CONTROLNET_MODEL = "controlnet_model"
     CONFIG_STYLES = "styles"
     CONFIG_ENABLE_HR = "enable_hr"
-
+    CONFIG_DENO_STRENGTH = "denoise_strength"
+    CONFIG_HR_SCALE = "hr_scale"
     CONFIG_ENABLE_TRANSLATE = "enable_translate"
     CONFIG_ENABLE_CONTROLNET = "enable_controlnet"
     CONFIG_ENABLE_SHUFFLE_PROMPT = "enable_shuffle_prompt"
@@ -102,6 +103,8 @@ class StableDiffusionPlugin(AbstractPlugin):
         CONFIG_CONTROLNET_MODEL: "control_v11p_sd15_openpose",
         CONFIG_STYLES: [],
         CONFIG_ENABLE_HR: 0,
+        CONFIG_HR_SCALE: 1.55,
+        CONFIG_DENO_STRENGTH: 0.65,
         CONFIG_ENABLE_TRANSLATE: 0,
         CONFIG_ENABLE_CONTROLNET: 0,
         CONFIG_ENABLE_SHUFFLE_PROMPT: 0,
@@ -159,6 +162,8 @@ class StableDiffusionPlugin(AbstractPlugin):
         configurable_options: List[str] = [
             self.CONFIG_SEND_BATCH_SIZE,
             self.CONFIG_ENABLE_HR,
+            self.CONFIG_HR_SCALE,
+            self.CONFIG_DENO_STRENGTH,
             self.CONFIG_ENABLE_TRANSLATE,
             self.CONFIG_ENABLE_DYNAMIC_PROMPT,
             self.CONFIG_ENABLE_SHUFFLE_PROMPT,
@@ -502,10 +507,10 @@ class StableDiffusionPlugin(AbstractPlugin):
                     send_result.extend(
                         await SD_app.txt2img(
                             diffusion_parameters=diffusion_parser,
-                            HiRes_parameters=HiResParser(
-                                enable_hr=self._config_registry.get_config(
-                                    self.CONFIG_ENABLE_HR
-                                )  # Get enable HR flag from configuration
+                            HiRes_parameters=HiResParser(  # Get enable HR flag from configuration
+                                enable_hr=self._config_registry.get_config(self.CONFIG_ENABLE_HR),
+                                hr_scale=self._config_registry.get_config(self.CONFIG_HR_SCALE),
+                                denoising_strength=self._config_registry.get_config(self.CONFIG_DENO_STRENGTH),
                             ),
                         )
                     )
