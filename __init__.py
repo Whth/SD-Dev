@@ -211,7 +211,7 @@ class StableDiffusionPlugin(AbstractPlugin):
             Example:
                 favorite_images = await diffusion_favorite_t(5)
             """
-            return make_image_form_paths(await SD_app.img2img_favorite(index))
+            return make_image_form_paths(await SD_app.txt2img_favorite(index))
 
         async def diffusion_favorite_i(index: int = None) -> List[Image]:
             """
@@ -397,13 +397,13 @@ class StableDiffusionPlugin(AbstractPlugin):
                             name=CMD.LORA_MODEL,
                             help_message="get available lora models",
                             source=lambda: f"SD Lora Models\n{len(SD_app.available_lora_models)} models in total\n"
-                            + "\n".join(SD_app.available_lora_models),
+                            + "\n\n".join(SD_app.available_lora_models),
                         ),
                         ExecutableNode(
                             name=CMD.NORMAL_MODEL,
                             help_message="get available stable diffusion models",
                             source=lambda: f"SD Stable Diffusion Models\n{len(SD_app.available_sd_models)} models in total\n"
-                            + "\n".join(SD_app.available_sd_models),
+                            + "\n\n".join(SD_app.available_sd_models),
                         ),
                     ],
                 ),
