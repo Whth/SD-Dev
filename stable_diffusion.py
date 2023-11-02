@@ -17,7 +17,7 @@ from .api import (
     API_LORAS,
 )
 from .controlnet import ControlNetUnit, make_cn_payload
-from .parser import DiffusionParser, HiResParser
+from .parser import DiffusionParser, HiResParser, OverRideSettings
 from .utils import save_base64_img_with_hash, extract_png_from_payload
 
 
@@ -125,17 +125,19 @@ class StableDiffusionApp(BaseModel):
     async def txt2img(
         self,
         diffusion_parameters: DiffusionParser = DiffusionParser(),
-        HiRes_parameters: HiResParser = HiResParser(),
+        hires_parameters: HiResParser = HiResParser(),
         controlnet_parameters: Optional[ControlNetUnit] = None,
+        override_settings: Optional[OverRideSettings] = None,
     ) -> List[str]:
         """
         Generates images from text files and saves them to the specified output directory.
 
         Args:
+            override_settings ():
             diffusion_parameters (DiffusionParser, optional): An instance of the DiffusionParser class
                 that contains the parameters for the diffusion process.
                 Defaults to DiffusionParser().
-            HiRes_parameters (HiResParser, optional): An instance of the HiResParser class
+            hires_parameters (HiResParser, optional): An instance of the HiResParser class
                 that contains the parameters for the HiRes process.
                 Defaults to HiResParser().
             controlnet_parameters (ControlNetUnit, optional): An instance of the ControlNetUnit class
@@ -149,12 +151,13 @@ class StableDiffusionApp(BaseModel):
         self.txt2img_params.payload_init()
         alwayson_scripts: Dict = {ALWAYSON_SCRIPTS_KEY: {}}
         self.txt2img_params.add_payload(diffusion_parameters.dict())
-        self.txt2img_params.add_payload(HiRes_parameters.dict(exclude_none=True))
+        self.txt2img_params.add_payload(hires_parameters.dict(exclude_none=True))
 
         if controlnet_parameters:
             alwayson_scripts[ALWAYSON_SCRIPTS_KEY].update(make_cn_payload([controlnet_parameters]))
 
         self.txt2img_params.add_payload(alwayson_scripts)
+        self.txt2img_params.add_payload(override_settings.dict())
         images_paths = await self._make_image_gen_request(self.txt2img_params.current, API_TXT2IMG)
 
         self.txt2img_params.store()
@@ -167,6 +170,7 @@ class StableDiffusionApp(BaseModel):
         controlnet_parameters: Optional[ControlNetUnit] = None,
         image_path: Optional[str] = None,
         image_base64: Optional[str] = None,
+        override_settings: Optional[OverRideSettings] = None,
     ) -> List[str]:
         """
         Converts an image to another image using the specified diffusion parameters and
@@ -174,6 +178,7 @@ class StableDiffusionApp(BaseModel):
         Saves the generated images to the specified output directory.
 
         Args:
+            override_settings ():
             image_base64 ():
             image_path: The path of the input image file.
             diffusion_parameters: An instance of DiffusionParser class containing the diffusion parameters.
@@ -208,6 +213,7 @@ class StableDiffusionApp(BaseModel):
         # Add the alwayson scripts to the payload
         self.img2img_params.add_payload(alwayson_scripts)
 
+        self.img2img_params.add_payload(override_settings.dict()) if override_settings else None
         images_paths = await self._make_image_gen_request(self.img2img_params.current, API_IMG2IMG)
 
         self.img2img_params.store()

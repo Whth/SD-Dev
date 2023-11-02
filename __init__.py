@@ -28,6 +28,7 @@ from .parser import (
     get_default_neg_prompt,
     get_default_pos_prompt,
     Options,
+    OverRideSettings,
 )
 from .stable_diffusion import StableDiffusionApp, DiffusionParser, HiResParser
 from .utils import extract_prompts, PromptProcessorRegistry, shuffle_prompt, split_list
@@ -90,7 +91,7 @@ class StableDiffusionPlugin(AbstractPlugin):
     CONFIG_ENABLE_CONTROLNET = "enable_controlnet"
     CONFIG_ENABLE_SHUFFLE_PROMPT = "enable_shuffle_prompt"
     CONFIG_ENABLE_DYNAMIC_PROMPT = "enable_dynamic_prompt"
-
+    CONFIG_CURRENT_MODEL_ID = "crmodel"
     CONFIG_SEND_BATCH_SIZE = "send_batch_size"
     DefaultConfig = {
         CONFIG_POS_KEYWORD: "+",
@@ -101,6 +102,7 @@ class StableDiffusionPlugin(AbstractPlugin):
         CONFIG_WILDCARD_DIR_PATH: f"{get_pwd()}/asset/wildcard",
         CONFIG_CONTROLNET_MODULE: "openpose_full",
         CONFIG_CONTROLNET_MODEL: "control_v11p_sd15_openpose",
+        CONFIG_CURRENT_MODEL_ID: 0,
         CONFIG_STYLES: [],
         CONFIG_ENABLE_HR: 0,
         CONFIG_HR_SCALE: 1.55,
@@ -128,7 +130,7 @@ class StableDiffusionPlugin(AbstractPlugin):
 
     @classmethod
     def get_plugin_version(cls) -> str:
-        return "0.1.5"
+        return "0.1.6"
 
     @classmethod
     def get_plugin_author(cls) -> str:
@@ -160,6 +162,7 @@ class StableDiffusionPlugin(AbstractPlugin):
         processor = PromptProcessorRegistry()
 
         configurable_options: List[str] = [
+            self.CONFIG_CURRENT_MODEL_ID,
             self.CONFIG_SEND_BATCH_SIZE,
             self.CONFIG_ENABLE_HR,
             self.CONFIG_HR_SCALE,
@@ -176,6 +179,7 @@ class StableDiffusionPlugin(AbstractPlugin):
         req_perm: RequiredPermission = required_perm_generator(
             target_resource_name=self.get_plugin_name(), super_permissions=[su_perm]
         )
+
         # endregion
 
         # region std cmds
@@ -396,14 +400,18 @@ class StableDiffusionPlugin(AbstractPlugin):
                         ExecutableNode(
                             name=CMD.LORA_MODEL,
                             help_message="get available lora models",
-                            source=lambda: f"SD Lora Models\n{len(SD_app.available_lora_models)} models in total\n"
-                            + "\n\n".join(SD_app.available_lora_models),
+                            source=lambda: f"SD Lora Models\n"
+                            f"{len(SD_app.available_lora_models)} models in total\n"
+                            f"-------------\n"
+                            + "\n".join(f"[{i}]: {model}" for i, model in enumerate(SD_app.available_lora_models)),
                         ),
                         ExecutableNode(
                             name=CMD.NORMAL_MODEL,
                             help_message="get available stable diffusion models",
-                            source=lambda: f"SD Stable Diffusion Models\n{len(SD_app.available_sd_models)} models in total\n"
-                            + "\n\n".join(SD_app.available_sd_models),
+                            source=lambda: f"SD Stable Diffusion Models\n"
+                            f"{len(SD_app.available_sd_models)} models in total\n"
+                            f"-------------\n"
+                            + "\n".join(f"[{i}]: {model}" for i, model in enumerate(SD_app.available_sd_models)),
                         ),
                     ],
                 ),
@@ -490,6 +498,17 @@ class StableDiffusionPlugin(AbstractPlugin):
             send_batch_size = self.config_registry.get_config(
                 self.CONFIG_SEND_BATCH_SIZE
             )  # Get send batch size from configuration
+            overrides = None
+            if SD_app.available_sd_models:
+                sd_options.record_start()
+                sd_options.sd_model_checkpoint = SD_app.available_sd_models[
+                    self.config_registry.get_config(self.CONFIG_CURRENT_MODEL_ID)
+                ]
+
+                overrides = sd_options.generate_override_settings_payload(
+                    sd_options.record_end(), recover_after_override=False
+                )
+
             for _ in range(batch_count):
                 final_pos_prompt, final_neg_prompt = processor.process(pos_prompt, neg_prompt)  # Process prompts
                 # Create a diffusion parser with the prompts
@@ -500,18 +519,19 @@ class StableDiffusionPlugin(AbstractPlugin):
                 )
                 if image_url:
                     send_result.extend(
-                        await _make_img2img(diffusion_parser, image_url)
+                        await _make_img2img(diffusion_parser, image_url, override_settings=overrides)
                     )  # Make image-to-image diffusion
                 else:
                     # Generate the image using the diffusion parser
                     send_result.extend(
                         await SD_app.txt2img(
                             diffusion_parameters=diffusion_parser,
-                            HiRes_parameters=HiResParser(  # Get enable HR flag from configuration
+                            hires_parameters=HiResParser(  # Get enable HR flag from configuration
                                 enable_hr=self._config_registry.get_config(self.CONFIG_ENABLE_HR),
                                 hr_scale=self._config_registry.get_config(self.CONFIG_HR_SCALE),
                                 denoising_strength=self._config_registry.get_config(self.CONFIG_DENO_STRENGTH),
                             ),
+                            override_settings=overrides,
                         )
                     )
 
@@ -558,7 +578,9 @@ class StableDiffusionPlugin(AbstractPlugin):
 
             # region internal tools
 
-        async def _make_img2img(diffusion_paser: DiffusionParser, image_url: str) -> List[str]:
+        async def _make_img2img(
+            diffusion_paser: DiffusionParser, image_url: str, override_settings: OverRideSettings
+        ) -> List[str]:
             # Download the first image in the chain
             print(f"Downloading image from: {image_url}\n")
             img_path = await download_file(save_dir=temp_dir_path, url=image_url)
@@ -575,7 +597,10 @@ class StableDiffusionPlugin(AbstractPlugin):
                         model=model,
                     )
             send_result = await SD_app.img2img(
-                diffusion_parameters=diffusion_paser, controlnet_parameters=cn_unit, image_base64=img_base64
+                diffusion_parameters=diffusion_paser,
+                controlnet_parameters=cn_unit,
+                image_base64=img_base64,
+                override_settings=override_settings,
             )
             return send_result
 
