@@ -1,4 +1,3 @@
-import pathlib
 from functools import partial
 from typing import List, Optional, Callable, Union
 
@@ -115,10 +114,6 @@ class StableDiffusionPlugin(AbstractPlugin):
         # in the current version of QQ transmitting protocol,
         # 20 is the maximum of the pictures that can be sent at once
     }
-
-    @classmethod
-    def _get_config_dir(cls) -> str:
-        return str(pathlib.Path(__file__).parent)
 
     @classmethod
     def get_plugin_name(cls) -> str:
