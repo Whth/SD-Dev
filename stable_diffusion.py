@@ -1,8 +1,9 @@
 import copy
 import json
 import pathlib
+from collections import OrderedDict
 from random import choice
-from typing import List, Dict, Optional, Any, Tuple
+from typing import List, Dict, Optional, Any
 
 import aiohttp
 from pydantic import BaseModel, Field, validator
@@ -291,11 +292,11 @@ class StableDiffusionApp(BaseModel):
 
         return models_detail_list
 
-    async def interrogate_image(self, parser: InterrogateParser) -> Tuple[Tuple[str, float], ...]:
+    async def interrogate_image(self, parser: InterrogateParser) -> OrderedDict[str, float]:
         return deepbooru_to_obj((await self._make_query_request(API_INTERROGATE, payload=parser.dict()))["caption"])
 
 
-def deepbooru_to_obj(string: str) -> Tuple[Tuple[str, float], ...]:
+def deepbooru_to_obj(string: str) -> OrderedDict[str, float]:
     """
     Convert a string representation of a deepbooru object to a tuple of tuples.
 
@@ -306,7 +307,12 @@ def deepbooru_to_obj(string: str) -> Tuple[Tuple[str, float], ...]:
         Tuple[Tuple[str, float], ...]: A tuple of tuples containing the parsed values.
 
     """
+
     split = map(lambda item: (item.strip()[1:-1]).split(":"), string.split(","))
     ref = map(lambda item: (item[0], float(item[1])), split)
 
-    return tuple(sorted(ref, key=lambda x: x[1], reverse=True))
+    # 创建一个空的有序字典
+    ordered_dict: OrderedDict = OrderedDict()
+    for tag in sorted(ref, key=lambda x: x[1], reverse=True):
+        ordered_dict[tag[0]] = tag[1]
+    return ordered_dict

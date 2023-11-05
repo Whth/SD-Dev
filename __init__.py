@@ -608,14 +608,17 @@ class StableDiffusionPlugin(AbstractPlugin):
             await app.send_message(
                 target,
                 "\n".join(
-                    f"{tag[1]:5}=> {tag[0]}"
-                    for tag in await self.sd_app.interrogate_image(
-                        parser=InterrogateParser(
-                            image_path=await download_file(
-                                image.url, save_dir=self.config_registry.get_config(self.CONFIG_IMG_TEMP_DIR_PATH)
+                    f"{prob:<5}=> {tag}"
+                    for tag, prob in (
+                        await self.sd_app.interrogate_image(
+                            parser=InterrogateParser(
+                                image_path=await download_file(
+                                    image.url,
+                                    save_dir=self.config_registry.get_config(self.CONFIG_IMG_TEMP_DIR_PATH),
+                                )
                             )
                         )
-                    )
+                    ).items()
                 ),
             )
 
