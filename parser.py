@@ -4,6 +4,8 @@ from typing import List, Tuple, Any, Dict, Optional
 import aiohttp
 from pydantic import BaseModel, Field, PrivateAttr
 
+from modules.shared import img_to_base64
+
 __DEFAULT_NEGATIVE_PROMPT__ = (
     "poorly drawn face,mutation,blurry,malformed limbs,disfigured,missing arms,missing legs,deformed legs,"
     "bad anatomy,bad hands,text,error,missing fingers,worst quality,normal quality,jpeg artifacts,signature,"
@@ -87,7 +89,6 @@ __PORTRAIT_SHOT__: Tuple[int, int] = (512, 768)
 __SQUARE_SHOT__: Tuple[int, int] = (512, 512)
 __ENFORCED_SIZE_TEMPLATE__: Tuple[int, int] = __PORTRAIT_SHOT__
 
-
 __SHOT_SIZE_TABLE__ = {
     "wide": __WIDE_SHOT__,
     "portrait": __PORTRAIT_SHOT__,
@@ -161,6 +162,19 @@ class HiResParser(BaseModel):
     hr_sampler_name: str = Field(default=None)
     hr_prompt: str = Field(default=None)
     hr_negative_prompt: str = Field(default=None)
+
+
+class InterrogateParser(BaseModel):
+    image_path: str = Field("", exclude=True)
+    image: str = Field("")
+    model: str = Field("deepbooru")
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        if self.image_path and self.image:
+            raise ValueError("image_path and image cannot both be set.")
+        elif self.image_path:
+            self.image = img_to_base64(self.image_path)
 
 
 class OverRideSettings(BaseModel):

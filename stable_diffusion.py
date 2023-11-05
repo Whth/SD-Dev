@@ -15,9 +15,10 @@ from .api import (
     API_IMG2IMG,
     API_MODELS,
     API_LORAS,
+    API_INTERROGATE,
 )
 from .controlnet import ControlNetUnit, make_cn_payload
-from .parser import DiffusionParser, HiResParser, OverRideSettings
+from .parser import DiffusionParser, HiResParser, OverRideSettings, InterrogateParser
 from .utils import save_base64_img_with_hash, extract_png_from_payload
 
 
@@ -250,18 +251,19 @@ class StableDiffusionApp(BaseModel):
         # Save the generated images to the output directory and return the list of file paths
         return save_base64_img_with_hash(img_base64_list=img_base64, output_dir=self.output_dir, host_url=self.host_url)
 
-    async def _make_query_request(self, query_api: str) -> Any:
+    async def _make_query_request(self, query_api: str, payload: Dict = None) -> Any:
         """
         Makes a query request to the specified query API.
 
         Args:
+            payload ():
             query_api (str): The query API to make the request to.
 
         Returns:
             Any: The response payload from the query request.
         """
         async with aiohttp.ClientSession() as session:
-            response_payload: Dict = await (await session.get(f"{self.host_url}/{query_api}")).json()
+            response_payload: Dict = await (await session.post(f"{self.host_url}/{query_api}", payload=payload)).json()
         return response_payload
 
     async def txt2img_favorite(self, index: Optional[int] = None) -> List[str]:
@@ -284,3 +286,6 @@ class StableDiffusionApp(BaseModel):
         self.available_lora_models.extend(map(lambda x: x["name"], models_detail_list))
 
         return models_detail_list
+
+    async def interrogate_image(self, parser: InterrogateParser) -> Dict:
+        return await self._make_query_request(API_INTERROGATE, payload=parser.dict())
