@@ -131,26 +131,27 @@ class StableDiffusionPlugin(AbstractPlugin):
     def get_plugin_author(cls) -> str:
         return "whth"
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.sd_app = StableDiffusionApp(
+            host_url=(self._config_registry.get_config(self.CONFIG_SD_HOST)),
+            cache_dir=(self._config_registry.get_config(self.CONFIG_IMG_TEMP_DIR_PATH)),
+            output_dir=(self._config_registry.get_config(self.CONFIG_OUTPUT_DIR_PATH)),
+        )
+
     def install(self):
         # region local utils
         translater: Optional[AbstractPlugin] = self._plugin_view.get(self.__TRANSLATE_PLUGIN_NAME, None)
         translate: Optional[StableDiffusionPlugin.__TRANSLATE_METHOD_TYPE] = None
         if translater:
             translate = getattr(translater, self.__TRANSLATE_METHOD_NAME)
-        output_dir_path = self._config_registry.get_config(self.CONFIG_OUTPUT_DIR_PATH)
-        temp_dir_path = self._config_registry.get_config(self.CONFIG_IMG_TEMP_DIR_PATH)
 
-        SD_app = StableDiffusionApp(
-            host_url=(self._config_registry.get_config(self.CONFIG_SD_HOST)),
-            cache_dir=temp_dir_path,
-            output_dir=output_dir_path,
-        )
         cmd_builder = CmdBuilder(
             config_setter=self._config_registry.set_config, config_getter=self._config_registry.get_config
         )
         controlnet_app: Controlnet = Controlnet(host_url=self._config_registry.get_config(self.CONFIG_SD_HOST))
 
-        gen = RandomPromptGenerator(
+        random_prompt_gen = RandomPromptGenerator(
             wildcard_manager=WildcardManager(path=self._config_registry.get_config(self.CONFIG_WILDCARD_DIR_PATH))
         )
         sd_options = Options()
@@ -186,7 +187,7 @@ class StableDiffusionPlugin(AbstractPlugin):
                 Image: The image representation of the diffusion history.
             """
 
-            return make_image_form_paths(await SD_app.txt2img_history())
+            return make_image_form_paths(await self.sd_app.txt2img_history())
 
         async def diffusion_history_i() -> List[Image]:
             """
@@ -195,7 +196,7 @@ class StableDiffusionPlugin(AbstractPlugin):
             Returns:
                 Image: The image representation of the diffusion history.
             """
-            return make_image_form_paths(await SD_app.img2img_history())
+            return make_image_form_paths(await self.sd_app.img2img_history())
 
         async def diffusion_favorite_t(index: int = None) -> List[Image]:
             """
@@ -210,7 +211,7 @@ class StableDiffusionPlugin(AbstractPlugin):
             Example:
                 favorite_images = await diffusion_favorite_t(5)
             """
-            return make_image_form_paths(await SD_app.txt2img_favorite(index))
+            return make_image_form_paths(await self.sd_app.txt2img_favorite(index))
 
         async def diffusion_favorite_i(index: int = None) -> List[Image]:
             """
@@ -222,7 +223,7 @@ class StableDiffusionPlugin(AbstractPlugin):
             Returns:
                 List[Image]: A list of Image objects representing the favorite image(s) retrieved.
             """
-            return make_image_form_paths(await SD_app.img2img_favorite(index))
+            return make_image_form_paths(await self.sd_app.img2img_favorite(index))
 
         def _test_process(pos_prompt: Optional[str] = None, neg_prompt: Optional[str] = None) -> str:
             """
@@ -317,25 +318,25 @@ class StableDiffusionPlugin(AbstractPlugin):
                                     name=CMD.TXT2IMG,
                                     required_permissions=req_perm,
                                     source=lambda: f"The size of the t2i Favorite storage is: \n"
-                                    f"{len(SD_app.txt2img_params.favorite)}",
+                                    f"{len(self.sd_app.txt2img_params.favorite)}",
                                 ),
                                 ExecutableNode(
                                     name=CMD.IMG2IMG,
                                     required_permissions=req_perm,
                                     source=lambda: f"The size of the i2i Favorite storage is: \n"
-                                    f"{len(SD_app.img2img_params.favorite)}",
+                                    f"{len(self.sd_app.img2img_params.favorite)}",
                                 ),
                             ],
                         ),
                         ExecutableNode(
                             name=CMD.TXT2IMG,
                             required_permissions=req_perm,
-                            source=lambda: f"add to t2i favorite\nSuccess={SD_app.add_favorite_t()}",
+                            source=lambda: f"add to t2i favorite\nSuccess={self.sd_app.add_favorite_t()}",
                         ),
                         ExecutableNode(
                             name=CMD.IMG2IMG,
                             required_permissions=req_perm,
-                            source=lambda: f"add to i2i favorite\nSuccess={SD_app.add_favorite_i()}",
+                            source=lambda: f"add to i2i favorite\nSuccess={self.sd_app.add_favorite_i()}",
                         ),
                         NameSpaceNode(
                             name=CMD.AGAIN,
@@ -396,17 +397,17 @@ class StableDiffusionPlugin(AbstractPlugin):
                             name=CMD.LORA_MODEL,
                             help_message="get available lora models",
                             source=lambda: f"SD Lora Models\n"
-                            f"{len(SD_app.available_lora_models)} models in total\n"
+                            f"{len(self.sd_app.available_lora_models)} models in total\n"
                             f"-------------\n"
-                            + "\n".join(f"[{i}]: {model}" for i, model in enumerate(SD_app.available_lora_models)),
+                            + "\n".join(f"[{i}]: {model}" for i, model in enumerate(self.sd_app.available_lora_models)),
                         ),
                         ExecutableNode(
                             name=CMD.NORMAL_MODEL,
                             help_message="get available stable diffusion models",
                             source=lambda: f"SD Stable Diffusion Models\n"
-                            f"{len(SD_app.available_sd_models)} models in total\n"
+                            f"{len(self.sd_app.available_sd_models)} models in total\n"
                             f"-------------\n"
-                            + "\n".join(f"[{i}]: {model}" for i, model in enumerate(SD_app.available_sd_models)),
+                            + "\n".join(f"[{i}]: {model}" for i, model in enumerate(self.sd_app.available_sd_models)),
                         ),
                     ],
                 ),
@@ -417,7 +418,7 @@ class StableDiffusionPlugin(AbstractPlugin):
 
         processor.register(
             judge=lambda: self._config_registry.get_config(self.CONFIG_ENABLE_DYNAMIC_PROMPT),
-            process_engine=lambda prompt: gen.generate(template=prompt)[0] or prompt,
+            process_engine=lambda prompt: random_prompt_gen.generate(template=prompt)[0] or prompt,
             process_name="DYNAMIC_PROMPT_INTERPRET",
         )
 
@@ -436,9 +437,9 @@ class StableDiffusionPlugin(AbstractPlugin):
         @self.receiver(ApplicationLaunch)
         async def fetch_resources():
             await controlnet_app.fetch_resources()
-            await sd_options.fetch_config(f"{SD_app.host_url}/{API_GET_CONFIG}")
-            await SD_app.fetch_sd_models()
-            await SD_app.fetch_lora_models()
+            await sd_options.fetch_config(f"{self.sd_app.host_url}/{API_GET_CONFIG}")
+            await self.sd_app.fetch_sd_models()
+            await self.sd_app.fetch_lora_models()
 
         # region castings
         @self.receiver(
@@ -494,9 +495,9 @@ class StableDiffusionPlugin(AbstractPlugin):
                 self.CONFIG_SEND_BATCH_SIZE
             )  # Get send batch size from configuration
             overrides = None
-            if SD_app.available_sd_models:
+            if self.sd_app.available_sd_models:
                 sd_options.record_start()
-                sd_options.sd_model_checkpoint = SD_app.available_sd_models[
+                sd_options.sd_model_checkpoint = self.sd_app.available_sd_models[
                     self.config_registry.get_config(self.CONFIG_CURRENT_MODEL_ID)
                 ]
 
@@ -519,7 +520,7 @@ class StableDiffusionPlugin(AbstractPlugin):
                 else:
                     # Generate the image using the diffusion parser
                     send_result.extend(
-                        await SD_app.txt2img(
+                        await self.sd_app.txt2img(
                             diffusion_parameters=diffusion_parser,
                             hires_parameters=HiResParser(  # Get enable HR flag from configuration
                                 enable_hr=self._config_registry.get_config(self.CONFIG_ENABLE_HR),
@@ -562,7 +563,12 @@ class StableDiffusionPlugin(AbstractPlugin):
             pay_load = ControlNetDetect(
                 controlnet_module=self._config_registry.get_config(self.CONFIG_CONTROLNET_MODULE),
                 controlnet_input_images=[
-                    img_to_base64(await download_file(save_dir=temp_dir_path, url=img.url)) for img in images
+                    img_to_base64(
+                        await download_file(
+                            save_dir=self._config_registry.get_config(self.CONFIG_IMG_TEMP_DIR_PATH), url=img.url
+                        )
+                    )
+                    for img in images
                 ],
             )
             img_base64_list = await controlnet_app.detect(payload=pay_load)
@@ -578,7 +584,9 @@ class StableDiffusionPlugin(AbstractPlugin):
         ) -> List[str]:
             # Download the first image in the chain
             print(f"Downloading image from: {image_url}\n")
-            img_path = await download_file(save_dir=temp_dir_path, url=image_url)
+            img_path = await download_file(
+                save_dir=self._config_registry.get_config(self.CONFIG_IMG_TEMP_DIR_PATH), url=image_url
+            )
             img_base64 = img_to_base64(img_path)
             cn_unit = None
             if self._config_registry.get_config(self.CONFIG_ENABLE_CONTROLNET):
@@ -591,7 +599,7 @@ class StableDiffusionPlugin(AbstractPlugin):
                         module=module,
                         model=model,
                     )
-            send_result = await SD_app.img2img(
+            send_result = await self.sd_app.img2img(
                 diffusion_parameters=diffusion_paser,
                 controlnet_parameters=cn_unit,
                 image_base64=img_base64,
