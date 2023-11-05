@@ -1,5 +1,6 @@
+import pathlib
 from functools import partial
-from typing import List, Optional, Callable, Union
+from typing import List, Optional, Callable, Union, Tuple
 
 from dynamicprompts.generators import RandomPromptGenerator
 from dynamicprompts.wildcards import WildcardManager
@@ -28,6 +29,7 @@ from .parser import (
     get_default_pos_prompt,
     Options,
     OverRideSettings,
+    InterrogateParser,
 )
 from .stable_diffusion import StableDiffusionApp, DiffusionParser, HiResParser
 from .utils import extract_prompts, PromptProcessorRegistry, shuffle_prompt, split_list
@@ -50,6 +52,7 @@ class CMD:
     MODELS = "models"
     MODULES = "modules"
 
+    INTERROGATE = "expl"
     NORMAL_MODEL = "sd"
     LORA_MODEL = "lora"
 
@@ -125,7 +128,7 @@ class StableDiffusionPlugin(AbstractPlugin):
 
     @classmethod
     def get_plugin_version(cls) -> str:
-        return "0.1.6"
+        return "0.1.7"
 
     @classmethod
     def get_plugin_author(cls) -> str:
@@ -411,6 +414,9 @@ class StableDiffusionPlugin(AbstractPlugin):
                         ),
                     ],
                 ),
+                ExecutableNode(
+                    name=CMD.INTERROGATE, help_message="Interrogate the image content", source=lambda x: None
+                ),
             ],
         )
         self._auth_manager.add_perm_from_req(req_perm)
@@ -579,6 +585,40 @@ class StableDiffusionPlugin(AbstractPlugin):
 
             # region internal tools
 
+        @self.receiver(
+            [FriendMessage, GroupMessage],
+            decorators=[MatchRegex(regex=rf"^{CMD.ROOT}\s+{CMD.INTERROGATE}.*")],
+        )
+        async def interrogate(
+            app: Ariadne,
+            target: Union[Group, Friend],
+            message: MessageChain,
+        ) -> None:
+            """
+            Interrogates the given message.
+            """
+            if Image not in message:
+                return
+            images = message.get(Image)
+            if not images:
+                return
+            image = images[0]
+            print(f"Interrogating images count: {len(images)}\n")
+
+            await app.send_message(
+                target,
+                "\n".join(
+                    f"{tag[1]:5}=> {tag[0]}"
+                    for tag in await self.sd_app.interrogate_image(
+                        parser=InterrogateParser(
+                            image_path=await download_file(
+                                image.url, save_dir=self.config_registry.get_config(self.CONFIG_IMG_TEMP_DIR_PATH)
+                            )
+                        )
+                    )
+                ),
+            )
+
         async def _make_img2img(
             diffusion_paser: DiffusionParser, image_url: str, override_settings: OverRideSettings
         ) -> List[str]:
@@ -608,3 +648,21 @@ class StableDiffusionPlugin(AbstractPlugin):
             return send_result
 
         # endregion
+
+    async def interrogate(self, image: str) -> Tuple:
+        """
+        Interrogate an image and return the result as a dictionary.
+
+        Args:
+            image (str): The path to an image or a base64 encoded image.
+
+        Returns:
+            dict: The result of the interrogation.
+        """
+        # Check if the image path exists
+        if pathlib.Path(image).exists():
+            # Interrogate the image using the image path
+            return await self.sd_app.interrogate_image(parser=InterrogateParser(image_path=image))
+        else:
+            # Interrogate the image using the base64 encoded image
+            return await self.sd_app.interrogate_image(parser=InterrogateParser(image=image))

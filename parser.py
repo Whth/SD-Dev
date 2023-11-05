@@ -167,7 +167,7 @@ class HiResParser(BaseModel):
 class InterrogateParser(BaseModel):
     image_path: str = Field("", exclude=True)
     image: str = Field("")
-    model: str = Field("deepbooru")
+    model: str = Field("deepdanbooru")
 
     def __init__(self, **data):
         super().__init__(**data)

@@ -2,7 +2,7 @@ import copy
 import json
 import pathlib
 from random import choice
-from typing import List, Dict, Optional, Any
+from typing import List, Dict, Optional, Any, Tuple
 
 import aiohttp
 from pydantic import BaseModel, Field, validator
@@ -262,8 +262,12 @@ class StableDiffusionApp(BaseModel):
         Returns:
             Any: The response payload from the query request.
         """
+        full_url = f"{self.host_url}/{query_api}"
         async with aiohttp.ClientSession() as session:
-            response_payload: Dict = await (await session.post(f"{self.host_url}/{query_api}", payload=payload)).json()
+            if payload:
+                response_payload: Dict = await (await session.post(full_url, json=payload)).json()
+            else:
+                response_payload: Dict = await (await session.get(full_url)).json()
         return response_payload
 
     async def txt2img_favorite(self, index: Optional[int] = None) -> List[str]:
@@ -287,5 +291,22 @@ class StableDiffusionApp(BaseModel):
 
         return models_detail_list
 
-    async def interrogate_image(self, parser: InterrogateParser) -> Dict:
-        return await self._make_query_request(API_INTERROGATE, payload=parser.dict())
+    async def interrogate_image(self, parser: InterrogateParser) -> Tuple[Tuple[str, float], ...]:
+        return deepbooru_to_obj((await self._make_query_request(API_INTERROGATE, payload=parser.dict()))["caption"])
+
+
+def deepbooru_to_obj(string: str) -> Tuple[Tuple[str, float], ...]:
+    """
+    Convert a string representation of a deepbooru object to a tuple of tuples.
+
+    Args:
+        string (str): The string representation of the deepbooru object.
+
+    Returns:
+        Tuple[Tuple[str, float], ...]: A tuple of tuples containing the parsed values.
+
+    """
+    split = map(lambda item: (item.strip()[1:-1]).split(":"), string.split(","))
+    ref = map(lambda item: (item[0], float(item[1])), split)
+
+    return tuple(sorted(ref, key=lambda x: x[1], reverse=True))
