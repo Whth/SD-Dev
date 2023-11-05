@@ -306,10 +306,15 @@ def deepbooru_to_obj(string: str) -> OrderedDict[str, float]:
     Returns:
         Tuple[Tuple[str, float], ...]: A tuple of tuples containing the parsed values.
 
+    Example:
+        >>> from collections import OrderedDict
+        >>> deepbooru_to_obj("(tag1:0.6),(tag2:0.3),(tag3:0.8)")
+        OderderedDict([('tag3', 0.8), ('tag1', 0.6), ('tag2', 0.3)])
     """
 
     split = map(lambda item: (item.strip()[1:-1]).split(":"), string.split(","))
-    ref = map(lambda item: (item[0], float(item[1])), split)
+    filtered = filter(lambda item: len(item) == 2, split)
+    ref = map(lambda item: (item[0], float(item[1])), filtered)
 
     # 创建一个空的有序字典
     ordered_dict: OrderedDict = OrderedDict()

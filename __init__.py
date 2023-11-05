@@ -1,6 +1,6 @@
 import pathlib
 from functools import partial
-from typing import List, Optional, Callable, Union, Tuple
+from typing import List, Optional, Callable, Union, OrderedDict
 
 from dynamicprompts.generators import RandomPromptGenerator
 from dynamicprompts.wildcards import WildcardManager
@@ -652,7 +652,7 @@ class StableDiffusionPlugin(AbstractPlugin):
 
         # endregion
 
-    async def interrogate(self, image: str) -> Tuple:
+    async def interrogate(self, image: str) -> OrderedDict[str, float]:
         """
         Interrogate an image and return the result as a dictionary.
 
