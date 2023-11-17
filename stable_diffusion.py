@@ -9,6 +9,7 @@ import aiohttp
 from pydantic import BaseModel, Field, validator
 
 from modules.file_manager import img_to_base64
+from .adetailer import ADetailerArgs
 from .api import (
     API_TXT2IMG,
     INIT_IMAGES_KEY,
@@ -129,12 +130,14 @@ class StableDiffusionApp(BaseModel):
         diffusion_parameters: DiffusionParser = DiffusionParser(),
         hires_parameters: HiResParser = HiResParser(),
         controlnet_parameters: Optional[ControlNetUnit] = None,
+        adetailer_parameters: Optional[ADetailerArgs] = None,
         override_settings: Optional[OverRideSettings] = None,
     ) -> List[str]:
         """
         Generates images from text files and saves them to the specified output directory.
 
         Args:
+            adetailer_parameters:
             override_settings ():
             diffusion_parameters (DiffusionParser, optional): An instance of the DiffusionParser class
                 that contains the parameters for the diffusion process.
@@ -157,7 +160,8 @@ class StableDiffusionApp(BaseModel):
 
         if controlnet_parameters:
             alwayson_scripts[ALWAYSON_SCRIPTS_KEY].update(make_cn_payload([controlnet_parameters]))
-
+        if adetailer_parameters:
+            alwayson_scripts[ALWAYSON_SCRIPTS_KEY].update(adetailer_parameters.make_pyload())
         self.txt2img_params.add_payload(alwayson_scripts)
         self.txt2img_params.add_payload(override_settings.dict())
         images_paths = await self._make_image_gen_request(self.txt2img_params.current, API_TXT2IMG)

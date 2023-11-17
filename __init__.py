@@ -11,13 +11,12 @@ from graia.ariadne.message.chain import MessageChain, Image
 from graia.ariadne.message.parser.base import MatchRegex, ContainKeyword
 from graia.ariadne.model import Group, Friend
 
-from modules.auth.permissions import Permission, PermissionCode
-from modules.auth.resources import required_perm_generator
 from modules.cmd import CmdBuilder
-from modules.cmd import RequiredPermission, ExecutableNode, NameSpaceNode
+from modules.cmd import ExecutableNode, NameSpaceNode
 from modules.file_manager import download_file, get_pwd
 from modules.file_manager import img_to_base64
 from modules.plugin_base import AbstractPlugin
+from .adetailer import ADetailerArgs
 from .api import API_GET_CONFIG
 from .controlnet import ControlNetUnit, Controlnet, ControlNetDetect
 from .extractors import get_image_url, make_image_form_paths
@@ -91,6 +90,7 @@ class StableDiffusionPlugin(AbstractPlugin):
     CONFIG_HR_SCALE = "hr_scale"
     CONFIG_ENABLE_TRANSLATE = "enable_translate"
     CONFIG_ENABLE_CONTROLNET = "enable_controlnet"
+    CONFIG_ENABLE_ADETAILER: str = "enable_adetailer"
     CONFIG_ENABLE_SHUFFLE_PROMPT = "enable_shuffle_prompt"
     CONFIG_ENABLE_DYNAMIC_PROMPT = "enable_dynamic_prompt"
     CONFIG_CURRENT_MODEL_ID = "crmodel"
@@ -111,6 +111,7 @@ class StableDiffusionPlugin(AbstractPlugin):
         CONFIG_DENO_STRENGTH: 0.65,
         CONFIG_ENABLE_TRANSLATE: 0,
         CONFIG_ENABLE_CONTROLNET: 0,
+        CONFIG_ENABLE_ADETAILER: 0,
         CONFIG_ENABLE_SHUFFLE_PROMPT: 0,
         CONFIG_ENABLE_DYNAMIC_PROMPT: 1,
         CONFIG_SEND_BATCH_SIZE: 18,
@@ -128,7 +129,7 @@ class StableDiffusionPlugin(AbstractPlugin):
 
     @classmethod
     def get_plugin_version(cls) -> str:
-        return "0.1.7"
+        return "0.1.8"
 
     @classmethod
     def get_plugin_author(cls) -> str:
@@ -171,13 +172,9 @@ class StableDiffusionPlugin(AbstractPlugin):
             self.CONFIG_ENABLE_SHUFFLE_PROMPT,
             self.CONFIG_ENABLE_CONTROLNET,
             self.CONFIG_CONTROLNET_MODULE,
+            self.CONFIG_ENABLE_ADETAILER,
             self.CONFIG_CONTROLNET_MODEL,
         ]
-
-        su_perm = Permission(id=PermissionCode.SuperPermission.value, name=self.get_plugin_name())
-        req_perm: RequiredPermission = required_perm_generator(
-            target_resource_name=self.get_plugin_name(), super_permissions=[su_perm]
-        )
 
         # endregion
 
@@ -248,37 +245,31 @@ class StableDiffusionPlugin(AbstractPlugin):
 
         tree = NameSpaceNode(
             name=CMD.ROOT,
-            required_permissions=req_perm,
+            required_permissions=self.required_permission,
             help_message=self.get_plugin_description(),
             children_node=[
                 NameSpaceNode(
                     name=CMD.CONFIG,
-                    required_permissions=req_perm,
                     children_node=[
                         ExecutableNode(
                             name=CMD.LIST_OUT,
-                            required_permissions=req_perm,
                             source=cmd_builder.build_list_out_for(configurable_options),
                         ),
                         ExecutableNode(
                             name=CMD.SET,
-                            required_permissions=req_perm,
                             source=cmd_builder.build_setter_hall(),
                         ),
                     ],
                 ),
                 NameSpaceNode(
                     name=CMD.CONTROLNET,
-                    required_permissions=req_perm,
                     children_node=[
                         ExecutableNode(
                             name=CMD.MODELS,
-                            required_permissions=req_perm,
                             source=lambda: "CN_Models:\n" + "\n".join(controlnet_app.models),
                         ),
                         ExecutableNode(
                             name=CMD.MODULES,
-                            required_permissions=req_perm,
                             source=lambda: "CN_Modules:\n" + "\n".join(controlnet_app.modules),
                         ),
                         ExecutableNode(
@@ -290,18 +281,15 @@ class StableDiffusionPlugin(AbstractPlugin):
                 ),
                 NameSpaceNode(
                     name=CMD.AGAIN,
-                    required_permissions=req_perm,
                     help_message="Generate from history, img2img or txt2img",
                     children_node=[
                         ExecutableNode(
                             name=CMD.TXT2IMG,
-                            required_permissions=req_perm,
                             help_message=diffusion_history_t.__doc__,
                             source=diffusion_history_t,
                         ),
                         ExecutableNode(
                             name=CMD.IMG2IMG,
-                            required_permissions=req_perm,
                             help_message=diffusion_history_i.__doc__,
                             source=diffusion_history_i,
                         ),
@@ -309,23 +297,19 @@ class StableDiffusionPlugin(AbstractPlugin):
                 ),
                 NameSpaceNode(
                     name=CMD.LIKE,
-                    required_permissions=req_perm,
                     help_message="mark last generation as liked,or generate from favorite",
                     children_node=[
                         NameSpaceNode(
                             name=CMD.SIZE,
-                            required_permissions=req_perm,
                             help_message="the size of the Favorite storage",
                             children_node=[
                                 ExecutableNode(
                                     name=CMD.TXT2IMG,
-                                    required_permissions=req_perm,
                                     source=lambda: f"The size of the t2i Favorite storage is: \n"
                                     f"{len(self.sd_app.txt2img_params.favorite)}",
                                 ),
                                 ExecutableNode(
                                     name=CMD.IMG2IMG,
-                                    required_permissions=req_perm,
                                     source=lambda: f"The size of the i2i Favorite storage is: \n"
                                     f"{len(self.sd_app.img2img_params.favorite)}",
                                 ),
@@ -333,28 +317,23 @@ class StableDiffusionPlugin(AbstractPlugin):
                         ),
                         ExecutableNode(
                             name=CMD.TXT2IMG,
-                            required_permissions=req_perm,
                             source=lambda: f"add to t2i favorite\nSuccess={self.sd_app.add_favorite_t()}",
                         ),
                         ExecutableNode(
                             name=CMD.IMG2IMG,
-                            required_permissions=req_perm,
                             source=lambda: f"add to i2i favorite\nSuccess={self.sd_app.add_favorite_i()}",
                         ),
                         NameSpaceNode(
                             name=CMD.AGAIN,
-                            required_permissions=req_perm,
                             help_message="retrieve a favorite generation, with index or random",
                             children_node=[
                                 ExecutableNode(
                                     name=CMD.TXT2IMG,
-                                    required_permissions=req_perm,
                                     help_message=diffusion_favorite_t.__doc__,
                                     source=diffusion_favorite_t,
                                 ),
                                 ExecutableNode(
                                     name=CMD.IMG2IMG,
-                                    required_permissions=req_perm,
                                     help_message=diffusion_favorite_i.__doc__,
                                     source=diffusion_favorite_i,
                                 ),
@@ -364,24 +343,20 @@ class StableDiffusionPlugin(AbstractPlugin):
                 ),
                 NameSpaceNode(
                     name=CMD.DEFAULT,
-                    required_permissions=req_perm,
                     help_message="Set default settings for the plugin",
                     children_node=[
                         ExecutableNode(
                             name=CMD.POS_PROMPT,
-                            required_permissions=req_perm,
                             help_message=set_default_pos_prompt.__doc__,
                             source=lambda x: f"Set pos prompt to\n{x}\n\nSuccess={set_default_pos_prompt(x)}",
                         ),
                         ExecutableNode(
                             name=CMD.NEG_PROMPT,
-                            required_permissions=req_perm,
                             help_message=set_default_neg_prompt.__doc__,
                             source=lambda x: f"Set neg prompt to\n{x}\nSuccess={set_default_neg_prompt(x)}",
                         ),
                         ExecutableNode(
                             name=CMD.SHOT_SIZE,
-                            required_permissions=req_perm,
                             help_message=set_shot_size.__doc__,
                             source=lambda x: f"Set shot size\nSuccess={set_shot_size(x)}",
                         ),
@@ -419,7 +394,7 @@ class StableDiffusionPlugin(AbstractPlugin):
                 ),
             ],
         )
-        self._auth_manager.add_perm_from_req(req_perm)
+
         self._root_namespace_node.add_node(tree)
 
         processor.register(
@@ -519,12 +494,22 @@ class StableDiffusionPlugin(AbstractPlugin):
                     negative_prompt=final_neg_prompt,
                     styles=self._config_registry.get_config(self.CONFIG_STYLES),  # Get styles from configuration
                 )
+
+                adetailer_parser = (
+                    ADetailerArgs(
+                        ad_prompt=final_pos_prompt,
+                        ad_negative_prompt=final_neg_prompt,
+                    )
+                    if self.config_registry.get_config(self.CONFIG_ENABLE_ADETAILER)
+                    else None
+                )
                 if image_url:
                     send_result.extend(
                         await _make_img2img(diffusion_parser, image_url, override_settings=overrides)
                     )  # Make image-to-image diffusion
                 else:
                     # Generate the image using the diffusion parser
+
                     send_result.extend(
                         await self.sd_app.txt2img(
                             diffusion_parameters=diffusion_parser,
@@ -533,6 +518,7 @@ class StableDiffusionPlugin(AbstractPlugin):
                                 hr_scale=self._config_registry.get_config(self.CONFIG_HR_SCALE),
                                 denoising_strength=self._config_registry.get_config(self.CONFIG_DENO_STRENGTH),
                             ),
+                            adetailer_parameters=adetailer_parser,
                             override_settings=overrides,
                         )
                     )
