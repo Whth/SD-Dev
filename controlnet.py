@@ -1,5 +1,5 @@
 import warnings
-from typing import NamedTuple, Dict, List
+from typing import Dict, List
 
 import aiohttp
 from aiohttp import ClientConnectorError
@@ -10,14 +10,14 @@ from .api import (
     API_CONTROLNET_MODULE_LIST,
     API_CONTROLNET_DETECT,
     CONTROLNET_KEY,
-    ARGS_KEY,
     CONTROLNET_MODEL_KEY,
     CONTROLNET_MODULE_KEY,
     IMAGES_KEY,
+    alwayson_scripts_pyload_wrapper,
 )
 
 
-class ControlNetUnit(NamedTuple):
+class ControlNetUnit(BaseModel):
     """
     containing control net parsers
     detailed api wiki see
@@ -205,7 +205,8 @@ class Controlnet(object):
         return make_cn_payload(passed_units)
 
 
-def make_cn_payload(units: List[ControlNetUnit]) -> Dict:
+@alwayson_scripts_pyload_wrapper(CONTROLNET_KEY)
+def make_cn_payload(units: List[ControlNetUnit]) -> List[Dict]:
     """
     Generate a payload dictionary from a list of ControlNetUnit objects.
 
@@ -217,6 +218,5 @@ def make_cn_payload(units: List[ControlNetUnit]) -> Dict:
     """
     unit_seq: List[Dict] = []
     for unit in units:
-        unit: ControlNetUnit
-        unit_seq.append(unit._asdict())
-    return {CONTROLNET_KEY: {ARGS_KEY: unit_seq}}
+        unit_seq.append(unit.dict())
+    return unit_seq
