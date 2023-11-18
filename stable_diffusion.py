@@ -18,6 +18,7 @@ from .api import (
     API_MODELS,
     API_LORAS,
     API_INTERROGATE,
+    merge_payloads,
 )
 from .controlnet import ControlNetUnit, make_cn_payload
 from .parser import DiffusionParser, HiResParser, OverRideSettings, InterrogateParser
@@ -131,39 +132,42 @@ class StableDiffusionApp(BaseModel):
         hires_parameters: HiResParser = HiResParser(),
         controlnet_parameters: Optional[ControlNetUnit] = None,
         adetailer_parameters: Optional[ADetailerArgs] = None,
-        override_settings: Optional[OverRideSettings] = None,
+        override_settings: Optional[OverRideSettings] = OverRideSettings(),
     ) -> List[str]:
         """
-        Generates images from text files and saves them to the specified output directory.
+        Convert a text to an image using various parameters.
 
         Args:
-            adetailer_parameters:
-            override_settings ():
-            diffusion_parameters (DiffusionParser, optional): An instance of the DiffusionParser class
-                that contains the parameters for the diffusion process.
-                Defaults to DiffusionParser().
-            hires_parameters (HiResParser, optional): An instance of the HiResParser class
-                that contains the parameters for the HiRes process.
-                Defaults to HiResParser().
-            controlnet_parameters (ControlNetUnit, optional): An instance of the ControlNetUnit class
-                that contains the parameters for the controlnet process.
-                Defaults to None.
+            diffusion_parameters (DiffusionParser): Parameters for the diffusion process. Default is DiffusionParser().
+            hires_parameters (HiResParser): Parameters for the high-resolution process. Default is HiResParser().
+            controlnet_parameters (Optional[ControlNetUnit]): Parameters for the control net. Default is None.
+            adetailer_parameters (Optional[ADetailerArgs]): Parameters for the adetailer. Default is None.
+            override_settings (Optional[OverRideSettings]): Override settings for the conversion process.
+                Default is OverRideSettings().
 
         Returns:
             List[str]: A list of paths to the generated images.
         """
 
         self.txt2img_params.payload_init()
-        alwayson_scripts: Dict = {ALWAYSON_SCRIPTS_KEY: {}}
-        self.txt2img_params.add_payload(diffusion_parameters.dict())
-        self.txt2img_params.add_payload(hires_parameters.dict(exclude_none=True))
 
-        if controlnet_parameters:
-            alwayson_scripts[ALWAYSON_SCRIPTS_KEY].update(make_cn_payload([controlnet_parameters]))
-        if adetailer_parameters:
-            alwayson_scripts[ALWAYSON_SCRIPTS_KEY].update(adetailer_parameters.make_pyload())
-        self.txt2img_params.add_payload(alwayson_scripts)
-        self.txt2img_params.add_payload(override_settings.dict())
+        self.txt2img_params.add_payload(
+            merge_payloads(
+                diffusion_parameters.dict(),
+                hires_parameters.dict(exclude_none=True),
+                override_settings.dict(),
+            )
+        )
+
+        self.txt2img_params.add_payload(
+            {
+                ALWAYSON_SCRIPTS_KEY: merge_payloads(
+                    adetailer_parameters.make_pyload() if adetailer_parameters else None,
+                    make_cn_payload([controlnet_parameters]) if controlnet_parameters else None,
+                )
+            }
+        )
+
         images_paths = await self._make_image_gen_request(self.txt2img_params.current, API_TXT2IMG)
 
         self.txt2img_params.store()
@@ -174,34 +178,31 @@ class StableDiffusionApp(BaseModel):
         self,
         diffusion_parameters: DiffusionParser = DiffusionParser(),
         controlnet_parameters: Optional[ControlNetUnit] = None,
+        adetailer_parameters: Optional[ADetailerArgs] = None,
         image_path: Optional[str] = None,
         image_base64: Optional[str] = None,
-        override_settings: Optional[OverRideSettings] = None,
+        override_settings: Optional[OverRideSettings] = OverRideSettings(),
     ) -> List[str]:
         """
-        Converts an image to another image using the specified diffusion parameters and
-        controlnet parameters (optional).
-        Saves the generated images to the specified output directory.
+        Asynchronously converts an image to another image using various parameters.
 
         Args:
-            override_settings ():
-            image_base64 ():
-            image_path: The path of the input image file.
-            diffusion_parameters: An instance of DiffusionParser class containing the diffusion parameters.
-            controlnet_parameters: An optional instance of ControlNetUnit class containing the controlnet parameters.
+            diffusion_parameters (DiffusionParser): An instance of the DiffusionParser class that contains
+                the diffusion parameters.
+            controlnet_parameters (Optional[ControlNetUnit]): An optional instance of the ControlNetUnit class
+                that contains the controlnet parameters.
+            adetailer_parameters (Optional[ADetailerArgs]): An optional instance of the ADetailerArgs class
+                that contains the adetailer parameters.
+            image_path (Optional[str]): An optional string representing the path of the input image.
+            image_base64 (Optional[str]): An optional string representing the base64 encoded input image.
+            override_settings (Optional[OverRideSettings]): An optional instance of the OverRideSettings class
+                that contains the override settings.
 
         Returns:
-            A list of file paths of the saved generated images.
+            List[str]: A list of strings representing the paths of the converted images.
         """
-
         # Create the payload dictionary to be sent in the request
         self.img2img_params.payload_init()
-
-        # Create a dictionary to store the alwayson scripts
-        alwayson_scripts: Dict = {ALWAYSON_SCRIPTS_KEY: {}}
-
-        # Add the diffusion parameters to the payload
-        self.img2img_params.add_payload(diffusion_parameters.dict())
 
         if image_path:
             # Convert the input image to base64 and add it to the payload
@@ -210,16 +211,24 @@ class StableDiffusionApp(BaseModel):
             png_payload: Dict = {INIT_IMAGES_KEY: [image_base64]}
         else:
             raise ValueError("one of image_path and image_base64 must be specified!")
-        self.img2img_params.add_payload(png_payload)
-
-        # If controlnet parameters are provided, update the alwayson scripts with them
-        if controlnet_parameters:
-            alwayson_scripts[ALWAYSON_SCRIPTS_KEY].update(make_cn_payload([controlnet_parameters]))
+        self.img2img_params.add_payload(
+            merge_payloads(
+                diffusion_parameters.dict(),
+                override_settings.dict(),
+                png_payload,
+            )
+        )
 
         # Add the alwayson scripts to the payload
-        self.img2img_params.add_payload(alwayson_scripts)
+        self.img2img_params.add_payload(
+            {
+                ALWAYSON_SCRIPTS_KEY: merge_payloads(
+                    adetailer_parameters.make_pyload() if adetailer_parameters else None,
+                    make_cn_payload([controlnet_parameters]) if controlnet_parameters else None,
+                )
+            }
+        )
 
-        self.img2img_params.add_payload(override_settings.dict()) if override_settings else None
         images_paths = await self._make_image_gen_request(self.img2img_params.current, API_IMG2IMG)
 
         self.img2img_params.store()
