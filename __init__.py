@@ -16,7 +16,7 @@ from modules.cmd import ExecutableNode, NameSpaceNode
 from modules.file_manager import download_file, get_pwd
 from modules.file_manager import img_to_base64
 from modules.plugin_base import AbstractPlugin
-from .adetailer import ADetailerArgs
+from .adetailer import ADetailerArgs, ADetailerUnit, ModelType
 from .api import API_GET_CONFIG
 from .controlnet import ControlNetUnit, Controlnet, ControlNetDetect
 from .extractors import get_image_url, make_image_form_paths
@@ -497,8 +497,28 @@ class StableDiffusionPlugin(AbstractPlugin):
 
                 adetailer_parser = (
                     ADetailerArgs(
-                        ad_prompt=final_pos_prompt,
-                        ad_negative_prompt=final_neg_prompt,
+                        ad_unit=[
+                            ADetailerUnit(
+                                ad_model=ModelType.MEDIAPIPE_FACE_FULL.value,
+                                ad_prompt=final_pos_prompt,
+                                ad_negative_prompt=final_neg_prompt,
+                            ),
+                            ADetailerUnit(
+                                ad_model=ModelType.HAND_YOLOV8N.value,
+                                ad_prompt=final_pos_prompt,
+                                ad_negative_prompt=final_neg_prompt,
+                            ),
+                            ADetailerUnit(
+                                ad_model=ModelType.MEDIAPIPE_FACE_MESH_EYES_ONLY.value,
+                                ad_prompt=final_pos_prompt,
+                                ad_negative_prompt=final_neg_prompt,
+                            ),
+                            ADetailerUnit(
+                                ad_model=ModelType.PERSON_YOLOV8NSEG.value,
+                                ad_prompt=final_pos_prompt,
+                                ad_negative_prompt=final_neg_prompt,
+                            ),
+                        ]
                     )
                     if self.config_registry.get_config(self.CONFIG_ENABLE_ADETAILER)
                     else None
