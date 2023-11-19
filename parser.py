@@ -5,6 +5,7 @@ import aiohttp
 from pydantic import BaseModel, Field, PrivateAttr
 
 from modules.shared import img_to_base64
+from .api import API_GET_CONFIG
 
 __DEFAULT_NEGATIVE_PROMPT__ = (
     "poorly drawn face,mutation,blurry,malformed limbs,disfigured,missing arms,missing legs,deformed legs,"
@@ -195,6 +196,7 @@ class Options(BaseModel):
         allow_mutation = True
         validate_assignment = True
 
+    host_url: str = Field(exclude=True)
     samples_save: bool = True
     samples_format: str = "png"
     samples_filename_pattern: str = "[seed]"
@@ -434,12 +436,9 @@ class Options(BaseModel):
     _hall_bak_dict: Dict[str, Any] = PrivateAttr(default={})
     _changed_bak_dict: Dict[str, Any] = PrivateAttr(default={})
 
-    async def fetch_config(self, api_config_url: str):
+    async def fetch_config(self):
         """
         Fetches the configuration from the specified API endpoint.
-
-        Parameters:
-            api_config_url (str): The URL of the API endpoint to fetch the configuration from.
 
         Raises:
             KeyError: If a key in the configuration dictionary is not found in the instance.
@@ -448,7 +447,7 @@ class Options(BaseModel):
             None
         """
         async with aiohttp.ClientSession() as session:
-            async with session.get(api_config_url) as response:
+            async with session.get(f"{self.host_url}/{API_GET_CONFIG}") as response:
                 config_dict: Dict[str, Any] = await response.json()
 
         updated_config_count: int = self.load_dict_to_config(config_dict=config_dict)
