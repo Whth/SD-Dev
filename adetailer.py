@@ -64,4 +64,4 @@ class ADetailerArgs(BaseModel):
 
     @alwayson_scripts_pyload_wrapper("ADetailer")
     def make_pyload(self) -> List[Dict[str, Any]]:
-        return [True, False] + [x.dict() for x in self.ad_unit]
+        return [x.dict() for x in self.ad_unit]
