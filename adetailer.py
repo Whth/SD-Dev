@@ -23,7 +23,7 @@ class ModelType(Enum):
     PERSON_YOLOV8SSEG = "person_yolov8s-seg.pt"
 
 
-ad_models = {
+ad_models: Set[str] = {
     ModelType.MEDIAPIPE_FACE_SHORT.value,
     ModelType.MEDIAPIPE_FACE_FULL.value,
     ModelType.MEDIAPIPE_FACE_MESH.value,
@@ -37,17 +37,28 @@ ad_models = {
 
 
 class ADetailerUnit(BaseModel):
+    class Config:
+        allow_mutation = False
+        validate_assignment = True
+
     ad_models: ClassVar[Set[str]] = ad_models
 
     ad_model: str = Field(default=ModelType.MEDIAPIPE_FACE_FULL.value)
     ad_prompt: str = ""
     ad_negative_prompt: str = ""
     ad_denoising_strength: confloat(ge=0.0, le=1.0) = 0.4
+    ad_controlnet_model: str = None
+    ad_controlnet_module: str = None
+    ad_controlnet_weight: confloat(ge=0.0, le=1.0) = 1.0
+    ad_controlnet_guidance_start: confloat(ge=0.0, le=1.0) = 0.1
+    ad_controlnet_guidance_end: confloat(ge=0.0, le=1.0) = 0.9
+    ad_use_clip_skip: bool = False
+    ad_clip_skip: int = 2
 
     @validator("ad_model")
     def validate_ad_model(cls, v):
-        if v not in ad_models:
-            raise ValueError(f"ad_model must be one of {ad_models}")
+        if v not in cls.ad_models:
+            raise ValueError(f"ad_model must be one of {cls.ad_models}")
         return v
 
 
@@ -64,4 +75,4 @@ class ADetailerArgs(BaseModel):
 
     @alwayson_scripts_pyload_wrapper("ADetailer")
     def make_pyload(self) -> List[Dict[str, Any]]:
-        return [x.dict() for x in self.ad_unit]
+        return [unit.dict(exclude_none=True) for unit in self.ad_unit]
