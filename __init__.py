@@ -11,13 +11,17 @@ from graia.ariadne.message.chain import MessageChain, Image
 from graia.ariadne.message.parser.base import MatchRegex, ContainKeyword
 from graia.ariadne.model import Group, Friend
 
-from modules.cmd import CmdBuilder
-from modules.cmd import ExecutableNode, NameSpaceNode
-from modules.file_manager import download_file, get_pwd
-from modules.file_manager import img_to_base64
-from modules.plugin_base import AbstractPlugin
+from modules.shared import (
+    make_stdout_seq_string,
+    CmdBuilder,
+    ExecutableNode,
+    NameSpaceNode,
+    download_file,
+    get_pwd,
+    img_to_base64,
+    AbstractPlugin,
+)
 from .adetailer import ADetailerArgs, ADetailerUnit, ModelType
-from .api import API_GET_CONFIG
 from .controlnet import ControlNetUnit, Controlnet, ControlNetDetect
 from .extractors import get_image_url, make_image_form_paths
 from .parser import (
@@ -32,7 +36,13 @@ from .parser import (
     RefinerParser,
 )
 from .stable_diffusion import StableDiffusionApp, DiffusionParser, HiResParser
-from .utils import extract_prompts, PromptProcessorRegistry, shuffle_prompt, split_list
+from .utils import (
+    extract_prompts,
+    PromptProcessorRegistry,
+    shuffle_prompt,
+    split_list,
+    make_lora_replace_process_engine,
+)
 
 __all__ = ["StableDiffusionPlugin"]
 
@@ -63,6 +73,8 @@ class CMD:
 
     CONTROLNET = "cn"
     CONTROLNET_DETECT = "d"
+
+    FETCH: str = "fetch"
 
 
 class StableDiffusionPlugin(AbstractPlugin):
@@ -163,7 +175,7 @@ class StableDiffusionPlugin(AbstractPlugin):
         random_prompt_gen = RandomPromptGenerator(
             wildcard_manager=WildcardManager(path=self._config_registry.get_config(self.CONFIG_WILDCARD_DIR_PATH))
         )
-        sd_options = Options()
+        sd_options = Options(host_url=self.config_registry.get_config(self.CONFIG_SD_HOST))
         processor = PromptProcessorRegistry()
 
         configurable_options: List[str] = [
@@ -249,6 +261,29 @@ class StableDiffusionPlugin(AbstractPlugin):
             return f"Pos prompt\n----------------\n{pos_prompt}\n\nNeg prompt\n----------------\n{neg_prompt}"
 
         # endregion
+        @self.receiver(ApplicationLaunch)
+        async def fetch_resources():
+            """
+            Asynchronous function that fetches resources upon application launch.
+
+            This function is decorated with `@self.receiver(ApplicationLaunch)` to indicate that it is a receiver for the `ApplicationLaunch` event.
+
+            The function performs the following tasks:
+            - Calls the `fetch_resources()` method of the `controlnet_app` object.
+            - Calls the `fetch_config()` method of the `sd_options` object.
+            - Calls the `fetch_sd_models()` method of the `self.sd_app` object.
+            - Calls the `fetch_lora_models()` method of the `self.sd_app` object.
+
+            Parameters:
+                None
+
+            Returns:
+                None
+            """
+            await controlnet_app.fetch_resources()
+            await sd_options.fetch_config()
+            await self.sd_app.fetch_sd_models()
+            await self.sd_app.fetch_lora_models()
 
         tree = NameSpaceNode(
             name=CMD.ROOT,
@@ -273,11 +308,11 @@ class StableDiffusionPlugin(AbstractPlugin):
                     children_node=[
                         ExecutableNode(
                             name=CMD.MODELS,
-                            source=lambda: "CN_Models:\n" + "\n".join(controlnet_app.models),
+                            source=lambda: make_stdout_seq_string(controlnet_app.models, title="CN_Models"),
                         ),
                         ExecutableNode(
                             name=CMD.MODULES,
-                            source=lambda: "CN_Modules:\n" + "\n".join(controlnet_app.modules),
+                            source=lambda: make_stdout_seq_string(controlnet_app.modules, title="CN_Modules"),
                         ),
                         ExecutableNode(
                             name=CMD.CONTROLNET_DETECT,
@@ -381,24 +416,23 @@ class StableDiffusionPlugin(AbstractPlugin):
                         ExecutableNode(
                             name=CMD.LORA_MODEL,
                             help_message="get available lora models",
-                            source=lambda: f"SD Lora Models\n"
-                            f"{len(self.sd_app.available_lora_models)} models in total\n"
-                            f"-------------\n"
-                            + "\n".join(f"[{i}]: {model}" for i, model in enumerate(self.sd_app.available_lora_models)),
+                            source=lambda: make_stdout_seq_string(
+                                seq=self.sd_app.available_lora_models, title="Lora Models"
+                            ),
                         ),
                         ExecutableNode(
                             name=CMD.NORMAL_MODEL,
                             help_message="get available stable diffusion models",
-                            source=lambda: f"SD Stable Diffusion Models\n"
-                            f"{len(self.sd_app.available_sd_models)} models in total\n"
-                            f"-------------\n"
-                            + "\n".join(f"[{i}]: {model}" for i, model in enumerate(self.sd_app.available_sd_models)),
+                            source=lambda: make_stdout_seq_string(
+                                seq=self.sd_app.available_sd_models, title="StableDiffusion Models"
+                            ),
                         ),
                     ],
                 ),
                 ExecutableNode(
                     name=CMD.INTERROGATE, help_message="Interrogate the image content", source=lambda x: None
                 ),
+                ExecutableNode(name=CMD.FETCH, help_message=fetch_resources.__doc__, source=fetch_resources),
             ],
         )
 
@@ -421,13 +455,11 @@ class StableDiffusionPlugin(AbstractPlugin):
             process_engine=shuffle_prompt,
             process_name="SHUFFLE",
         )
-
-        @self.receiver(ApplicationLaunch)
-        async def fetch_resources():
-            await controlnet_app.fetch_resources()
-            await sd_options.fetch_config(f"{self.sd_app.host_url}/{API_GET_CONFIG}")
-            await self.sd_app.fetch_sd_models()
-            await self.sd_app.fetch_lora_models()
+        processor.register(
+            judge=lambda: True,
+            process_engine=make_lora_replace_process_engine(self.sd_app.available_lora_models),
+            process_name="LORA_REPLACE",
+        )
 
         # region castings
         @self.receiver(
@@ -600,10 +632,6 @@ class StableDiffusionPlugin(AbstractPlugin):
             img_base64_list = await controlnet_app.detect(payload=pay_load)
 
             await app.send_message(target, [Image(base64=img_base64) for img_base64 in img_base64_list])
-
-            # endregion
-
-            # region internal tools
 
         @self.receiver(
             [FriendMessage, GroupMessage],
