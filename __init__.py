@@ -595,7 +595,9 @@ class StableDiffusionPlugin(AbstractPlugin):
                                 hr_scale=self._config_registry.get_config(self.CONFIG_HR_SCALE),
                                 hr_upscaler=self.sd_app.available_upscalers[
                                     self._config_registry.get_config(self.CONFIG_UPSCALER)
-                                ],
+                                ]
+                                if self.sd_app.available_upscalers
+                                else "",
                                 denoising_strength=self._config_registry.get_config(self.CONFIG_DENO_STRENGTH),
                             ),
                             refiner_parameters=ref_parser,
