@@ -129,11 +129,11 @@ class StableDiffusionApp(BaseModel):
     async def txt2img(
         self,
         diffusion_parameters: DiffusionParser = DiffusionParser(),
-        hires_parameters: HiResParser = HiResParser(),
+        hires_parameters: Optional[HiResParser] = None,
         refiner_parameters: Optional[RefinerParser] = None,
         controlnet_parameters: Optional[ControlNetUnit] = None,
         adetailer_parameters: Optional[ADetailerArgs] = None,
-        override_settings: Optional[OverRideSettings] = OverRideSettings(),
+        override_settings: Optional[OverRideSettings] = None,
     ) -> List[str]:
         """
         Generate an image from a text using the specified parameters.
@@ -159,8 +159,8 @@ class StableDiffusionApp(BaseModel):
         self.txt2img_params.add_payload(
             merge_payloads(
                 diffusion_parameters.dict(),
-                hires_parameters.dict(exclude_none=True),
-                override_settings.dict(),
+                hires_parameters.dict(exclude_none=True) if hires_parameters else None,
+                override_settings.dict() if override_settings else None,
                 refiner_parameters.dict() if refiner_parameters else None,
             )
         )
@@ -183,12 +183,12 @@ class StableDiffusionApp(BaseModel):
     async def img2img(
         self,
         diffusion_parameters: DiffusionParser = DiffusionParser(),
-        refiner_parameters: Optional[RefinerParser] = RefinerParser(),
+        refiner_parameters: Optional[RefinerParser] = None,
         controlnet_parameters: Optional[ControlNetUnit] = None,
         adetailer_parameters: Optional[ADetailerArgs] = None,
+        override_settings: Optional[OverRideSettings] = None,
         image_path: Optional[str] = None,
         image_base64: Optional[str] = None,
-        override_settings: Optional[OverRideSettings] = OverRideSettings(),
     ) -> List[str]:
         """
         Generate image(s) from the given input image using diffusion-based algorithms and refinement techniques.
@@ -217,9 +217,9 @@ class StableDiffusionApp(BaseModel):
             raise ValueError("one of image_path and image_base64 must be specified!")
         self.img2img_params.add_payload(
             merge_payloads(
-                diffusion_parameters.dict(),
-                override_settings.dict(),
                 png_payload,
+                diffusion_parameters.dict(),
+                override_settings.dict() if override_settings else None,
                 refiner_parameters.dict() if refiner_parameters else None,
             )
         )
@@ -301,11 +301,13 @@ class StableDiffusionApp(BaseModel):
 
     async def fetch_sd_models(self) -> List[Dict]:
         models_detail_list: List[Dict] = await self._make_query_request(API_MODELS)
+        self.available_sd_models.clear()
         self.available_sd_models.extend(map(lambda x: x["title"], models_detail_list))
         return models_detail_list
 
     async def fetch_lora_models(self) -> List[Dict]:
         models_detail_list: List[Dict] = await self._make_query_request(API_LORAS)
+        self.available_lora_models.clear()
         self.available_lora_models.extend(map(lambda x: x["name"], models_detail_list))
 
         return models_detail_list
