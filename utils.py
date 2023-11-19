@@ -257,3 +257,21 @@ def split_list(input_list: List, sublist_size: int, strip_remains: bool = False)
         result = result[:-1]
 
     return result
+
+
+def make_lora_replace_process_engine(lora_list: List[str]) -> Callable:
+    pat = re.compile(r"(lora:(\d+)(?::(\d+\.\d+))?)")
+
+    def lora_wrapper(lora: str, strength: str) -> str:
+        if not strength:
+            strength = 1.0
+        return f"<lora:{lora}:{strength}>"
+
+    def process_engine(prompt: str) -> str:
+        matched = pat.findall(prompt)
+        if matched:
+            for m in matched:
+                prompt = prompt.replace(m[0], lora_wrapper(lora_list[int(m[1])], m[2]))
+        return prompt
+
+    return process_engine
