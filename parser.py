@@ -145,8 +145,12 @@ class DiffusionParser(BaseModel):
 
 
 class RefinerParser(BaseModel):
+    class Config:
+        allow_mutation = False
+        validate_assignment = True
+
     refiner_checkpoint: str = Field(default="")
-    refiner_switch_at: float = Field(default=0.0, ge=0.0, le=1.0)
+    refiner_switch_at: float = Field(default=0.8, ge=0.0, le=1.0)
 
 
 class HiResParser(BaseModel):

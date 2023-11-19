@@ -29,6 +29,7 @@ from .parser import (
     Options,
     OverRideSettings,
     InterrogateParser,
+    RefinerParser,
 )
 from .stable_diffusion import StableDiffusionApp, DiffusionParser, HiResParser
 from .utils import extract_prompts, PromptProcessorRegistry, shuffle_prompt, split_list
@@ -94,6 +95,8 @@ class StableDiffusionPlugin(AbstractPlugin):
     CONFIG_ENABLE_SHUFFLE_PROMPT = "enable_shuffle_prompt"
     CONFIG_ENABLE_DYNAMIC_PROMPT = "enable_dynamic_prompt"
     CONFIG_CURRENT_MODEL_ID = "crmodel"
+    CONFIG_REFINER_MODEL_ID = "rfmodel"
+    CONFIG_ENABLE_REFINER = "enable_refiner"
     CONFIG_SEND_BATCH_SIZE = "send_batch_size"
     DefaultConfig = {
         CONFIG_POS_KEYWORD: "+",
@@ -105,6 +108,7 @@ class StableDiffusionPlugin(AbstractPlugin):
         CONFIG_CONTROLNET_MODULE: "openpose_full",
         CONFIG_CONTROLNET_MODEL: "control_v11p_sd15_openpose",
         CONFIG_CURRENT_MODEL_ID: 0,
+        CONFIG_REFINER_MODEL_ID: 0,
         CONFIG_STYLES: [],
         CONFIG_ENABLE_HR: 0,
         CONFIG_HR_SCALE: 1.55,
@@ -112,6 +116,7 @@ class StableDiffusionPlugin(AbstractPlugin):
         CONFIG_ENABLE_TRANSLATE: 0,
         CONFIG_ENABLE_CONTROLNET: 0,
         CONFIG_ENABLE_ADETAILER: 0,
+        CONFIG_ENABLE_REFINER: 0,
         CONFIG_ENABLE_SHUFFLE_PROMPT: 0,
         CONFIG_ENABLE_DYNAMIC_PROMPT: 1,
         CONFIG_SEND_BATCH_SIZE: 18,
@@ -129,7 +134,7 @@ class StableDiffusionPlugin(AbstractPlugin):
 
     @classmethod
     def get_plugin_version(cls) -> str:
-        return "0.1.8"
+        return "0.1.9"
 
     @classmethod
     def get_plugin_author(cls) -> str:
@@ -163,6 +168,7 @@ class StableDiffusionPlugin(AbstractPlugin):
 
         configurable_options: List[str] = [
             self.CONFIG_CURRENT_MODEL_ID,
+            self.CONFIG_REFINER_MODEL_ID,
             self.CONFIG_SEND_BATCH_SIZE,
             self.CONFIG_ENABLE_HR,
             self.CONFIG_HR_SCALE,
@@ -171,8 +177,9 @@ class StableDiffusionPlugin(AbstractPlugin):
             self.CONFIG_ENABLE_DYNAMIC_PROMPT,
             self.CONFIG_ENABLE_SHUFFLE_PROMPT,
             self.CONFIG_ENABLE_CONTROLNET,
-            self.CONFIG_CONTROLNET_MODULE,
             self.CONFIG_ENABLE_ADETAILER,
+            self.CONFIG_ENABLE_REFINER,
+            self.CONFIG_CONTROLNET_MODULE,
             self.CONFIG_CONTROLNET_MODEL,
         ]
 
@@ -475,7 +482,8 @@ class StableDiffusionPlugin(AbstractPlugin):
             send_batch_size = self.config_registry.get_config(
                 self.CONFIG_SEND_BATCH_SIZE
             )  # Get send batch size from configuration
-            overrides = None
+            overrides: None | OverRideSettings = None
+            ref_parser: None | RefinerParser = None
             if self.sd_app.available_sd_models:
                 sd_options.record_start()
                 sd_options.sd_model_checkpoint = self.sd_app.available_sd_models[
@@ -484,6 +492,17 @@ class StableDiffusionPlugin(AbstractPlugin):
 
                 overrides = sd_options.generate_override_settings_payload(
                     sd_options.record_end(), recover_after_override=False
+                )
+                ref_parser = (
+                    RefinerParser(
+                        refiner_checkpoint=(
+                            self.sd_app.available_sd_models[
+                                self.config_registry.get_config(self.CONFIG_REFINER_MODEL_ID)
+                            ]
+                        )
+                    )
+                    if self.config_registry.get_config(self.CONFIG_ENABLE_REFINER)
+                    else None
                 )
 
             for _ in range(batch_count):
@@ -499,24 +518,16 @@ class StableDiffusionPlugin(AbstractPlugin):
                     ADetailerArgs(
                         ad_unit=[
                             ADetailerUnit(
-                                ad_model=ModelType.MEDIAPIPE_FACE_FULL.value,
-                                ad_prompt=final_pos_prompt,
-                                ad_negative_prompt=final_neg_prompt,
-                            ),
-                            ADetailerUnit(
-                                ad_model=ModelType.HAND_YOLOV8N.value,
-                                ad_prompt=final_pos_prompt,
-                                ad_negative_prompt=final_neg_prompt,
-                            ),
-                            ADetailerUnit(
-                                ad_model=ModelType.MEDIAPIPE_FACE_MESH_EYES_ONLY.value,
-                                ad_prompt=final_pos_prompt,
-                                ad_negative_prompt=final_neg_prompt,
-                            ),
-                            ADetailerUnit(
                                 ad_model=ModelType.PERSON_YOLOV8NSEG.value,
-                                ad_prompt=final_pos_prompt,
-                                ad_negative_prompt=final_neg_prompt,
+                            ),
+                            ADetailerUnit(
+                                ad_model=ModelType.FACE_YOLOV8N.value,
+                            ),
+                            ADetailerUnit(
+                                ad_model=ModelType.MEDIAPIPE_FACE_SHORT.value,
+                            ),
+                            ADetailerUnit(
+                                ad_model=ModelType.MEDIAPIPE_FACE_FULL.value,
                             ),
                         ]
                     )
@@ -525,7 +536,9 @@ class StableDiffusionPlugin(AbstractPlugin):
                 )
                 if image_url:
                     send_result.extend(
-                        await _make_img2img(diffusion_parser, image_url, override_settings=overrides)
+                        await _make_img2img(
+                            diffusion_parser, image_url, override_settings=overrides, refiner_parameters=ref_parser
+                        )
                     )  # Make image-to-image diffusion
                 else:
                     # Generate the image using the diffusion parser
@@ -538,6 +551,7 @@ class StableDiffusionPlugin(AbstractPlugin):
                                 hr_scale=self._config_registry.get_config(self.CONFIG_HR_SCALE),
                                 denoising_strength=self._config_registry.get_config(self.CONFIG_DENO_STRENGTH),
                             ),
+                            refiner_parameters=ref_parser,
                             adetailer_parameters=adetailer_parser,
                             override_settings=overrides,
                         )
@@ -629,7 +643,10 @@ class StableDiffusionPlugin(AbstractPlugin):
             )
 
         async def _make_img2img(
-            diffusion_paser: DiffusionParser, image_url: str, override_settings: OverRideSettings
+            diffusion_paser: DiffusionParser,
+            image_url: str,
+            override_settings: OverRideSettings,
+            refiner_parameters: RefinerParser = None,
         ) -> List[str]:
             # Download the first image in the chain
             print(f"Downloading image from: {image_url}\n")
@@ -653,6 +670,7 @@ class StableDiffusionPlugin(AbstractPlugin):
                 controlnet_parameters=cn_unit,
                 image_base64=img_base64,
                 override_settings=override_settings,
+                refiner_parameters=refiner_parameters,
             )
             return send_result
 

@@ -21,7 +21,7 @@ from .api import (
     merge_payloads,
 )
 from .controlnet import ControlNetUnit, make_cn_payload
-from .parser import DiffusionParser, HiResParser, OverRideSettings, InterrogateParser
+from .parser import DiffusionParser, HiResParser, OverRideSettings, InterrogateParser, RefinerParser
 from .utils import save_base64_img_with_hash, extract_png_from_payload
 
 
@@ -130,20 +130,25 @@ class StableDiffusionApp(BaseModel):
         self,
         diffusion_parameters: DiffusionParser = DiffusionParser(),
         hires_parameters: HiResParser = HiResParser(),
+        refiner_parameters: Optional[RefinerParser] = None,
         controlnet_parameters: Optional[ControlNetUnit] = None,
         adetailer_parameters: Optional[ADetailerArgs] = None,
         override_settings: Optional[OverRideSettings] = OverRideSettings(),
     ) -> List[str]:
         """
-        Convert a text to an image using various parameters.
+        Generate an image from a text using the specified parameters.
 
         Args:
-            diffusion_parameters (DiffusionParser): Parameters for the diffusion process. Default is DiffusionParser().
-            hires_parameters (HiResParser): Parameters for the high-resolution process. Default is HiResParser().
-            controlnet_parameters (Optional[ControlNetUnit]): Parameters for the control net. Default is None.
-            adetailer_parameters (Optional[ADetailerArgs]): Parameters for the adetailer. Default is None.
-            override_settings (Optional[OverRideSettings]): Override settings for the conversion process.
-                Default is OverRideSettings().
+            diffusion_parameters (DiffusionParser, optional): The parameters for the diffusion process.
+                Defaults to DiffusionParser().
+            hires_parameters (HiResParser, optional): The parameters for generating high-resolution images.
+                Defaults to HiResParser().
+            refiner_parameters (RefinerParser, optional): The parameters for refining the generated images.
+                Defaults to None.
+            controlnet_parameters (ControlNetUnit, optional): The parameters for controlling the net. Defaults to None.
+            adetailer_parameters (ADetailerArgs, optional): The parameters for the adetailer. Defaults to None.
+            override_settings (OverRideSettings, optional): The settings for overriding the default parameters.
+                Defaults to OverRideSettings().
 
         Returns:
             List[str]: A list of paths to the generated images.
@@ -156,6 +161,7 @@ class StableDiffusionApp(BaseModel):
                 diffusion_parameters.dict(),
                 hires_parameters.dict(exclude_none=True),
                 override_settings.dict(),
+                refiner_parameters.dict() if refiner_parameters else None,
             )
         )
 
@@ -177,6 +183,7 @@ class StableDiffusionApp(BaseModel):
     async def img2img(
         self,
         diffusion_parameters: DiffusionParser = DiffusionParser(),
+        refiner_parameters: Optional[RefinerParser] = RefinerParser(),
         controlnet_parameters: Optional[ControlNetUnit] = None,
         adetailer_parameters: Optional[ADetailerArgs] = None,
         image_path: Optional[str] = None,
@@ -184,22 +191,19 @@ class StableDiffusionApp(BaseModel):
         override_settings: Optional[OverRideSettings] = OverRideSettings(),
     ) -> List[str]:
         """
-        Asynchronously converts an image to another image using various parameters.
+        Generate image(s) from the given input image using diffusion-based algorithms and refinement techniques.
 
         Args:
-            diffusion_parameters (DiffusionParser): An instance of the DiffusionParser class that contains
-                the diffusion parameters.
-            controlnet_parameters (Optional[ControlNetUnit]): An optional instance of the ControlNetUnit class
-                that contains the controlnet parameters.
-            adetailer_parameters (Optional[ADetailerArgs]): An optional instance of the ADetailerArgs class
-                that contains the adetailer parameters.
-            image_path (Optional[str]): An optional string representing the path of the input image.
-            image_base64 (Optional[str]): An optional string representing the base64 encoded input image.
-            override_settings (Optional[OverRideSettings]): An optional instance of the OverRideSettings class
-                that contains the override settings.
+            diffusion_parameters (DiffusionParser): An instance of DiffusionParser class containing diffusion parameters.
+            refiner_parameters (Optional[RefinerParser]): An optional instance of RefinerParser class containing refiner parameters.
+            controlnet_parameters (Optional[ControlNetUnit]): An optional instance of ControlNetUnit class containing controlnet parameters.
+            adetailer_parameters (Optional[ADetailerArgs]): An optional instance of ADetailerArgs class containing adetailer parameters.
+            image_path (Optional[str]): An optional path to the input image file.
+            image_base64 (Optional[str]): An optional base64 encoded string representation of the input image.
+            override_settings (Optional[OverRideSettings]): An optional instance of OverRideSettings class containing override settings.
 
         Returns:
-            List[str]: A list of strings representing the paths of the converted images.
+            List[str]: A list of file paths of the generated images.
         """
         # Create the payload dictionary to be sent in the request
         self.img2img_params.payload_init()
@@ -216,6 +220,7 @@ class StableDiffusionApp(BaseModel):
                 diffusion_parameters.dict(),
                 override_settings.dict(),
                 png_payload,
+                refiner_parameters.dict() if refiner_parameters else None,
             )
         )
 
