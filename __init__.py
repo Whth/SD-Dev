@@ -65,6 +65,7 @@ class CMD:
     INTERROGATE = "expl"
     NORMAL_MODEL = "sd"
     LORA_MODEL = "lora"
+    UPSCALER = "ups"
 
     POS_PROMPT = "pos"
     NEG_PROMPT = "neg"
@@ -101,6 +102,7 @@ class StableDiffusionPlugin(AbstractPlugin):
     CONFIG_ENABLE_HR = "enable_hr"
     CONFIG_DENO_STRENGTH = "denoise_strength"
     CONFIG_HR_SCALE = "hr_scale"
+    CONFIG_UPSCALER = "upscaler"
     CONFIG_ENABLE_TRANSLATE = "enable_translate"
     CONFIG_ENABLE_CONTROLNET = "enable_controlnet"
     CONFIG_ENABLE_ADETAILER: str = "enable_adetailer"
@@ -124,6 +126,7 @@ class StableDiffusionPlugin(AbstractPlugin):
         CONFIG_STYLES: [],
         CONFIG_ENABLE_HR: 0,
         CONFIG_HR_SCALE: 1.55,
+        CONFIG_UPSCALER: 0,
         CONFIG_DENO_STRENGTH: 0.65,
         CONFIG_ENABLE_TRANSLATE: 0,
         CONFIG_ENABLE_CONTROLNET: 0,
@@ -184,6 +187,7 @@ class StableDiffusionPlugin(AbstractPlugin):
             self.CONFIG_SEND_BATCH_SIZE,
             self.CONFIG_ENABLE_HR,
             self.CONFIG_HR_SCALE,
+            self.CONFIG_UPSCALER,
             self.CONFIG_DENO_STRENGTH,
             self.CONFIG_ENABLE_TRANSLATE,
             self.CONFIG_ENABLE_DYNAMIC_PROMPT,
@@ -284,6 +288,7 @@ class StableDiffusionPlugin(AbstractPlugin):
             await sd_options.fetch_config()
             await self.sd_app.fetch_sd_models()
             await self.sd_app.fetch_lora_models()
+            await self.sd_app.fetch_upscalers()
 
         tree = NameSpaceNode(
             name=CMD.ROOT,
@@ -425,6 +430,13 @@ class StableDiffusionPlugin(AbstractPlugin):
                             help_message="get available stable diffusion models",
                             source=lambda: make_stdout_seq_string(
                                 seq=self.sd_app.available_sd_models, title="StableDiffusion Models"
+                            ),
+                        ),
+                        ExecutableNode(
+                            name=CMD.UPSCALER,
+                            help_message="get available upscalers",
+                            source=lambda: make_stdout_seq_string(
+                                seq=self.sd_app.available_upscalers, title="Upscalers"
                             ),
                         ),
                     ],
@@ -581,6 +593,9 @@ class StableDiffusionPlugin(AbstractPlugin):
                             hires_parameters=HiResParser(  # Get enable HR flag from configuration
                                 enable_hr=self._config_registry.get_config(self.CONFIG_ENABLE_HR),
                                 hr_scale=self._config_registry.get_config(self.CONFIG_HR_SCALE),
+                                hr_upscaler=self.sd_app.available_upscalers[
+                                    self._config_registry.get_config(self.CONFIG_UPSCALER)
+                                ],
                                 denoising_strength=self._config_registry.get_config(self.CONFIG_DENO_STRENGTH),
                             ),
                             refiner_parameters=ref_parser,

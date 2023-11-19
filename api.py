@@ -6,6 +6,7 @@ API_IMG2IMG: str = "sdapi/v1/img2img"
 API_MODELS: str = "sdapi/v1/sd-models"
 API_LORAS: str = "sdapi/v1/loras"
 API_GET_CONFIG: str = "sdapi/v1/options"
+API_GET_UPSCALERS: str = "sdapi/v1/upscalers"
 
 API_INTERROGATE: str = "sdapi/v1/interrogate"
 

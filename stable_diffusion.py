@@ -19,6 +19,7 @@ from .api import (
     API_LORAS,
     API_INTERROGATE,
     merge_payloads,
+    API_GET_UPSCALERS,
 )
 from .controlnet import ControlNetUnit, make_cn_payload
 from .parser import DiffusionParser, HiResParser, OverRideSettings, InterrogateParser, RefinerParser
@@ -112,6 +113,7 @@ class StableDiffusionApp(BaseModel):
     txt2img_params: Optional[PersistentManager]
     available_sd_models: List[str] = Field(default_factory=list, const=True)
     available_lora_models: List[str] = Field(default_factory=list, const=True)
+    available_upscalers: List[str] = Field(default_factory=list, const=True)
 
     def __init__(self, **data):
         super().__init__(**data)
@@ -309,14 +311,19 @@ class StableDiffusionApp(BaseModel):
         models_detail_list: List[Dict] = await self._make_query_request(API_LORAS)
         self.available_lora_models.clear()
         self.available_lora_models.extend(map(lambda x: x["name"], models_detail_list))
+        return models_detail_list
 
+    async def fetch_upscalers(self) -> List[Dict]:
+        models_detail_list: List[Dict] = await self._make_query_request(API_GET_UPSCALERS)
+        self.available_upscalers.clear()
+        self.available_upscalers.extend(map(lambda x: x["name"], models_detail_list))
         return models_detail_list
 
     async def interrogate_image(self, parser: InterrogateParser) -> OrderedDict[str, float]:
-        return deepbooru_to_obj((await self._make_query_request(API_INTERROGATE, payload=parser.dict()))["caption"])
+        return deepdanbooru_to_obj((await self._make_query_request(API_INTERROGATE, payload=parser.dict()))["caption"])
 
 
-def deepbooru_to_obj(string: str) -> OrderedDict[str, float]:
+def deepdanbooru_to_obj(string: str) -> OrderedDict[str, float]:
     """
     Convert a string representation of a deepbooru object to a tuple of tuples.
 
@@ -328,7 +335,7 @@ def deepbooru_to_obj(string: str) -> OrderedDict[str, float]:
 
     Example:
         >>> from collections import OrderedDict
-        >>> deepbooru_to_obj("(tag1:0.6),(tag2:0.3),(tag3:0.8)")
+        >>> deepdanbooru_to_obj("(tag1:0.6),(tag2:0.3),(tag3:0.8)")
         OderderedDict([('tag3', 0.8), ('tag1', 0.6), ('tag2', 0.3)])
     """
 

@@ -259,8 +259,8 @@ def split_list(input_list: List, sublist_size: int, strip_remains: bool = False)
     return result
 
 
-def make_lora_replace_process_engine(lora_list: List[str]) -> Callable:
-    pat = re.compile(r"(lora:(\d+)(?::(\d+\.\d+))?)")
+def make_lora_replace_process_engine(lora_list: List[str], identifier: str = "lr") -> Callable:
+    pat = re.compile(rf"({identifier}:(\d+)(?::(\d+\.\d+))?)")
 
     def lora_wrapper(lora: str, strength: str) -> str:
         if not strength:
