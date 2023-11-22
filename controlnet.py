@@ -1,8 +1,7 @@
 import warnings
-from typing import Dict, List
+from typing import Dict, List, Optional
 
-import aiohttp
-from aiohttp import ClientConnectorError
+from aiohttp import ClientConnectorError, ClientSession
 from pydantic import BaseModel
 
 from .api import (
@@ -95,17 +94,46 @@ class Controlnet(object):
         """
         return self._module_list
 
-    @staticmethod
-    async def __async_get(url: str) -> Dict:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as response:
-                return await response.json()
+    @classmethod
+    async def __async_get(cls, url: str, session: Optional[ClientSession] = None) -> Dict:
+        """
+        An asynchronous class method that makes a GET request to the specified URL using the provided session. If no session is provided, a new session is created. Returns the JSON response as a dictionary.
 
-    @staticmethod
-    async def __async_post(url: str, payload: Dict) -> Dict:
-        async with aiohttp.ClientSession() as session:
-            async with session.post(url, json=payload) as response:
-                return await response.json()
+        Parameters:
+            url (str): The URL to make the GET request to.
+            session (Optional[ClientSession]): An optional session to use for the GET request. If None, a new session will be created.
+
+        Returns:
+            Dict: The JSON response as a dictionary.
+        """
+
+        if session:
+            response = await session.get(url=url)
+        else:
+            async with ClientSession() as session:
+                response = await session.get(url=url)
+        return await response.json()
+
+    @classmethod
+    async def __async_post(cls, url: str, payload: Dict, session: Optional[ClientSession] = None) -> Dict:
+        """
+        Sends a POST request to the specified URL with the given payload asynchronously.
+
+        Args:
+            url (str): The URL to send the request to.
+            payload (Dict): The payload to include in the request.
+            session (Optional[ClientSession], optional): The `ClientSession` object to use for the request.
+                                                       If not provided, a new session will be created.
+
+        Returns:
+            Dict: The response from the request as a JSON object.
+        """
+        if session:
+            response = await session.post(url=url, json=payload)
+        else:
+            async with ClientSession() as session:
+                response = await session.post(url=url, json=payload)
+        return await response.json()
 
     def __init__(self, host_url: str):
         """
@@ -119,41 +147,56 @@ class Controlnet(object):
         self._model_list: List[str] = []
         self._module_list: List[str] = []
 
-    async def fetch_resources(self):
+    async def fetch_resources(self, session: Optional[ClientSession] = None):
         """
         Asynchronously fetches the model and module lists from the API and
         stores them in the corresponding attributes.
         """
         try:
-            self._model_list: List[str] = await self.get_model_list()
-            self._module_list: List[str] = await self.get_module_list()
+            fetch_session = session or ClientSession(base_url=self._host_url)
+            self._model_list: List[str] = await self.get_model_list(session=fetch_session)
+            self._module_list: List[str] = await self.get_module_list(session=fetch_session)
         except ClientConnectorError:
             pass
 
-    async def get_model_list(self) -> List[str]:
+    async def get_model_list(self, session: Optional[ClientSession] = None) -> List[str]:
         """
         Retrieves a list of models from the API.
 
+        Args:
+            session: An optional ClientSession object for making the API request.
+
         Returns:
-            A list of strings representing the models.
+            A list of model names.
         """
-        models: List[str] = (await self.__async_get(f"{self._host_url}/{API_CONTROLNET_MODEL_LIST}")).get(
-            CONTROLNET_MODEL_KEY
-        )
-        # since string from the api is with a hash suffix
+
+        if session:
+            # Make API request with session
+            response = await self.__async_get(API_CONTROLNET_MODEL_LIST, session=session)
+        else:
+            # Make API request without session
+            response = await self.__async_get(f"{self._host_url}{API_CONTROLNET_MODEL_LIST}")
+
+        models: List[str] = response.get(CONTROLNET_MODEL_KEY)
+
+        # Remove hash suffix from model names
         removed_suffix = [model.split(" ")[0] for model in models]
 
         return removed_suffix
 
-    async def get_module_list(self) -> List[str]:
+    async def get_module_list(self, session: Optional[ClientSession] = None) -> List[str]:
         """
         Retrieves a list of modules from the controlnet API.
 
         Returns:
             A list of module names.
         """
-        url = f"{self._host_url}/{API_CONTROLNET_MODULE_LIST}"
-        response = await self.__async_get(url)
+        if session:
+            # Make API request with session
+            response = await self.__async_get(API_CONTROLNET_MODULE_LIST, session=session)
+        else:
+            # Make API request without session
+            response = await self.__async_get(f"{self._host_url}{API_CONTROLNET_MODULE_LIST}")
         return response.get(CONTROLNET_MODULE_KEY)
 
     async def detect(self, payload: ControlNetDetect) -> List[str]:
@@ -169,7 +212,7 @@ class Controlnet(object):
 
         if payload.controlnet_module not in self._module_list:
             raise KeyError("invalid controlnet module,please check")
-        return (await self.__async_post(f"{self._host_url}/{API_CONTROLNET_DETECT}", payload=payload.dict())).get(
+        return (await self.__async_post(f"{self._host_url}{API_CONTROLNET_DETECT}", payload=payload.dict())).get(
             IMAGES_KEY
         )
 

@@ -5,7 +5,7 @@ from collections import OrderedDict
 from random import choice
 from typing import List, Dict, Optional, Any
 
-import aiohttp
+from aiohttp import ClientSession
 from pydantic import BaseModel, Field, validator
 
 from modules.file_manager import img_to_base64
@@ -22,7 +22,13 @@ from .api import (
     API_GET_UPSCALERS,
 )
 from .controlnet import ControlNetUnit, make_cn_payload
-from .parser import DiffusionParser, HiResParser, OverRideSettings, InterrogateParser, RefinerParser
+from .parser import (
+    DiffusionParser,
+    HiResParser,
+    OverRideSettings,
+    InterrogateParser,
+    RefinerParser,
+)
 from .utils import save_base64_img_with_hash, extract_png_from_payload
 
 
@@ -106,6 +112,9 @@ class StableDiffusionApp(BaseModel):
     class that implements the basic diffusion api
     """
 
+    class Config:
+        arbitrary_types_allowed = True
+
     host_url: str
     cache_dir: str
     output_dir: str
@@ -136,6 +145,7 @@ class StableDiffusionApp(BaseModel):
         controlnet_parameters: Optional[ControlNetUnit] = None,
         adetailer_parameters: Optional[ADetailerArgs] = None,
         override_settings: Optional[OverRideSettings] = None,
+        session: Optional[ClientSession] = None,
     ) -> List[str]:
         """
         Generate an image from a text using the specified parameters.
@@ -176,7 +186,7 @@ class StableDiffusionApp(BaseModel):
             }
         )
 
-        images_paths = await self._make_image_gen_request(self.txt2img_params.current, API_TXT2IMG)
+        images_paths = await self._make_image_gen_request(self.txt2img_params.current, API_TXT2IMG, session)
 
         self.txt2img_params.store()
 
@@ -191,6 +201,7 @@ class StableDiffusionApp(BaseModel):
         override_settings: Optional[OverRideSettings] = None,
         image_path: Optional[str] = None,
         image_base64: Optional[str] = None,
+        session: Optional[ClientSession] = None,
     ) -> List[str]:
         """
         Generate image(s) from the given input image using diffusion-based algorithms and refinement techniques.
@@ -236,7 +247,7 @@ class StableDiffusionApp(BaseModel):
             }
         )
 
-        images_paths = await self._make_image_gen_request(self.img2img_params.current, API_IMG2IMG)
+        images_paths = await self._make_image_gen_request(self.img2img_params.current, API_IMG2IMG, session)
 
         self.img2img_params.store()
 
@@ -250,7 +261,12 @@ class StableDiffusionApp(BaseModel):
     async def txt2img_history(self) -> List[str]:
         return await self._make_image_gen_request(self.txt2img_params.history[-1], API_TXT2IMG)
 
-    async def _make_image_gen_request(self, payload: Dict, image_gen_api) -> List[str]:
+    async def _make_image_gen_request(
+        self,
+        payload: Dict,
+        image_gen_api: str,
+        session: Optional[ClientSession] = None,
+    ) -> List[str]:
         """
         Makes a request to the image generation API with the given payload and saves the generated images to the output directory.
 
@@ -261,18 +277,30 @@ class StableDiffusionApp(BaseModel):
         Returns:
             List[str]: The list of file paths for the saved images.
         """
+        if session:
+            # Send a POST request to the API with the payload and get the response
+            response = await session.post(image_gen_api, json=payload)
 
-        # Send a POST request to the API with the payload and get the response
-        async with aiohttp.ClientSession() as session:
-            response_payload: Dict = await (await session.post(f"{self.host_url}/{image_gen_api}", json=payload)).json()
+        else:
+            async with ClientSession(base_url=self.host_url) as session:
+                # Send a POST request to the API with the payload and get the response
+                response = await session.post(image_gen_api, json=payload)
+        response_payload: Dict = await response.json()
 
         # Extract the generated images from the response payload
         img_base64: List[str] = extract_png_from_payload(response_payload)
 
         # Save the generated images to the output directory and return the list of file paths
-        return save_base64_img_with_hash(img_base64_list=img_base64, output_dir=self.output_dir, host_url=self.host_url)
+        return await save_base64_img_with_hash(
+            img_base64_list=img_base64, output_dir=self.output_dir, host_url=self.host_url
+        )
 
-    async def _make_query_request(self, query_api: str, payload: Dict = None) -> Any:
+    async def _make_query_request(
+        self,
+        query_api: str,
+        payload: Dict = None,
+        session: Optional[ClientSession] = None,
+    ) -> Any:
         """
         Makes a query request to the specified query API.
 
@@ -283,13 +311,12 @@ class StableDiffusionApp(BaseModel):
         Returns:
             Any: The response payload from the query request.
         """
-        full_url = f"{self.host_url}/{query_api}"
-        async with aiohttp.ClientSession() as session:
-            if payload:
-                response_payload: Dict = await (await session.post(full_url, json=payload)).json()
-            else:
-                response_payload: Dict = await (await session.get(full_url)).json()
-        return response_payload
+        if session:
+            response = await session.get(query_api, json=payload)
+        else:
+            async with ClientSession(base_url=self.host_url) as session:
+                response = await session.get(query_api, json=payload)
+        return await response.json()
 
     async def txt2img_favorite(self, index: Optional[int] = None) -> List[str]:
         return await self._make_image_gen_request(
@@ -301,20 +328,20 @@ class StableDiffusionApp(BaseModel):
             self.img2img_params.favorite[index] if index else choice(self.img2img_params.favorite), API_IMG2IMG
         )
 
-    async def fetch_sd_models(self) -> List[Dict]:
-        models_detail_list: List[Dict] = await self._make_query_request(API_MODELS)
+    async def fetch_sd_models(self, session: Optional[ClientSession] = None) -> List[Dict]:
+        models_detail_list: List[Dict] = await self._make_query_request(API_MODELS, session=session)
         self.available_sd_models.clear()
         self.available_sd_models.extend(map(lambda x: x["title"], models_detail_list))
         return models_detail_list
 
-    async def fetch_lora_models(self) -> List[Dict]:
-        models_detail_list: List[Dict] = await self._make_query_request(API_LORAS)
+    async def fetch_lora_models(self, session: Optional[ClientSession] = None) -> List[Dict]:
+        models_detail_list: List[Dict] = await self._make_query_request(API_LORAS, session=session)
         self.available_lora_models.clear()
         self.available_lora_models.extend(map(lambda x: x["name"], models_detail_list))
         return models_detail_list
 
-    async def fetch_upscalers(self) -> List[Dict]:
-        models_detail_list: List[Dict] = await self._make_query_request(API_GET_UPSCALERS)
+    async def fetch_upscalers(self, session: Optional[ClientSession] = None) -> List[Dict]:
+        models_detail_list: List[Dict] = await self._make_query_request(API_GET_UPSCALERS, session=session)
         self.available_upscalers.clear()
         self.available_upscalers.extend(map(lambda x: x["name"], models_detail_list))
         return models_detail_list

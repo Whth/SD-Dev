@@ -2,6 +2,7 @@ import pathlib
 from functools import partial
 from typing import List, Optional, Callable, Union, OrderedDict
 
+from aiohttp import ClientSession, ClientTimeout
 from dynamicprompts.generators import RandomPromptGenerator
 from dynamicprompts.wildcards import WildcardManager
 from graia.ariadne import Ariadne
@@ -112,12 +113,14 @@ class StableDiffusionPlugin(AbstractPlugin):
     CONFIG_REFINER_MODEL_ID = "rfmodel"
     CONFIG_ENABLE_REFINER = "enable_refiner"
     CONFIG_SEND_BATCH_SIZE = "send_batch_size"
+    CONFIG_UNIT_TIMEOUT = "utimeout"
     DefaultConfig = {
         CONFIG_POS_KEYWORD: "+",
         CONFIG_NEG_KEYWORD: "-",
         CONFIG_OUTPUT_DIR_PATH: f"{get_pwd()}/output",
         CONFIG_IMG_TEMP_DIR_PATH: f"{get_pwd()}/temp",
         CONFIG_SD_HOST: "http://localhost:7860",
+        # TODO: support multiple hosts
         CONFIG_WILDCARD_DIR_PATH: f"{get_pwd()}/asset/wildcard",
         CONFIG_CONTROLNET_MODULE: "openpose_full",
         CONFIG_CONTROLNET_MODEL: "control_v11p_sd15_openpose",
@@ -135,6 +138,7 @@ class StableDiffusionPlugin(AbstractPlugin):
         CONFIG_ENABLE_SHUFFLE_PROMPT: 0,
         CONFIG_ENABLE_DYNAMIC_PROMPT: 1,
         CONFIG_SEND_BATCH_SIZE: 18,
+        CONFIG_UNIT_TIMEOUT: 180,
         # in the current version of QQ transmitting protocol,
         # 20 is the maximum of the pictures that can be sent at once
     }
@@ -149,7 +153,7 @@ class StableDiffusionPlugin(AbstractPlugin):
 
     @classmethod
     def get_plugin_version(cls) -> str:
-        return "0.1.9"
+        return "0.2.0"
 
     @classmethod
     def get_plugin_author(cls) -> str:
@@ -185,6 +189,7 @@ class StableDiffusionPlugin(AbstractPlugin):
             self.CONFIG_CURRENT_MODEL_ID,
             self.CONFIG_REFINER_MODEL_ID,
             self.CONFIG_SEND_BATCH_SIZE,
+            self.CONFIG_UNIT_TIMEOUT,
             self.CONFIG_ENABLE_HR,
             self.CONFIG_HR_SCALE,
             self.CONFIG_UPSCALER,
@@ -278,17 +283,16 @@ class StableDiffusionPlugin(AbstractPlugin):
             - Calls the `fetch_sd_models()` method of the `self.sd_app` object.
             - Calls the `fetch_lora_models()` method of the `self.sd_app` object.
 
-            Parameters:
-                None
-
             Returns:
                 None
             """
-            await controlnet_app.fetch_resources()
-            await sd_options.fetch_config()
-            await self.sd_app.fetch_sd_models()
-            await self.sd_app.fetch_lora_models()
-            await self.sd_app.fetch_upscalers()
+
+            async with ClientSession(base_url=self._config_registry.get_config(self.CONFIG_SD_HOST)) as fetch_session:
+                await controlnet_app.fetch_resources(fetch_session)
+                await sd_options.fetch_config(fetch_session)
+                await self.sd_app.fetch_sd_models(fetch_session)
+                await self.sd_app.fetch_lora_models(fetch_session)
+                await self.sd_app.fetch_upscalers(fetch_session)
 
         tree = NameSpaceNode(
             name=CMD.ROOT,
@@ -455,13 +459,11 @@ class StableDiffusionPlugin(AbstractPlugin):
             process_engine=lambda prompt: random_prompt_gen.generate(template=prompt)[0] or prompt,
             process_name="DYNAMIC_PROMPT_INTERPRET",
         )
-
         processor.register(
             judge=lambda: self._config_registry.get_config(self.CONFIG_ENABLE_TRANSLATE),
             process_engine=partial(translate, tolang="en", fromlang="auto"),
             process_name="TRANSLATE",
         ) if translate else None
-
         processor.register(
             judge=lambda: self._config_registry.get_config(self.CONFIG_ENABLE_SHUFFLE_PROMPT),
             process_engine=shuffle_prompt,
@@ -549,71 +551,76 @@ class StableDiffusionPlugin(AbstractPlugin):
                     else None
                 )
 
-            for _ in range(batch_count):
-                final_pos_prompt, final_neg_prompt = processor.process(pos_prompt, neg_prompt)  # Process prompts
-                # Create a diffusion parser with the prompts
-                diffusion_parser = DiffusionParser(
-                    prompt=final_pos_prompt,
-                    negative_prompt=final_neg_prompt,
-                    styles=self._config_registry.get_config(self.CONFIG_STYLES),  # Get styles from configuration
-                )
-
-                adetailer_parser = (
-                    ADetailerArgs(
-                        ad_unit=[
-                            ADetailerUnit(
-                                ad_model=ModelType.PERSON_YOLOV8NSEG.value,
-                                ad_denoising_strength=0.75,
-                                ad_controlnet_model="openpose",
-                                ad_controlnet_module="inpaint",
-                                ad_controlnet_guidance_start=0.0,
-                                ad_controlnet_guidance_end=0.4,
-                            ),
-                            ADetailerUnit(
-                                ad_model=ModelType.HAND_YOLOV8N.value,
-                                ad_denoising_strength=0.55,
-                            ),
-                        ]
-                    )
-                    if self.config_registry.get_config(self.CONFIG_ENABLE_ADETAILER)
-                    else None
-                )
-                if image_url:
-                    send_result.extend(
-                        await _make_img2img(
-                            diffusion_parser, image_url, override_settings=overrides, refiner_parameters=ref_parser
-                        )
-                    )  # Make image-to-image diffusion
-                else:
-                    # Generate the image using the diffusion parser
-
-                    send_result.extend(
-                        await self.sd_app.txt2img(
-                            diffusion_parameters=diffusion_parser,
-                            hires_parameters=HiResParser(  # Get enable HR flag from configuration
-                                enable_hr=self._config_registry.get_config(self.CONFIG_ENABLE_HR),
-                                hr_scale=self._config_registry.get_config(self.CONFIG_HR_SCALE),
-                                hr_upscaler=self.sd_app.available_upscalers[
-                                    self._config_registry.get_config(self.CONFIG_UPSCALER)
-                                ]
-                                if self.sd_app.available_upscalers
-                                else "",
-                                denoising_strength=self._config_registry.get_config(self.CONFIG_DENO_STRENGTH),
-                            ),
-                            refiner_parameters=ref_parser,
-                            adetailer_parameters=adetailer_parser,
-                            override_settings=overrides,
-                        )
+            async with ClientSession(
+                base_url=self.config_registry.get_config(self.CONFIG_SD_HOST),
+                timeout=ClientTimeout(total=self.config_registry.get_config(self.CONFIG_UNIT_TIMEOUT) * batch_count),
+            ) as session:
+                for _ in range(batch_count):
+                    final_pos_prompt, final_neg_prompt = processor.process(pos_prompt, neg_prompt)  # Process prompts
+                    # Create a diffusion parser with the prompts
+                    diffusion_parser = DiffusionParser(
+                        prompt=final_pos_prompt,
+                        negative_prompt=final_neg_prompt,
+                        styles=self._config_registry.get_config(self.CONFIG_STYLES),  # Get styles from configuration
                     )
 
-                # Split the send_result into batches, whose size is send_batch_size
-                split_batch = split_list(
-                    input_list=send_result, sublist_size=send_batch_size, strip_remains=False
-                )  # Split send_result into batches
-                send_batches, send_result = split_batch[:-1], split_batch[-1]
-                for batch in send_batches:
-                    # Send the image as a message in the group
-                    await app.send_message(target, [Image(path=path) for path in batch])
+                    adetailer_parser = (
+                        ADetailerArgs(
+                            ad_unit=[
+                                ADetailerUnit(
+                                    ad_model=ModelType.PERSON_YOLOV8NSEG.value,
+                                    ad_denoising_strength=0.75,
+                                    ad_controlnet_model="openpose",
+                                    ad_controlnet_module="inpaint",
+                                    ad_controlnet_guidance_start=0.0,
+                                    ad_controlnet_guidance_end=0.4,
+                                ),
+                                ADetailerUnit(
+                                    ad_model=ModelType.HAND_YOLOV8N.value,
+                                    ad_denoising_strength=0.55,
+                                ),
+                            ]
+                        )
+                        if self.config_registry.get_config(self.CONFIG_ENABLE_ADETAILER)
+                        else None
+                    )
+                    if image_url:
+                        send_result.extend(
+                            await _make_img2img(
+                                diffusion_parser, image_url, override_settings=overrides, refiner_parameters=ref_parser
+                            )
+                        )  # Make image-to-image diffusion
+                    else:
+                        # Generate the image using the diffusion parser
+
+                        send_result.extend(
+                            await self.sd_app.txt2img(
+                                diffusion_parameters=diffusion_parser,
+                                hires_parameters=HiResParser(  # Get enable HR flag from configuration
+                                    enable_hr=self._config_registry.get_config(self.CONFIG_ENABLE_HR),
+                                    hr_scale=self._config_registry.get_config(self.CONFIG_HR_SCALE),
+                                    hr_upscaler=self.sd_app.available_upscalers[
+                                        self._config_registry.get_config(self.CONFIG_UPSCALER)
+                                    ]
+                                    if self.sd_app.available_upscalers
+                                    else "",
+                                    denoising_strength=self._config_registry.get_config(self.CONFIG_DENO_STRENGTH),
+                                ),
+                                refiner_parameters=ref_parser,
+                                adetailer_parameters=adetailer_parser,
+                                override_settings=overrides,
+                                session=session,
+                            )
+                        )
+
+                    # Split the send_result into batches, whose size is send_batch_size
+                    split_batch = split_list(
+                        input_list=send_result, sublist_size=send_batch_size, strip_remains=False
+                    )  # Split send_result into batches
+                    send_batches, send_result = split_batch[:-1], split_batch[-1]
+                    for batch in send_batches:
+                        # Send the image as a message in the group
+                        await app.send_message(target, [Image(path=path) for path in batch])
 
             if send_result:
                 # deal with the remains

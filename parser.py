@@ -1,7 +1,7 @@
 import random
 from typing import List, Tuple, Any, Dict, Optional
 
-import aiohttp
+from aiohttp import ClientSession
 from pydantic import BaseModel, Field, PrivateAttr
 
 from modules.shared import img_to_base64
@@ -436,7 +436,7 @@ class Options(BaseModel):
     _hall_bak_dict: Dict[str, Any] = PrivateAttr(default={})
     _changed_bak_dict: Dict[str, Any] = PrivateAttr(default={})
 
-    async def fetch_config(self):
+    async def fetch_config(self, session: Optional[ClientSession] = None):
         """
         Fetches the configuration from the specified API endpoint.
 
@@ -446,10 +446,12 @@ class Options(BaseModel):
         Returns:
             None
         """
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"{self.host_url}/{API_GET_CONFIG}") as response:
-                config_dict: Dict[str, Any] = await response.json()
-
+        if session:
+            response = await session.get(API_GET_CONFIG)
+        else:
+            async with ClientSession(base_url=self.host_url) as session:
+                response = await session.get(API_GET_CONFIG)
+        config_dict: Dict[str, Any] = await response.json()
         updated_config_count: int = self.load_dict_to_config(config_dict=config_dict)
 
         self._fetched = True

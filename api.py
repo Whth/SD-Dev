@@ -1,22 +1,21 @@
 from typing import Callable, Any
 
-API_PNG_INFO: str = "sdapi/v1/png-info"
-API_TXT2IMG: str = "sdapi/v1/txt2img"
-API_IMG2IMG: str = "sdapi/v1/img2img"
-API_MODELS: str = "sdapi/v1/sd-models"
-API_LORAS: str = "sdapi/v1/loras"
-API_GET_CONFIG: str = "sdapi/v1/options"
-API_GET_UPSCALERS: str = "sdapi/v1/upscalers"
+API_PNG_INFO: str = "/sdapi/v1/png-info"
+API_TXT2IMG: str = "/sdapi/v1/txt2img"
+API_IMG2IMG: str = "/sdapi/v1/img2img"
+API_MODELS: str = "/sdapi/v1/sd-models"
+API_LORAS: str = "/sdapi/v1/loras"
+API_GET_CONFIG: str = "/sdapi/v1/options"
+API_GET_UPSCALERS: str = "/sdapi/v1/upscalers"
 
-API_INTERROGATE: str = "sdapi/v1/interrogate"
+API_INTERROGATE: str = "/sdapi/v1/interrogate"
 
-API_CONTROLNET_MODEL_LIST: str = "controlnet/model_list"
-API_CONTROLNET_MODULE_LIST: str = "controlnet/module_list"
+API_CONTROLNET_MODEL_LIST: str = "/controlnet/model_list"
+API_CONTROLNET_MODULE_LIST: str = "/controlnet/module_list"
 CONTROLNET_MODULE_KEY: str = "module_list"  # used to extract the list obj in the response json
 CONTROLNET_MODEL_KEY: str = "model_list"
-API_CONTROLNET_DETECT: str = "controlnet/detect"
+API_CONTROLNET_DETECT: str = "/controlnet/detect"
 CONTROLNET_KEY = "controlnet"
-
 
 ALWAYSON_SCRIPTS_KEY = "alwayson_scripts"
 ARGS_KEY = "args"  # used to parse always on scripts

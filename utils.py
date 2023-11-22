@@ -5,8 +5,8 @@ import re
 from random import shuffle
 from typing import List, Dict, Callable, Any, Tuple
 
-import requests
 from PIL import Image, PngImagePlugin
+from aiohttp import ClientSession
 from colorama import Fore
 from slugify import slugify
 
@@ -48,7 +48,7 @@ def extract_png_from_payload(payload: Dict) -> List[str]:
     return img_base64
 
 
-def save_base64_img_with_hash(
+async def save_base64_img_with_hash(
     img_base64_list: List[str], output_dir: str, host_url: str, max_file_name_length: int = 34
 ) -> List[str]:
     """
@@ -65,34 +65,32 @@ def save_base64_img_with_hash(
     """
 
     output_img_paths: List[str] = []
+    async with ClientSession(base_url=host_url) as sd_session:
+        for img_base64 in img_base64_list:
+            # Decode the base64-encoded image
 
-    for img_base64 in img_base64_list:
-        # Decode the base64-encoded image
+            response = await sd_session.post(url=API_PNG_INFO, json={IMAGE_KEY: img_base64})
+            req_png_info = (await response.json()).get(PNG_INFO_KEY)
 
-        # Make a POST request to get PNG info
-        response = requests.post(url=f"{host_url}/{API_PNG_INFO}", json={IMAGE_KEY: img_base64})
+            # Create a label for the saved image
+            label = slugify(
+                req_png_info[:max_file_name_length] if len(req_png_info) > max_file_name_length else req_png_info
+            )
 
-        req_png_info = response.json().get(PNG_INFO_KEY)
+            # Create the output directory if it doesn't exist
+            os.makedirs(output_dir, exist_ok=True)
+            # Save the image with the PNG info
+            saved_path = f"{output_dir}/{label}.png"
+            png_info = PngImagePlugin.PngInfo()
+            png_info.add_text("parameters", req_png_info)
+            image = Image.open(io.BytesIO(base64.b64decode(img_base64)))
+            image.save(saved_path, pnginfo=png_info)
 
-        # Create a label for the saved image
-        label = slugify(
-            req_png_info[:max_file_name_length] if len(req_png_info) > max_file_name_length else req_png_info
-        )
+            # Rename the saved image with a hash
+            saved_path_with_hash = rename_image_with_hash(saved_path)
 
-        # Create the output directory if it doesn't exist
-        os.makedirs(output_dir, exist_ok=True)
-        # Save the image with the PNG info
-        saved_path = f"{output_dir}/{label}.png"
-        png_info = PngImagePlugin.PngInfo()
-        png_info.add_text("parameters", req_png_info)
-        image = Image.open(io.BytesIO(base64.b64decode(img_base64)))
-        image.save(saved_path, pnginfo=png_info)
-
-        # Rename the saved image with a hash
-        saved_path_with_hash = rename_image_with_hash(saved_path)
-
-        # Add the path to the list of output image paths
-        output_img_paths.append(saved_path_with_hash)
+            # Add the path to the list of output image paths
+            output_img_paths.append(saved_path_with_hash)
 
     return output_img_paths
 
