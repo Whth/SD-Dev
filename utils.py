@@ -1,9 +1,9 @@
 import base64
 import io
-import os
+import pathlib
 import re
 from random import shuffle
-from typing import List, Dict, Callable, Any, Tuple
+from typing import List, Dict, Callable, Any, Tuple, Optional
 
 from PIL import Image, PngImagePlugin
 from aiohttp import ClientSession
@@ -49,48 +49,56 @@ def extract_png_from_payload(payload: Dict) -> List[str]:
 
 
 async def save_base64_img_with_hash(
-    img_base64_list: List[str], output_dir: str, host_url: str, max_file_name_length: int = 34
+    img_base64_list: List[str],
+    output_dir: str,
+    host_url: str,
+    max_file_name_length: int = 34,
+    session: Optional[ClientSession] = None,
 ) -> List[str]:
     """
-    Saves a list of base64-encoded images as PNG files with hash-based filenames.
-
+    Save a list of base64-encoded images to disk with a hash appended to their filenames.
     Args:
-        img_base64_list (List[str]): A list of base64-encoded images.
-        output_dir (str): The directory where the output images will be saved.
-        host_url (str): The URL of the host server.
-        max_file_name_length (int, optional): The maximum length of the file name before truncation. Defaults to 34.
-
+        img_base64_list (List[str]): List of base64-encoded images.
+        output_dir (str): Directory to save the images.
+        host_url (str): Base URL for making HTTP requests.
+        max_file_name_length (int, optional): Maximum length for the generated filename. Defaults to 34.
+        session (Optional[ClientSession], optional): A pre-existing aiohttp ClientSession object. Defaults to None.
     Returns:
-        List[str]: A list of paths to the saved PNG images with hash-based filenames.
+        List[str]: List of paths to the saved images.
     """
 
     output_img_paths: List[str] = []
-    async with ClientSession(base_url=host_url) as sd_session:
-        for img_base64 in img_base64_list:
-            # Decode the base64-encoded image
+    png_info_stack: List = []
+    selected_session = session or ClientSession(base_url=host_url)
 
-            response = await sd_session.post(url=API_PNG_INFO, json={IMAGE_KEY: img_base64})
-            req_png_info = (await response.json()).get(PNG_INFO_KEY)
+    for img_base64 in img_base64_list:
+        # Decode the base64-encoded image
+        response = await selected_session.post(url=API_PNG_INFO, json={IMAGE_KEY: img_base64})
+        png_info_stack.append((await response.json()).get(PNG_INFO_KEY))
 
-            # Create a label for the saved image
-            label = slugify(
-                req_png_info[:max_file_name_length] if len(req_png_info) > max_file_name_length else req_png_info
-            )
+    if session is None:
+        await selected_session.close()
 
-            # Create the output directory if it doesn't exist
-            os.makedirs(output_dir, exist_ok=True)
-            # Save the image with the PNG info
-            saved_path = f"{output_dir}/{label}.png"
-            png_info = PngImagePlugin.PngInfo()
-            png_info.add_text("parameters", req_png_info)
-            image = Image.open(io.BytesIO(base64.b64decode(img_base64)))
-            image.save(saved_path, pnginfo=png_info)
+    for img_base64, req_png_info in zip(img_base64_list, png_info_stack):
+        # Create a label for the saved image
+        label = slugify(
+            req_png_info[:max_file_name_length] if len(req_png_info) > max_file_name_length else req_png_info
+        )
 
-            # Rename the saved image with a hash
-            saved_path_with_hash = rename_image_with_hash(saved_path)
+        # Create the output directory if it doesn't exist
+        pathlib.Path(output_dir).absolute().mkdir(parents=True, exist_ok=True)
+        # Save the image with the PNG info
+        saved_path = f"{output_dir}/{label}.png"
+        png_info = PngImagePlugin.PngInfo()
+        png_info.add_text("parameters", req_png_info)
+        image = Image.open(io.BytesIO(base64.b64decode(img_base64)))
+        image.save(saved_path, pnginfo=png_info)
 
-            # Add the path to the list of output image paths
-            output_img_paths.append(saved_path_with_hash)
+        # Rename the saved image with a hash
+        saved_path_with_hash = rename_image_with_hash(saved_path)
+
+        # Add the path to the list of output image paths
+        output_img_paths.append(saved_path_with_hash)
 
     return output_img_paths
 

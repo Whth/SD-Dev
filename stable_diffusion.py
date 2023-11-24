@@ -282,9 +282,9 @@ class StableDiffusionApp(BaseModel):
             response = await session.post(image_gen_api, json=payload)
 
         else:
-            async with ClientSession(base_url=self.host_url) as session:
+            async with ClientSession(base_url=self.host_url) as local_session:
                 # Send a POST request to the API with the payload and get the response
-                response = await session.post(image_gen_api, json=payload)
+                response = await local_session.post(image_gen_api, json=payload)
         response_payload: Dict = await response.json()
 
         # Extract the generated images from the response payload
@@ -292,7 +292,7 @@ class StableDiffusionApp(BaseModel):
 
         # Save the generated images to the output directory and return the list of file paths
         return await save_base64_img_with_hash(
-            img_base64_list=img_base64, output_dir=self.output_dir, host_url=self.host_url
+            img_base64_list=img_base64, output_dir=self.output_dir, host_url=self.host_url, session=session
         )
 
     async def _make_query_request(
