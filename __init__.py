@@ -99,6 +99,7 @@ class StableDiffusionPlugin(AbstractPlugin):
 
     CONFIG_CONTROLNET_MODULE = "controlnet_module"
     CONFIG_CONTROLNET_MODEL = "controlnet_model"
+    CONFIG_CLIP: str = "clip"
     CONFIG_STYLES = "styles"
     CONFIG_ENABLE_HR = "enable_hr"
     CONFIG_DENO_STRENGTH = "denoise_strength"
@@ -126,6 +127,7 @@ class StableDiffusionPlugin(AbstractPlugin):
         CONFIG_CONTROLNET_MODEL: "control_v11p_sd15_openpose",
         CONFIG_CURRENT_MODEL_ID: 0,
         CONFIG_REFINER_MODEL_ID: 0,
+        CONFIG_CLIP: 3,
         CONFIG_STYLES: [],
         CONFIG_ENABLE_HR: 0,
         CONFIG_HR_SCALE: 1.55,
@@ -188,6 +190,7 @@ class StableDiffusionPlugin(AbstractPlugin):
         configurable_options: List[str] = [
             self.CONFIG_CURRENT_MODEL_ID,
             self.CONFIG_REFINER_MODEL_ID,
+            self.CONFIG_CLIP,
             self.CONFIG_SEND_BATCH_SIZE,
             self.CONFIG_UNIT_TIMEOUT,
             self.CONFIG_ENABLE_HR,
@@ -535,6 +538,7 @@ class StableDiffusionPlugin(AbstractPlugin):
                 sd_options.sd_model_checkpoint = self.sd_app.available_sd_models[
                     self.config_registry.get_config(self.CONFIG_CURRENT_MODEL_ID)
                 ]
+                sd_options.CLIP_stop_at_last_layers = self.config_registry.get_config(self.CONFIG_CLIP)
 
                 overrides = sd_options.generate_override_settings_payload(
                     sd_options.record_end(), recover_after_override=False
