@@ -108,11 +108,12 @@ class Controlnet(object):
         """
 
         if session:
-            response = await session.get(url=url)
+            async with session.get(url=url) as response:
+                return await response.json()
         else:
             async with ClientSession() as session:
-                response = await session.get(url=url)
-        return await response.json()
+                async with session.get(url=url) as response:
+                    return await response.json()
 
     @classmethod
     async def __async_post(cls, url: str, payload: Dict, session: Optional[ClientSession] = None) -> Dict:
@@ -129,11 +130,12 @@ class Controlnet(object):
             Dict: The response from the request as a JSON object.
         """
         if session:
-            response = await session.post(url=url, json=payload)
+            async with session.post(url=url, json=payload) as response:
+                return await response.json()
         else:
             async with ClientSession() as session:
-                response = await session.post(url=url, json=payload)
-        return await response.json()
+                async with session.post(url=url, json=payload) as response:
+                    return await response.json()
 
     def __init__(self, host_url: str):
         """

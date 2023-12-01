@@ -6,6 +6,7 @@ from random import choice
 from typing import List, Dict, Optional, Any
 
 from aiohttp import ClientSession
+from colorama import Fore
 from pydantic import BaseModel, Field, validator
 
 from modules.file_manager import img_to_base64
@@ -148,19 +149,16 @@ class StableDiffusionApp(BaseModel):
         session: Optional[ClientSession] = None,
     ) -> List[str]:
         """
-        Generate an image from a text using the specified parameters.
+        Converts text to image using the given parameters.
 
         Args:
-            diffusion_parameters (DiffusionParser, optional): The parameters for the diffusion process.
-                Defaults to DiffusionParser().
-            hires_parameters (HiResParser, optional): The parameters for generating high-resolution images.
-                Defaults to HiResParser().
-            refiner_parameters (RefinerParser, optional): The parameters for refining the generated images.
-                Defaults to None.
-            controlnet_parameters (ControlNetUnit, optional): The parameters for controlling the net. Defaults to None.
-            adetailer_parameters (ADetailerArgs, optional): The parameters for the adetailer. Defaults to None.
-            override_settings (OverRideSettings, optional): The settings for overriding the default parameters.
-                Defaults to OverRideSettings().
+            diffusion_parameters (DiffusionParser): The diffusion parameters for the text-to-image conversion.
+            hires_parameters (Optional[HiResParser]): The high-resolution parameters for the text-to-image conversion.
+            refiner_parameters (Optional[RefinerParser]): The refiner parameters for the text-to-image conversion.
+            controlnet_parameters (Optional[ControlNetUnit]): The controlnet parameters for the text-to-image conversion.
+            adetailer_parameters (Optional[ADetailerArgs]): The adetailer parameters for the text-to-image conversion.
+            override_settings (Optional[OverRideSettings]): The override settings for the text-to-image conversion.
+            session (Optional[ClientSession]): The client session for making the image generation request.
 
         Returns:
             List[str]: A list of paths to the generated images.
@@ -311,12 +309,14 @@ class StableDiffusionApp(BaseModel):
         Returns:
             Any: The response payload from the query request.
         """
+        print(f"{Fore.LIGHTBLUE_EX}Making query ==> {query_api}{Fore.RESET}")
         if session:
-            response = await session.get(query_api, json=payload)
+            async with session.request("POST" if payload else "GET", query_api, json=payload) as response:
+                return await response.json()
         else:
             async with ClientSession(base_url=self.host_url) as session:
-                response = await session.get(query_api, json=payload)
-        return await response.json()
+                async with session.request("POST" if payload else "GET", query_api, json=payload) as response:
+                    return await response.json()
 
     async def txt2img_favorite(self, index: Optional[int] = None) -> List[str]:
         return await self._make_image_gen_request(

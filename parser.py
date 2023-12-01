@@ -447,11 +447,13 @@ class Options(BaseModel):
             None
         """
         if session:
-            response = await session.get(API_GET_CONFIG)
+            async with session.get(API_GET_CONFIG) as response:
+                response = await response.json()
         else:
             async with ClientSession(base_url=self.host_url) as session:
-                response = await session.get(API_GET_CONFIG)
-        config_dict: Dict[str, Any] = await response.json()
+                async with session.get(API_GET_CONFIG) as response:
+                    response = await response.json()
+        config_dict: Dict[str, Any] = response
         updated_config_count: int = self.load_dict_to_config(config_dict=config_dict)
 
         self._fetched = True
