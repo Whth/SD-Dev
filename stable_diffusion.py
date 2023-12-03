@@ -277,13 +277,14 @@ class StableDiffusionApp(BaseModel):
         """
         if session:
             # Send a POST request to the API with the payload and get the response
-            response = await session.post(image_gen_api, json=payload)
+            async with session.post(image_gen_api, json=payload) as response:
+                response_payload: Dict = await response.json()
 
         else:
             async with ClientSession(base_url=self.host_url) as local_session:
                 # Send a POST request to the API with the payload and get the response
-                response = await local_session.post(image_gen_api, json=payload)
-        response_payload: Dict = await response.json()
+                async with local_session.post(image_gen_api, json=payload) as response:
+                    response_payload: Dict = await response.json()
 
         # Extract the generated images from the response payload
         img_base64: List[str] = extract_png_from_payload(response_payload)
