@@ -16,11 +16,15 @@ class ModelType(Enum):
     MEDIAPIPE_FACE_FULL = "mediapipe_face_full"
     MEDIAPIPE_FACE_MESH = "mediapipe_face_mesh"
     MEDIAPIPE_FACE_MESH_EYES_ONLY = "mediapipe_face_mesh_eyes_only"
+    FACE_YOLOV8M = "face_yolov8m.pt"
     FACE_YOLOV8N = "face_yolov8n.pt"
     FACE_YOLOV8S = "face_yolov8s.pt"
     HAND_YOLOV8N = "hand_yolov8n.pt"
+    HAND_YOLOV8S = "hand_yolov8s.pt"
     PERSON_YOLOV8NSEG = "person_yolov8n-seg.pt"
     PERSON_YOLOV8SSEG = "person_yolov8s-seg.pt"
+    PERSON_YOLOV8MSEG = "person_yolov8m-seg.pt"
+    DEEPFASHION = "deepfashion2_yolov8s-seg.pt"
 
 
 ad_models: Set[str] = {
@@ -31,8 +35,13 @@ ad_models: Set[str] = {
     ModelType.FACE_YOLOV8N.value,
     ModelType.FACE_YOLOV8S.value,
     ModelType.HAND_YOLOV8N.value,
+    ModelType.HAND_YOLOV8S.value,
     ModelType.PERSON_YOLOV8NSEG.value,
     ModelType.PERSON_YOLOV8SSEG.value,
+    ModelType.PERSON_YOLOV8MSEG.value,
+    ModelType.DEEPFASHION.value,
+    ModelType.FACE_YOLOV8M.value,
+    ModelType.PERSON_YOLOV8MSEG.value,
 }
 
 

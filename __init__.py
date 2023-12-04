@@ -572,16 +572,16 @@ class StableDiffusionPlugin(AbstractPlugin):
                         ADetailerArgs(
                             ad_unit=[
                                 ADetailerUnit(
-                                    ad_model=ModelType.PERSON_YOLOV8NSEG.value,
-                                    ad_denoising_strength=0.75,
-                                    ad_controlnet_model="openpose",
-                                    ad_controlnet_module="inpaint",
-                                    ad_controlnet_guidance_start=0.0,
-                                    ad_controlnet_guidance_end=0.4,
+                                    ad_model=ModelType.MEDIAPIPE_FACE_FULL.value,
                                 ),
                                 ADetailerUnit(
-                                    ad_model=ModelType.HAND_YOLOV8N.value,
-                                    ad_denoising_strength=0.55,
+                                    ad_model=ModelType.DEEPFASHION.value,
+                                ),
+                                ADetailerUnit(
+                                    ad_model=ModelType.FACE_YOLOV8M.value,
+                                ),
+                                ADetailerUnit(
+                                    ad_model=ModelType.PERSON_YOLOV8MSEG.value,
                                 ),
                             ]
                         )
