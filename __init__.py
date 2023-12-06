@@ -572,12 +572,6 @@ class StableDiffusionPlugin(AbstractPlugin):
                         ADetailerArgs(
                             ad_unit=[
                                 ADetailerUnit(
-                                    ad_model=ModelType.MEDIAPIPE_FACE_FULL.value,
-                                ),
-                                ADetailerUnit(
-                                    ad_model=ModelType.DEEPFASHION.value,
-                                ),
-                                ADetailerUnit(
                                     ad_model=ModelType.FACE_YOLOV8M.value,
                                 ),
                                 ADetailerUnit(
@@ -712,15 +706,20 @@ class StableDiffusionPlugin(AbstractPlugin):
             img_base64 = img_to_base64(img_path)
             cn_unit = None
             if self._config_registry.get_config(self.CONFIG_ENABLE_CONTROLNET):
+                # ControlNet
                 module: str = self._config_registry.get_config(self.CONFIG_CONTROLNET_MODULE)
                 model: str = self._config_registry.get_config(self.CONFIG_CONTROLNET_MODEL)
-
+                print(f"Using ControlNet module: {module}, model: {model}\n")
                 if module in controlnet_app.modules and model in controlnet_app.models:
                     cn_unit = ControlNetUnit(
                         input_image=img_base64,
                         module=module,
                         model=model,
                     )
+            if self.config_registry.get_config(self.CONFIG_ENABLE_HR):
+                hr_scale = self.config_registry.get_config(self.CONFIG_HR_SCALE)
+                diffusion_paser.width = int(diffusion_paser.width * hr_scale)
+                diffusion_paser.height = int(diffusion_paser.height * hr_scale)
             send_result = await self.sd_app.img2img(
                 diffusion_parameters=diffusion_paser,
                 controlnet_parameters=cn_unit,

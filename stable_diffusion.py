@@ -1,15 +1,18 @@
+import asyncio
 import copy
 import json
 import pathlib
+import re
 from collections import OrderedDict
 from random import choice
-from typing import List, Dict, Optional, Any
+from typing import List, Dict, Optional, Any, Tuple
 
+from PIL import PngImagePlugin, Image
 from aiohttp import ClientSession
 from colorama import Fore
 from pydantic import BaseModel, Field, validator
 
-from modules.file_manager import img_to_base64
+from modules.shared import img_to_base64, base64_to_img, rename_image_with_hash
 from .adetailer import ADetailerArgs
 from .api import (
     API_TXT2IMG,
@@ -21,6 +24,9 @@ from .api import (
     API_INTERROGATE,
     merge_payloads,
     API_GET_UPSCALERS,
+    API_PNG_INFO,
+    IMAGE_KEY,
+    PNG_INFO_KEY,
 )
 from .controlnet import ControlNetUnit, make_cn_payload
 from .parser import (
@@ -30,7 +36,7 @@ from .parser import (
     InterrogateParser,
     RefinerParser,
 )
-from .utils import save_base64_img_with_hash, extract_png_from_payload
+from .utils import extract_png_from_payload
 
 
 class RetrievedData(BaseModel):
@@ -275,24 +281,27 @@ class StableDiffusionApp(BaseModel):
         Returns:
             List[str]: The list of file paths for the saved images.
         """
-        if session:
-            # Send a POST request to the API with the payload and get the response
-            async with session.post(image_gen_api, json=payload) as response:
-                response_payload: Dict = await response.json()
-
-        else:
-            async with ClientSession(base_url=self.host_url) as local_session:
-                # Send a POST request to the API with the payload and get the response
-                async with local_session.post(image_gen_api, json=payload) as response:
-                    response_payload: Dict = await response.json()
-
-        # Extract the generated images from the response payload
-        img_base64: List[str] = extract_png_from_payload(response_payload)
+        is_local_session = session is None
+        session = session or ClientSession(base_url=self.host_url)
+        # Send a POST request to the API with the payload and get the response
+        async with session.post(image_gen_api, json=payload) as response:
+            response_payload: Dict = await response.json()
+            # Extract the generated images from the response payload
+            img_base64_chunks: List[str] = extract_png_from_payload(response_payload)
+            png_infos: Tuple[str] = await asyncio.gather(
+                *[
+                    self.get_png_info(image_base64=img_base64_chunk, session=session)
+                    for img_base64_chunk in img_base64_chunks
+                ]
+            )
+        if is_local_session:
+            await session.close()
 
         # Save the generated images to the output directory and return the list of file paths
-        return await save_base64_img_with_hash(
-            img_base64_list=img_base64, output_dir=self.output_dir, host_url=self.host_url, session=session
-        )
+        return [
+            assemble_image(image_base64=img_base64_chunk, png_info=png_info, output_dir=self.output_dir)
+            for img_base64_chunk, png_info in zip(img_base64_chunks, png_infos)
+        ]
 
     async def _make_query_request(
         self,
@@ -311,13 +320,15 @@ class StableDiffusionApp(BaseModel):
             Any: The response payload from the query request.
         """
         print(f"{Fore.LIGHTBLUE_EX}Making query ==> {query_api}{Fore.RESET}")
-        if session:
-            async with session.request("POST" if payload else "GET", query_api, json=payload) as response:
-                return await response.json()
-        else:
-            async with ClientSession(base_url=self.host_url) as session:
-                async with session.request("POST" if payload else "GET", query_api, json=payload) as response:
-                    return await response.json()
+        is_local_session = session is None
+        session = session or ClientSession(base_url=self.host_url)
+
+        async with session.request("POST" if payload else "GET", query_api, json=payload) as response:
+            ret = await response.json()
+        if is_local_session:
+            await session.close()
+
+        return ret
 
     async def txt2img_favorite(self, index: Optional[int] = None) -> List[str]:
         return await self._make_image_gen_request(
@@ -349,6 +360,86 @@ class StableDiffusionApp(BaseModel):
 
     async def interrogate_image(self, parser: InterrogateParser) -> OrderedDict[str, float]:
         return deepdanbooru_to_obj((await self._make_query_request(API_INTERROGATE, payload=parser.dict()))["caption"])
+
+    async def get_png_info(
+        self,
+        image_path: Optional[str] = None,
+        image_base64: Optional[str] = None,
+        session: Optional[ClientSession] = None,
+    ) -> str:
+        """
+        Fetches information about a PNG image.
+
+        Args:
+            image_path (str): The path to the PNG image file.
+            image_base64 (Optional[str], optional): The base64-encoded PNG image. Defaults to None.
+            session (Optional[ClientSession], optional): The aiohttp ClientSession to use for making the request.
+                Defaults to None.
+
+        Returns:
+            str: The information about the PNG image.
+
+        Raises:
+            None
+
+        """
+        image = [image_path, image_base64]
+        if not any(image):
+            raise ValueError("One of image_path or image_base64 should be provided.")
+        if all(image):
+            raise ValueError("Only one of image_path or image_base64 should be provided.")
+        image_base64: str = image_base64 or img_to_base64(image_path)
+        if session:
+            async with session.post(url=API_PNG_INFO, json={IMAGE_KEY: image_base64}) as response:
+                return (await response.json()).get(PNG_INFO_KEY)
+        else:
+            async with ClientSession(base_url=self.host_url) as selected_session:
+                async with selected_session.post(url=API_PNG_INFO, json={IMAGE_KEY: image_base64}) as response:
+                    return (await response.json()).get(PNG_INFO_KEY)
+
+
+def inject_png_info(image_path: str, req_png_info: str) -> None:
+    """
+    Injects PNG metadata into an image file.
+
+    Args:
+        image_path (str): The path to the image file.
+        req_png_info (str): The PNG metadata to be injected.
+
+    Returns:
+        None: This function does not return anything.
+    """
+    image = Image.open(image_path)
+    png_info = PngImagePlugin.PngInfo()
+    png_info.add_text("parameters", req_png_info)
+    image.save(image_path, pnginfo=png_info)
+
+
+def assemble_image(image_base64: str, png_info: str, output_dir: str, max_name_length: int = 50) -> str:
+    """
+    Assembles an image from a base64 string, adds PNG information, saves it to the specified output directory,
+        and returns the path of the saved image.
+
+    Args:
+        image_base64 (str): The base64 string representing the image.
+        png_info (str): The PNG information to be added to the image.
+        output_dir (str): The directory where the image will be saved.
+        max_name_length (int, optional): The maximum length of the file name. Defaults to 50.
+
+    Returns:
+        str: The path of the saved image.
+    """
+    pathlib.Path(output_dir).mkdir(parents=True, exist_ok=True)
+
+    file_name = re.sub(r'[\\/:"*?<>|]', "", png_info) or "null"
+    if len(file_name) > max_name_length:
+        file_name = file_name[:max_name_length]
+
+    output_path = f"{output_dir}/{file_name}.png"
+    base64_to_img(image_base64, output_path)
+    inject_png_info(output_path, png_info)
+
+    return rename_image_with_hash(output_path)
 
 
 def deepdanbooru_to_obj(string: str) -> OrderedDict[str, float]:

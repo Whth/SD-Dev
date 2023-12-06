@@ -1,21 +1,12 @@
-import base64
-import io
-import pathlib
 import re
 from random import shuffle
-from typing import List, Dict, Callable, Any, Tuple, Optional
+from typing import List, Dict, Callable, Any, Tuple
 
-from PIL import Image, PngImagePlugin
-from aiohttp import ClientSession
+from PIL import Image
 from colorama import Fore
-from slugify import slugify
 
-from modules.file_manager import rename_image_with_hash
 from .api import (
-    API_PNG_INFO,
-    IMAGE_KEY,
     IMAGES_KEY,
-    PNG_INFO_KEY,
 )
 
 
@@ -48,61 +39,6 @@ def extract_png_from_payload(payload: Dict) -> List[str]:
     return img_base64
 
 
-async def save_base64_img_with_hash(
-    img_base64_list: List[str],
-    output_dir: str,
-    host_url: str,
-    max_file_name_length: int = 34,
-    session: Optional[ClientSession] = None,
-) -> List[str]:
-    """
-    Save a list of base64-encoded images to disk with a hash appended to their filenames.
-    Args:
-        img_base64_list (List[str]): List of base64-encoded images.
-        output_dir (str): Directory to save the images.
-        host_url (str): Base URL for making HTTP requests.
-        max_file_name_length (int, optional): Maximum length for the generated filename. Defaults to 34.
-        session (Optional[ClientSession], optional): A pre-existing aiohttp ClientSession object. Defaults to None.
-    Returns:
-        List[str]: List of paths to the saved images.
-    """
-
-    output_img_paths: List[str] = []
-    png_info_stack: List = []
-    selected_session = session or ClientSession(base_url=host_url)
-
-    for img_base64 in img_base64_list:
-        # Decode the base64-encoded image
-        response = await selected_session.post(url=API_PNG_INFO, json={IMAGE_KEY: img_base64})
-        png_info_stack.append((await response.json()).get(PNG_INFO_KEY))
-
-    if session is None:
-        await selected_session.close()
-
-    for img_base64, req_png_info in zip(img_base64_list, png_info_stack):
-        # Create a label for the saved image
-        label = slugify(
-            req_png_info[:max_file_name_length] if len(req_png_info) > max_file_name_length else req_png_info
-        )
-
-        # Create the output directory if it doesn't exist
-        pathlib.Path(output_dir).absolute().mkdir(parents=True, exist_ok=True)
-        # Save the image with the PNG info
-        saved_path = f"{output_dir}/{label}.png"
-        png_info = PngImagePlugin.PngInfo()
-        png_info.add_text("parameters", req_png_info)
-        image = Image.open(io.BytesIO(base64.b64decode(img_base64)))
-        image.save(saved_path, pnginfo=png_info)
-
-        # Rename the saved image with a hash
-        saved_path_with_hash = rename_image_with_hash(saved_path)
-
-        # Add the path to the list of output image paths
-        output_img_paths.append(saved_path_with_hash)
-
-    return output_img_paths
-
-
 def extract_prompts(
     string: str,
     pos_keyword: str = "+",
@@ -118,10 +54,12 @@ def extract_prompts(
         pos_keyword (str, optional): The positive prompt keyword. Defaults to "+".
         neg_keyword (str, optional): The negative prompt keyword. Defaults to "-".
         batch_count_keyword (str, optional): The batch count keyword. Defaults to "pP".
-        raise_settings (Tuple[bool, bool, bool], optional): A tuple of booleans indicating whether to raise an exception if a prompt is not found. Defaults to (False, False, False).
+        raise_settings (Tuple[bool, bool, bool], optional): A tuple of booleans indicating whether to raise an
+            exception if a prompt is not found. Defaults to (False, False, False).
 
     Returns:
-        Tuple[str, str, int]: A tuple containing the positive prompt, negative prompt, and batch count extracted from the string.
+        Tuple[str, str, int]: A tuple containing the positive prompt, negative prompt,
+            and batch count extracted from the string.
     """
 
     # Match positive prompt
