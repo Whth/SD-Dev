@@ -155,7 +155,7 @@ class StableDiffusionPlugin(AbstractPlugin):
 
     @classmethod
     def get_plugin_version(cls) -> str:
-        return "0.2.0"
+        return "0.2.1"
 
     @classmethod
     def get_plugin_author(cls) -> str:
