@@ -77,6 +77,7 @@ class CMD:
     CONTROLNET_DETECT = "d"
 
     FETCH: str = "fetch"
+    HALT: str = "halt"
 
 
 class StableDiffusionPlugin(AbstractPlugin):
@@ -155,7 +156,7 @@ class StableDiffusionPlugin(AbstractPlugin):
 
     @classmethod
     def get_plugin_version(cls) -> str:
-        return "0.2.1"
+        return "0.2.2"
 
     @classmethod
     def get_plugin_author(cls) -> str:
@@ -452,6 +453,9 @@ class StableDiffusionPlugin(AbstractPlugin):
                     name=CMD.INTERROGATE, help_message="Interrogate the image content", source=lambda x: None
                 ),
                 ExecutableNode(name=CMD.FETCH, help_message=fetch_resources.__doc__, source=fetch_resources),
+                ExecutableNode(
+                    name=CMD.HALT, help_message=self.sd_app.interrupt.__doc__, source=lambda: self.sd_app.interrupt()
+                ),
             ],
         )
 

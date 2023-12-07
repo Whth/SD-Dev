@@ -27,6 +27,7 @@ from .api import (
     API_PNG_INFO,
     IMAGE_KEY,
     PNG_INFO_KEY,
+    API_INTERRUPT,
 )
 from .controlnet import ControlNetUnit, make_cn_payload
 from .parser import (
@@ -155,16 +156,23 @@ class StableDiffusionApp(BaseModel):
         session: Optional[ClientSession] = None,
     ) -> List[str]:
         """
-        Converts text to image using the given parameters.
+        Converts text to images.
 
         Args:
-            diffusion_parameters (DiffusionParser): The diffusion parameters for the text-to-image conversion.
-            hires_parameters (Optional[HiResParser]): The high-resolution parameters for the text-to-image conversion.
-            refiner_parameters (Optional[RefinerParser]): The refiner parameters for the text-to-image conversion.
-            controlnet_parameters (Optional[ControlNetUnit]): The controlnet parameters for the text-to-image conversion.
-            adetailer_parameters (Optional[ADetailerArgs]): The adetailer parameters for the text-to-image conversion.
-            override_settings (Optional[OverRideSettings]): The override settings for the text-to-image conversion.
-            session (Optional[ClientSession]): The client session for making the image generation request.
+            diffusion_parameters (DiffusionParser, optional): The parameters for text diffusion.
+                Defaults to DiffusionParser().
+            hires_parameters (HiResParser, optional): The parameters for generating high-resolution images.
+                Defaults to None.
+            refiner_parameters (RefinerParser, optional): The parameters for image refinement.
+                Defaults to None.
+            controlnet_parameters (ControlNetUnit, optional): The parameters for control net.
+                Defaults to None.
+            adetailer_parameters (ADetailerArgs, optional): The parameters for adetailer.
+                Defaults to None.
+            override_settings (OverRideSettings, optional): The override settings for the parameters.
+                Defaults to None.
+            session (ClientSession, optional): The client session.
+                Defaults to None.
 
         Returns:
             List[str]: A list of paths to the generated images.
@@ -208,19 +216,20 @@ class StableDiffusionApp(BaseModel):
         session: Optional[ClientSession] = None,
     ) -> List[str]:
         """
-        Generate image(s) from the given input image using diffusion-based algorithms and refinement techniques.
+        Asynchronously converts an image to another image using various parameters.
 
         Args:
-            diffusion_parameters (DiffusionParser): An instance of DiffusionParser class containing diffusion parameters.
-            refiner_parameters (Optional[RefinerParser]): An optional instance of RefinerParser class containing refiner parameters.
-            controlnet_parameters (Optional[ControlNetUnit]): An optional instance of ControlNetUnit class containing controlnet parameters.
-            adetailer_parameters (Optional[ADetailerArgs]): An optional instance of ADetailerArgs class containing adetailer parameters.
-            image_path (Optional[str]): An optional path to the input image file.
-            image_base64 (Optional[str]): An optional base64 encoded string representation of the input image.
-            override_settings (Optional[OverRideSettings]): An optional instance of OverRideSettings class containing override settings.
+            diffusion_parameters (DiffusionParser): The parameters for the diffusion process.
+            refiner_parameters (Optional[RefinerParser]): The parameters for the refiner process.
+            controlnet_parameters (Optional[ControlNetUnit]): The parameters for the controlnet process.
+            adetailer_parameters (Optional[ADetailerArgs]): The parameters for the adetailer process.
+            override_settings (Optional[OverRideSettings]): The override settings for the process.
+            image_path (Optional[str]): The path of the input image.
+            image_base64 (Optional[str]): The base64 representation of the input image.
+            session (Optional[ClientSession]): The client session for making the request.
 
         Returns:
-            List[str]: A list of file paths of the generated images.
+            List[str]: A list of paths to the converted images.
         """
         # Create the payload dictionary to be sent in the request
         self.img2img_params.payload_init()
@@ -307,6 +316,7 @@ class StableDiffusionApp(BaseModel):
         self,
         query_api: str,
         payload: Dict = None,
+        method: Optional[str] = None,
         session: Optional[ClientSession] = None,
     ) -> Any:
         """
@@ -323,7 +333,8 @@ class StableDiffusionApp(BaseModel):
         is_local_session = session is None
         session = session or ClientSession(base_url=self.host_url)
 
-        async with session.request("POST" if payload else "GET", query_api, json=payload) as response:
+        method = method or ("POST" if payload else "GET")
+        async with session.request(method, query_api, json=payload) as response:
             ret = await response.json()
         if is_local_session:
             await session.close()
@@ -340,25 +351,81 @@ class StableDiffusionApp(BaseModel):
             self.img2img_params.favorite[index] if index else choice(self.img2img_params.favorite), API_IMG2IMG
         )
 
+    async def interrupt(self, session: Optional[ClientSession] = None) -> None:
+        """
+        Interrupts the current process by making a POST request to the interrupt API.
+
+        Args:
+            session (Optional[ClientSession]): The session to use for the request. If not provided,
+                a new session will be created with the default base URL.
+
+        Returns:
+            None
+
+        Raises:
+            None
+        """
+        is_local_session = session is None
+        session = session or ClientSession(base_url=self.host_url)
+        await self._make_query_request(API_INTERRUPT, method="POST", session=session)
+        if is_local_session:
+            await session.close()
+
     async def fetch_sd_models(self, session: Optional[ClientSession] = None) -> List[Dict]:
+        """
+        Fetches the SD models by making a query request to the API.
+
+        Args:
+            session (Optional[ClientSession]): An optional client session object to be used for the request.
+
+        Returns:
+            List[Dict]: A list of dictionaries containing the details of the fetched models.
+        """
         models_detail_list: List[Dict] = await self._make_query_request(API_MODELS, session=session)
         self.available_sd_models.clear()
         self.available_sd_models.extend(map(lambda x: x["title"], models_detail_list))
         return models_detail_list
 
     async def fetch_lora_models(self, session: Optional[ClientSession] = None) -> List[Dict]:
+        """
+        Fetches the Lora models from the API.
+
+        Parameters:
+            session (Optional[ClientSession]): An optional ClientSession object for making the request.
+
+        Returns:
+            List[Dict]: A list of dictionaries containing the details of the Lora models.
+        """
         models_detail_list: List[Dict] = await self._make_query_request(API_LORAS, session=session)
         self.available_lora_models.clear()
         self.available_lora_models.extend(map(lambda x: x["name"], models_detail_list))
         return models_detail_list
 
     async def fetch_upscalers(self, session: Optional[ClientSession] = None) -> List[Dict]:
+        """
+        Fetches the list of upscalers from the API.
+
+        Parameters:
+            session (Optional[ClientSession]): An optional aiohttp ClientSession to use for the request.
+
+        Returns:
+            List[Dict]: A list of dictionaries containing details of the upscalers.
+        """
         models_detail_list: List[Dict] = await self._make_query_request(API_GET_UPSCALERS, session=session)
         self.available_upscalers.clear()
         self.available_upscalers.extend(map(lambda x: x["name"], models_detail_list))
         return models_detail_list
 
     async def interrogate_image(self, parser: InterrogateParser) -> OrderedDict[str, float]:
+        """
+        Interrogates an image using the given parser and returns the result as an ordered dictionary.
+
+        Args:
+            parser (InterrogateParser): The parser object containing the image information.
+
+        Returns:
+            OrderedDict[str, float]: The result of the interrogation as a dictionary with caption as the key and confidence score as the value.
+        """
         return deepdanbooru_to_obj((await self._make_query_request(API_INTERROGATE, payload=parser.dict()))["caption"])
 
     async def get_png_info(

@@ -9,6 +9,7 @@ API_GET_CONFIG: str = "/sdapi/v1/options"
 API_GET_UPSCALERS: str = "/sdapi/v1/upscalers"
 
 API_INTERROGATE: str = "/sdapi/v1/interrogate"
+API_INTERRUPT: str = "/sdapi/v1/interrupt"
 
 API_CONTROLNET_MODEL_LIST: str = "/controlnet/model_list"
 API_CONTROLNET_MODULE_LIST: str = "/controlnet/module_list"
