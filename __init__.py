@@ -78,6 +78,7 @@ class CMD:
 
     FETCH: str = "fetch"
     HALT: str = "halt"
+    EXPLAIN: str = "e"
 
 
 class StableDiffusionPlugin(AbstractPlugin):
@@ -273,6 +274,22 @@ class StableDiffusionPlugin(AbstractPlugin):
             pos_prompt, neg_prompt = processor.process(pos_prompt, neg_prompt)
             return f"Pos prompt\n----------------\n{pos_prompt}\n\nNeg prompt\n----------------\n{neg_prompt}"
 
+        def _explain() -> str:
+            """
+            Explain the function and its purpose.
+
+            Returns:
+                str: The explanation of the function.
+            """
+            stdout = ""
+            crmodel = self.sd_app.available_sd_models[self.config_registry.get_config(self.CONFIG_CURRENT_MODEL_ID)]
+            rfmodel = self.sd_app.available_sd_models[self.config_registry.get_config(self.CONFIG_REFINER_MODEL_ID)]
+            upscaler = self.sd_app.available_upscalers[self.config_registry.get_config(self.CONFIG_UPSCALER)]
+            stdout += f"Current model:\n{crmodel}\n"
+            stdout += f"Refiner model:\n{rfmodel}\n"
+            stdout += f"Upscaler:\n{upscaler}\n"
+            return stdout
+
         # endregion
         @self.receiver(ApplicationLaunch)
         async def fetch_resources():
@@ -313,6 +330,11 @@ class StableDiffusionPlugin(AbstractPlugin):
                         ExecutableNode(
                             name=CMD.SET,
                             source=cmd_builder.build_setter_hall(),
+                        ),
+                        ExecutableNode(
+                            name=CMD.EXPLAIN,
+                            source=_explain,
+                            help_message=_explain.__doc__,
                         ),
                     ],
                 ),

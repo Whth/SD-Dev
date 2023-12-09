@@ -7,20 +7,14 @@ from pydantic import BaseModel, Field, PrivateAttr
 from modules.shared import img_to_base64
 from .api import API_GET_CONFIG
 
-__DEFAULT_NEGATIVE_PROMPT__ = (
-    "poorly drawn face,mutation,blurry,malformed limbs,disfigured,missing arms,missing legs,deformed legs,"
-    "bad anatomy,bad hands,text,error,missing fingers,worst quality,normal quality,jpeg artifacts,signature,"
-    "watermark,username,bad feet,poorly drawn asymmetric eyes,cloned face,mutilated,multiple breasts,"
-    "poorly drawn hands,extra legs,malformed hands,long neck,three arms,long body,more than 2 thighs,"
-    "more than 2 nipples,lowres,__low__"
-)
+__DEFAULT_NEGATIVE_PROMPT__ = "poorly drawn face,mutation,blurry,malformed limbs"
 
 __DEFAULT_POSITIVE_PROMPT__ = (
-    "modern art,student uniform,white OR blue shirt,short blue skirt,white tights,"
-    "high school girl,one girl,solo,upper body,shy,extremely cute,lovely,outside,"
-    "on street,beautiful,expressionless,cool girl,medium breasts,watercolor,oil,"
-    "see through,thighs,thin torso,masterpiece,wonderful art,high resolution,"
-    "hair ornament,stripes,body curve,suitable for all viewers,"
+    "modern art,student uniform,short blue skirt,white tights,"
+    "senior high school girl,solo,upper body,shy,extremely cute,lovely,outside,"
+    "on street,beautiful,expressionless,cool girl,medium breasts,"
+    "viewing angle,thighs,thin torso,masterpiece,wonderful art,"
+    "hair ornament,stripes,body curve,"
     "__high__,__breasts__,__perspective__,__haircolor__,__hairstyle__,"
 )
 __R_GEN__ = random.SystemRandom()
@@ -139,8 +133,8 @@ class DiffusionParser(BaseModel):
     styles: List[str] = Field(default_factory=list)
     seed: int = -1
     sampler_name: str = "UniPC"
-    steps: int = 20
-    cfg_scale: float = 7.0
+    steps: int = 19
+    cfg_scale: float = 7.1
     width: int = Field(default_factory=get_shot_width)
     height: int = Field(default_factory=get_shot_height)
 
@@ -195,6 +189,7 @@ class Options(BaseModel):
     class Config:
         allow_mutation = True
         validate_assignment = True
+        validate_all = True
 
     host_url: str = Field(exclude=True)
     samples_save: bool = True
@@ -297,18 +292,21 @@ class Options(BaseModel):
     sdxl_crop_left: int = 0
     sdxl_refiner_low_aesthetic_score: float = 2.5
     sdxl_refiner_high_aesthetic_score: float = 6
-    sd_vae_explanation: str = (
-        "<abbr title='Variational autoencoder'>VAE</abbr> is a neural network that transforms a "
-        "standard <abbr title='red/green/blue'>RGB</abbr>\nimage into latent space "
-        "representation and back. Latent space representation is what stable diffusion is "
-        "working on during sampling\n(i.e. when the progress bar is between empty and full). "
-        "For txt2img VAE is used to create a resulting image after the sampling is "
-        "finished.\nFor img2img VAE is used to process user's input image before the sampling "
-        "and to create an image after sampling."
+    sd_vae_explanation: str = Field(
+        default=(
+            "<abbr title='Variational autoencoder'>VAE</abbr> is a neural network that transforms a "
+            "standard <abbr title='red/green/blue'>RGB</abbr>\nimage into latent space "
+            "representation and back. Latent space representation is what stable diffusion is "
+            "working on during sampling\n(i.e. when the progress bar is between empty and full). "
+            "For txt2img VAE is used to create a resulting image after the sampling is "
+            "finished.\nFor img2img VAE is used to process user's input image before the sampling "
+            "and to create an image after sampling."
+        ),
+        exclude=True,
     )
     sd_vae_checkpoint_cache: int = 0
     sd_vae: str = "Automatic"
-    sd_vae_overrides_per_model_preferences: bool = True
+    sd_vae_overrides_per_model_preferences: bool = False
     auto_vae_precision: bool = True
     sd_vae_encode_method: str = "Full"
     sd_vae_decode_method: str = "Full"
@@ -326,9 +324,9 @@ class Options(BaseModel):
     return_mask_composite: bool = False
     cross_attention_optimization: str = "Automatic"
     s_min_uncond: int = 0
-    token_merging_ratio: int = 0
-    token_merging_ratio_img2img: int = 0
-    token_merging_ratio_hr: int = 0
+    token_merging_ratio: float = 0.3
+    token_merging_ratio_img2img: float = 0.4
+    token_merging_ratio_hr: float = 0.4
     pad_cond_uncond: bool = False
     persistent_cond_cache: bool = True
     batch_cond_uncond: bool = True
@@ -399,11 +397,11 @@ class Options(BaseModel):
     live_previews_enable: bool = True
     live_previews_image_format: str = "png"
     show_progress_grid: bool = True
-    show_progress_every_n_steps: bool = 10
+    show_progress_every_n_steps: int = 10
     show_progress_type: str = "Approx NN"
     live_preview_allow_lowvram_full: bool = False
     live_preview_content: str = "Prompt"
-    live_preview_refresh_period: bool = 1000
+    live_preview_refresh_period: int = 1000
     live_preview_fast_interrupt: bool = False
     hide_samplers: List = []
     eta_ddim: float = 0
@@ -426,7 +424,7 @@ class Options(BaseModel):
     uni_pc_lower_order_final: bool = True
     postprocessing_enable_in_main_ui: List = []
     postprocessing_operation_order: List = []
-    upscaling_max_images_in_cache: bool = 5
+    upscaling_max_images_in_cache: int = 5
     disabled_extensions: List = []
     disable_all_extensions: str = "none"
     restore_config_state_file: str = ""
@@ -460,13 +458,15 @@ class Options(BaseModel):
 
         print(f"Updated SD-config count: {updated_config_count}")
 
-    def load_dict_to_config(self, config_dict: Dict[str, Any]):
+    def load_dict_to_config(self, config_dict: Dict[str, Any]) -> int:
+        print(f"Loading config dict size: {len(config_dict)}")
         updated_config_count: int = 0
         for key, value in config_dict.items():
             if hasattr(self, key):
                 if value != getattr(self, key):
                     setattr(self, key, value)
                     updated_config_count += 1
+
             else:
                 raise KeyError(f'Key "{key}" not found in instance.')
         return updated_config_count
@@ -502,6 +502,21 @@ class Options(BaseModel):
 
         else:
             raise KeyError("illegal key found")
+
+    def generate_full_override_settings_payload(
+        self, override_settings_restore_afterwards: bool = False
+    ) -> OverRideSettings:
+        """
+        Generates a payload for full override settings.
+
+        Returns:
+            OverRideSettings: The generated payload for full override settings.
+        """
+        if not self._fetched:
+            return OverRideSettings()
+        return OverRideSettings(
+            override_settings=self.dict(), override_settings_restore_afterwards=override_settings_restore_afterwards
+        )
 
     def revert_changes(self):
         for key, value in self._changed_bak_dict.items():
