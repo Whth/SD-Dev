@@ -1,4 +1,5 @@
 import pathlib
+from enum import Enum
 from functools import partial
 from typing import List, Optional, Callable, Union, OrderedDict
 
@@ -21,6 +22,8 @@ from modules.shared import (
     get_pwd,
     img_to_base64,
     AbstractPlugin,
+    make_regex_part_from_enum,
+    assemble_cmd_regex_parts,
 )
 from .adetailer import ADetailerArgs, ADetailerUnit, ModelType
 from .controlnet import ControlNetUnit, Controlnet, ControlNetDetect
@@ -48,37 +51,34 @@ from .utils import (
 __all__ = ["StableDiffusionPlugin"]
 
 
-class CMD:
-    ROOT = "sd"
-    AGAIN = "ag"
-    IMG2IMG = "i"
-    TXT2IMG = "t"
-    LIKE = "lk"
-    SIZE = "size"
-    DEFAULT = "default"
-    SET = "set"
-    CONFIG = "config"
-    LIST_OUT = "list"
+class CMD(Enum):
+    stablediffusion = ["sd", "stbdf"]
+    again = ["a", "ag", "rc"]
+    img2img = ["i", "i2i"]
+    txt2img = ["t", "t2i"]
+    like = ["l", "lk"]
+    size = ["s", "sz"]
+    default = ["d", "dfa"]
+    set = ["s", "st"]
+    config = ["c", "cf", "cfg"]
+    list = ["l", "ls"]
+    models = ["m", "md"]
+    modules = ["o", "mu"]
+    interrogate = ["i", "inte"]
+    normal = ["n", "s", "sd"]
+    lora = ["l", "lr"]
+    upscaler = ["u", "up", "ups"]
+    positive = ["p", "pos"]
+    negative = ["n", "neg"]
 
-    MODELS = "models"
-    MODULES = "modules"
+    test = ["t", "ts"]
+    shot = ["s", "shts"]
 
-    INTERROGATE = "expl"
-    NORMAL_MODEL = "sd"
-    LORA_MODEL = "lora"
-    UPSCALER = "ups"
-
-    POS_PROMPT = "pos"
-    NEG_PROMPT = "neg"
-    SHOT_SIZE = "shot"
-    TEST = "test"
-
-    CONTROLNET = "cn"
-    CONTROLNET_DETECT = "d"
-
-    FETCH: str = "fetch"
-    HALT: str = "halt"
-    EXPLAIN: str = "e"
+    controlnet = ["cn", "ctln"]
+    detect = ["d", "dtc"]
+    fetch = ["f", "fch"]
+    halt = ["h", "ht"]
+    explain = ["x", "xp"]
 
 
 class StableDiffusionPlugin(AbstractPlugin):
@@ -157,7 +157,7 @@ class StableDiffusionPlugin(AbstractPlugin):
 
     @classmethod
     def get_plugin_version(cls) -> str:
-        return "0.2.2"
+        return "0.2.3"
 
     @classmethod
     def get_plugin_author(cls) -> str:
@@ -316,102 +316,118 @@ class StableDiffusionPlugin(AbstractPlugin):
                 await self.sd_app.fetch_upscalers(fetch_session)
 
         tree = NameSpaceNode(
-            name=CMD.ROOT,
+            name=CMD.stablediffusion.name,
+            aliases=CMD.stablediffusion.value,
             required_permissions=self.required_permission,
             help_message=self.get_plugin_description(),
             children_node=[
                 NameSpaceNode(
-                    name=CMD.CONFIG,
+                    name=CMD.config.name,
+                    aliases=CMD.config.value,
                     children_node=[
                         ExecutableNode(
-                            name=CMD.LIST_OUT,
+                            name=CMD.list.name,
+                            aliases=CMD.list.value,
                             source=cmd_builder.build_list_out_for(configurable_options),
                         ),
                         ExecutableNode(
-                            name=CMD.SET,
+                            name=CMD.set.name,
+                            aliases=CMD.set.value,
                             source=cmd_builder.build_setter_hall(),
                         ),
                         ExecutableNode(
-                            name=CMD.EXPLAIN,
+                            name=CMD.explain.name,
+                            aliases=CMD.explain.value,
                             source=_explain,
-                            help_message=_explain.__doc__,
                         ),
                     ],
                 ),
                 NameSpaceNode(
-                    name=CMD.CONTROLNET,
+                    name=CMD.controlnet.name,
+                    aliases=CMD.controlnet.value,
                     children_node=[
                         ExecutableNode(
-                            name=CMD.MODELS,
+                            name=CMD.models.name,
+                            aliases=CMD.models.value,
                             source=lambda: make_stdout_seq_string(controlnet_app.models, title="CN_Models"),
                         ),
                         ExecutableNode(
-                            name=CMD.MODULES,
+                            name=CMD.modules.name,
+                            aliases=CMD.modules.value,
                             source=lambda: make_stdout_seq_string(controlnet_app.modules, title="CN_Modules"),
                         ),
                         ExecutableNode(
-                            name=CMD.CONTROLNET_DETECT,
+                            name=CMD.detect.name,
+                            aliases=CMD.detect.value,
                             help_message="Detect a image use controlnet",
                             source=lambda: None,
                         ),
                     ],
                 ),
                 NameSpaceNode(
-                    name=CMD.AGAIN,
+                    name=CMD.again.name,
+                    aliases=CMD.again.value,
                     help_message="Generate from history, img2img or txt2img",
                     children_node=[
                         ExecutableNode(
-                            name=CMD.TXT2IMG,
-                            help_message=diffusion_history_t.__doc__,
+                            name=CMD.txt2img.name,
+                            aliases=CMD.txt2img.value,
                             source=diffusion_history_t,
                         ),
                         ExecutableNode(
-                            name=CMD.IMG2IMG,
-                            help_message=diffusion_history_i.__doc__,
+                            name=CMD.img2img.name,
+                            aliases=CMD.img2img.value,
                             source=diffusion_history_i,
                         ),
                     ],
                 ),
                 NameSpaceNode(
-                    name=CMD.LIKE,
+                    name=CMD.like.name,
+                    aliases=CMD.like.value,
                     help_message="mark last generation as liked,or generate from favorite",
                     children_node=[
                         NameSpaceNode(
-                            name=CMD.SIZE,
+                            name=CMD.size.name,
+                            aliases=CMD.size.value,
                             help_message="the size of the Favorite storage",
                             children_node=[
                                 ExecutableNode(
-                                    name=CMD.TXT2IMG,
+                                    name=CMD.txt2img.name,
+                                    aliases=CMD.txt2img.value,
                                     source=lambda: f"The size of the t2i Favorite storage is: \n"
                                     f"{len(self.sd_app.txt2img_params.favorite)}",
                                 ),
                                 ExecutableNode(
-                                    name=CMD.IMG2IMG,
+                                    name=CMD.img2img.name,
+                                    aliases=CMD.img2img.value,
                                     source=lambda: f"The size of the i2i Favorite storage is: \n"
                                     f"{len(self.sd_app.img2img_params.favorite)}",
                                 ),
                             ],
                         ),
                         ExecutableNode(
-                            name=CMD.TXT2IMG,
+                            name=CMD.txt2img.name,
+                            aliases=CMD.txt2img.value,
                             source=lambda: f"add to t2i favorite\nSuccess={self.sd_app.add_favorite_t()}",
                         ),
                         ExecutableNode(
-                            name=CMD.IMG2IMG,
+                            name=CMD.img2img.name,
+                            aliases=CMD.img2img.value,
                             source=lambda: f"add to i2i favorite\nSuccess={self.sd_app.add_favorite_i()}",
                         ),
                         NameSpaceNode(
-                            name=CMD.AGAIN,
+                            name=CMD.again.name,
+                            aliases=CMD.again.value,
                             help_message="retrieve a favorite generation, with index or random",
                             children_node=[
                                 ExecutableNode(
-                                    name=CMD.TXT2IMG,
-                                    help_message=diffusion_favorite_t.__doc__,
+                                    name=CMD.txt2img.name,
+                                    aliases=CMD.txt2img.value,
                                     source=diffusion_favorite_t,
                                 ),
                                 ExecutableNode(
-                                    name=CMD.IMG2IMG,
-                                    help_message=diffusion_favorite_i.__doc__,
+                                    name=CMD.img2img.name,
+                                    aliases=CMD.img2img.value,
                                     source=diffusion_favorite_i,
                                 ),
                             ],
@@ -419,51 +435,56 @@ class StableDiffusionPlugin(AbstractPlugin):
                     ],
                 ),
                 NameSpaceNode(
-                    name=CMD.DEFAULT,
+                    name=CMD.default.name,
+                    aliases=CMD.default.value,
                     help_message="Set default settings for the plugin",
                     children_node=[
                         ExecutableNode(
-                            name=CMD.POS_PROMPT,
-                            help_message=set_default_pos_prompt.__doc__,
+                            name=CMD.positive.name,
+                            aliases=CMD.positive.value,
                             source=lambda x: f"Set pos prompt to\n{x}\n\nSuccess={set_default_pos_prompt(x)}",
                         ),
                         ExecutableNode(
-                            name=CMD.NEG_PROMPT,
-                            help_message=set_default_neg_prompt.__doc__,
+                            name=CMD.negative.name,
+                            aliases=CMD.negative.value,
                             source=lambda x: f"Set neg prompt to\n{x}\nSuccess={set_default_neg_prompt(x)}",
                         ),
                         ExecutableNode(
-                            name=CMD.SHOT_SIZE,
-                            help_message=set_shot_size.__doc__,
+                            name=CMD.shot.name,
+                            aliases=CMD.shot.value,
                             source=lambda x: f"Set shot size\nSuccess={set_shot_size(x)}",
                         ),
                     ],
                 ),
                 ExecutableNode(
-                    name=CMD.TEST,
-                    help_message=_test_process.__doc__,
+                    name=CMD.test.name,
+                    aliases=CMD.test.value,
                     source=_test_process,
                 ),
                 NameSpaceNode(
-                    name=CMD.MODELS,
+                    name=CMD.models.name,
+                    aliases=CMD.models.value,
                     help_message="get available models,StableDiffusion/Lora",
                     children_node=[
                         ExecutableNode(
-                            name=CMD.LORA_MODEL,
+                            name=CMD.lora.name,
+                            aliases=CMD.lora.value,
                             help_message="get available lora models",
                             source=lambda: make_stdout_seq_string(
                                 seq=self.sd_app.available_lora_models, title="Lora Models"
                             ),
                         ),
                         ExecutableNode(
-                            name=CMD.NORMAL_MODEL,
+                            name=CMD.normal.name,
+                            aliases=CMD.normal.value,
                             help_message="get available stable diffusion models",
                             source=lambda: make_stdout_seq_string(
                                 seq=self.sd_app.available_sd_models, title="StableDiffusion Models"
                             ),
                         ),
                         ExecutableNode(
-                            name=CMD.UPSCALER,
+                            name=CMD.upscaler.name,
+                            aliases=CMD.upscaler.value,
                             help_message="get available upscalers",
                             source=lambda: make_stdout_seq_string(
                                 seq=self.sd_app.available_upscalers, title="Upscalers"
@@ -472,12 +493,13 @@ class StableDiffusionPlugin(AbstractPlugin):
                     ],
                 ),
                 ExecutableNode(
-                    name=CMD.INTERROGATE, help_message="Interrogate the image content", source=lambda x: None
+                    name=CMD.interrogate.name,
+                    aliases=CMD.interrogate.value,
+                    help_message="Interrogate the image content",
+                    source=lambda x: None,
                 ),
-                ExecutableNode(name=CMD.FETCH, help_message=fetch_resources.__doc__, source=fetch_resources),
-                ExecutableNode(
-                    name=CMD.HALT, help_message=self.sd_app.interrupt.__doc__, source=lambda: self.sd_app.interrupt()
-                ),
+                ExecutableNode(name=CMD.fetch.name, aliases=CMD.fetch.value, source=fetch_resources),
+                ExecutableNode(name=CMD.halt.name, aliases=CMD.halt.value, source=lambda: self.sd_app.interrupt()),
             ],
         )
 
@@ -652,7 +674,18 @@ class StableDiffusionPlugin(AbstractPlugin):
 
         @self.receiver(
             [FriendMessage, GroupMessage],
-            decorators=[MatchRegex(regex=rf"^{CMD.ROOT}\s+{CMD.CONTROLNET}\s+{CMD.CONTROLNET_DETECT}.*")],
+            decorators=[
+                MatchRegex(
+                    regex=assemble_cmd_regex_parts(
+                        [
+                            make_regex_part_from_enum(CMD.stablediffusion),
+                            make_regex_part_from_enum(CMD.controlnet),
+                            make_regex_part_from_enum(CMD.detect),
+                        ]
+                    )
+                    + ".*"
+                )
+            ],
         )
         async def cn_detect(
             app: Ariadne,
@@ -685,7 +718,17 @@ class StableDiffusionPlugin(AbstractPlugin):
 
         @self.receiver(
             [FriendMessage, GroupMessage],
-            decorators=[MatchRegex(regex=rf"^{CMD.ROOT}\s+{CMD.INTERROGATE}.*")],
+            decorators=[
+                MatchRegex(
+                    regex=assemble_cmd_regex_parts(
+                        [
+                            make_regex_part_from_enum(CMD.stablediffusion),
+                            make_regex_part_from_enum(CMD.interrogate),
+                        ]
+                    )
+                    + ".*"
+                )
+            ],
         )
         async def interrogate(
             app: Ariadne,
