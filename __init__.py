@@ -678,7 +678,9 @@ class StableDiffusionPlugin(AbstractPlugin):
                 ],
             )
             img_base64_list = await controlnet_app.detect(payload=pay_load)
-
+            if not img_base64_list:
+                await app.send_message(target, "Something went wrong, please try again later.")
+                return None
             await app.send_message(target, [Image(base64=img_base64) for img_base64 in img_base64_list])
 
         @self.receiver(

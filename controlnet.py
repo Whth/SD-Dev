@@ -107,13 +107,17 @@ class Controlnet(object):
             Dict: The JSON response as a dictionary.
         """
 
-        if session:
-            async with session.get(url=url) as response:
-                return await response.json()
-        else:
-            async with ClientSession() as session:
-                async with session.get(url=url) as response:
-                    return await response.json()
+        is_local_session = session is None
+        session = session or ClientSession()
+
+        async with session.get(url=url) as response:
+            if response.status != 200:
+                warnings.warn(await response.text())
+            obj = await response.json()
+        if is_local_session:
+            await session.close()
+
+        return obj
 
     @classmethod
     async def __async_post(cls, url: str, payload: Dict, session: Optional[ClientSession] = None) -> Dict:
@@ -129,13 +133,17 @@ class Controlnet(object):
         Returns:
             Dict: The response from the request as a JSON object.
         """
-        if session:
-            async with session.post(url=url, json=payload) as response:
-                return await response.json()
-        else:
-            async with ClientSession() as session:
-                async with session.post(url=url, json=payload) as response:
-                    return await response.json()
+        is_local_session = session is None
+        session = session or ClientSession()
+
+        async with session.post(url=url, json=payload) as response:
+            if response.status != 200:
+                warnings.warn(await response.text())
+            obj = await response.json()
+        if is_local_session:
+            await session.close()
+
+        return obj
 
     def __init__(self, host_url: str):
         """
