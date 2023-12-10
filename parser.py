@@ -82,12 +82,16 @@ def get_seed() -> int:
 __WIDE_SHOT__: Tuple[int, int] = (768, 512)
 __PORTRAIT_SHOT__: Tuple[int, int] = (512, 768)
 __SQUARE_SHOT__: Tuple[int, int] = (512, 512)
+__TALL_SHOT__: Tuple[int, int] = (464, 896)
+__BAND_SHOT__: Tuple[int, int] = (896, 464)
 __ENFORCED_SIZE_TEMPLATE__: Tuple[int, int] = __PORTRAIT_SHOT__
 
 __SHOT_SIZE_TABLE__ = {
     "wide": __WIDE_SHOT__,
     "portrait": __PORTRAIT_SHOT__,
     "square": __SQUARE_SHOT__,
+    "tall": __TALL_SHOT__,
+    "band": __BAND_SHOT__,
 }
 
 
