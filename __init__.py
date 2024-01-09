@@ -117,6 +117,7 @@ class StableDiffusionPlugin(AbstractPlugin):
     CONFIG_ENABLE_REFINER = "enable_refiner"
     CONFIG_SEND_BATCH_SIZE = "send_batch_size"
     CONFIG_UNIT_TIMEOUT = "utimeout"
+    CONFIG_SWITCH_AT = "switchat"
     DefaultConfig = {
         CONFIG_POS_KEYWORD: "+",
         CONFIG_NEG_KEYWORD: "-",
@@ -143,6 +144,7 @@ class StableDiffusionPlugin(AbstractPlugin):
         CONFIG_ENABLE_DYNAMIC_PROMPT: 1,
         CONFIG_SEND_BATCH_SIZE: 18,
         CONFIG_UNIT_TIMEOUT: 180,
+        CONFIG_SWITCH_AT: 0.7,
         # in the current version of QQ transmitting protocol,
         # 20 is the maximum of the pictures that can be sent at once
     }
@@ -207,6 +209,7 @@ class StableDiffusionPlugin(AbstractPlugin):
             self.CONFIG_ENABLE_REFINER,
             self.CONFIG_CONTROLNET_MODULE,
             self.CONFIG_CONTROLNET_MODEL,
+            self.CONFIG_SWITCH_AT,
         ]
 
         # endregion
@@ -597,7 +600,8 @@ class StableDiffusionPlugin(AbstractPlugin):
                             self.sd_app.available_sd_models[
                                 self.config_registry.get_config(self.CONFIG_REFINER_MODEL_ID)
                             ]
-                        )
+                        ),
+                        refiner_switch_at=self.config_registry.get_config(self.CONFIG_SWITCH_AT),
                     )
                     if self.config_registry.get_config(self.CONFIG_ENABLE_REFINER)
                     else None
