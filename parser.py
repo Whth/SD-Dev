@@ -1,4 +1,5 @@
 import random
+import warnings
 from typing import List, Tuple, Any, Dict, Optional
 
 from aiohttp import ClientSession
@@ -465,6 +466,7 @@ class Options(BaseModel):
     def load_dict_to_config(self, config_dict: Dict[str, Any]) -> int:
         print(f"Loading config dict size: {len(config_dict)}")
         updated_config_count: int = 0
+        invalid_pairs = []
         for key, value in config_dict.items():
             if hasattr(self, key):
                 if value != getattr(self, key):
@@ -472,7 +474,8 @@ class Options(BaseModel):
                     updated_config_count += 1
 
             else:
-                raise KeyError(f'Key "{key}" not found in instance.')
+                invalid_pairs.append(f"{key} = {value}")
+        warnings.warn(f"\n".join(invalid_pairs))
         return updated_config_count
 
     def record_start(self):
