@@ -16,7 +16,7 @@ __DEFAULT_POSITIVE_PROMPT__ = (
     "on street,beautiful,expressionless,cool girl,medium breasts,"
     "viewing angle,thighs,thin torso,masterpiece,wonderful art,"
     "hair ornament,stripes,body curve,"
-    "__high__,__breasts__,__perspective__,__haircolor__,__hairstyle__,"
+    "__high__,__perspective__,__haircolor__,__hairstyle__,"
 )
 __R_GEN__ = random.SystemRandom()
 
