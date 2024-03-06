@@ -1,5 +1,5 @@
 import pathlib
-from enum import Enum
+import random
 from functools import partial
 from typing import List, Optional, Callable, Union, OrderedDict
 
@@ -24,6 +24,8 @@ from modules.shared import (
     AbstractPlugin,
     make_regex_part_from_enum,
     assemble_cmd_regex_parts,
+    EnumCMD,
+    dict_to_markdown_table_complex,
 )
 from .adetailer import ADetailerArgs, ADetailerUnit, ModelType
 from .controlnet import ControlNetUnit, Controlnet, ControlNetDetect
@@ -473,16 +475,16 @@ class StableDiffusionPlugin(AbstractPlugin):
                             name=CMD.lora.name,
                             aliases=CMD.lora.value,
                             help_message="get available lora models",
-                            source=lambda: make_stdout_seq_string(
-                                seq=self.sd_app.available_lora_models, title="Lora Models"
+                            source=lambda: dict_to_markdown_table_complex(
+                                {"Loras": sorted([s.split(".")[0] for s in self.sd_app.available_lora_models])}
                             ),
                         ),
                         ExecutableNode(
                             name=CMD.normal.name,
                             aliases=CMD.normal.value,
                             help_message="get available stable diffusion models",
-                            source=lambda: make_stdout_seq_string(
-                                seq=self.sd_app.available_sd_models, title="StableDiffusion Models"
+                            source=lambda: dict_to_markdown_table_complex(
+                                {"SD_Models": sorted([s.split(".")[0] for s in self.sd_app.available_sd_models])}
                             ),
                         ),
                         ExecutableNode(
