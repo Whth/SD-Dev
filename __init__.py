@@ -53,7 +53,7 @@ from .utils import (
 __all__ = ["StableDiffusionPlugin"]
 
 
-class CMD(Enum):
+class CMD(EnumCMD):
     stablediffusion = ["sd", "stbdf"]
     again = ["a", "ag", "rc"]
     img2img = ["i", "i2i"]
@@ -81,6 +81,7 @@ class CMD(Enum):
     fetch = ["f", "fch"]
     halt = ["h", "ht"]
     explain = ["x", "xp"]
+    randlora = ["rlr"]
 
 
 class StableDiffusionPlugin(AbstractPlugin):
@@ -192,6 +193,27 @@ class StableDiffusionPlugin(AbstractPlugin):
         )
         sd_options = Options(host_url=self.config_registry.get_config(self.CONFIG_SD_HOST))
         processor = PromptProcessorRegistry()
+
+        processor.register(
+            judge=lambda: self._config_registry.get_config(self.CONFIG_ENABLE_DYNAMIC_PROMPT),
+            process_engine=lambda prompt: random_prompt_gen.generate(template=prompt)[0] if prompt else "",
+            process_name="DYNAMIC_PROMPT_INTERPRET",
+        )
+        processor.register(
+            judge=lambda: self._config_registry.get_config(self.CONFIG_ENABLE_TRANSLATE),
+            process_engine=partial(translate, tolang="en", fromlang="auto"),
+            process_name="TRANSLATE",
+        ) if translate else None
+        processor.register(
+            judge=lambda: self._config_registry.get_config(self.CONFIG_ENABLE_SHUFFLE_PROMPT),
+            process_engine=shuffle_prompt,
+            process_name="SHUFFLE",
+        )
+        processor.register(
+            judge=lambda: True,
+            process_engine=make_lora_replace_process_engine(self.sd_app.available_lora_models),
+            process_name="LORA_REPLACE",
+        )
 
         configurable_options: List[str] = [
             self.CONFIG_CURRENT_MODEL_ID,
@@ -319,6 +341,51 @@ class StableDiffusionPlugin(AbstractPlugin):
                 await self.sd_app.fetch_sd_models(fetch_session)
                 await self.sd_app.fetch_lora_models(fetch_session)
                 await self.sd_app.fetch_upscalers(fetch_session)
+
+        async def rand_lora_generation(count: int = 1) -> MessageChain | str:
+            """
+            Asynchronously generates a random lora message chain with the specified count.
+
+            Args:
+                count (int, optional): The number of lora messages to generate. Defaults to 1.
+
+            Returns:
+                MessageChain | str: The generated lora message chain or a string indicating no lora models found.
+            """
+            pre_append_string = "girl,solo"
+            if not self.sd_app.available_lora_models:
+                return "No lora models found OR lora models not fetched"
+
+            count = count or 1
+            count = 1 if count < 1 else count
+
+            lora_seq_len_sub1: int = len(self.sd_app.available_lora_models) - 1
+            chain_seq = MessageChain([])
+            for _ in range(count):
+                rand_lora = random.randint(0, lora_seq_len_sub1)
+                lora_name: str = self.sd_app.available_lora_models[rand_lora]
+
+                prompt, _ = processor.process(pos_prompt=f"lr:{rand_lora},{pre_append_string}", neg_prompt="")
+
+                images = await self.sd_app.txt2img(
+                    diffusion_parameters=DiffusionParser(
+                        prompt=prompt, styles=self.config_registry.get_config(self.CONFIG_STYLES)
+                    ),
+                    hires_parameters=HiResParser(  # Get enable HR flag from configuration
+                        enable_hr=self._config_registry.get_config(self.CONFIG_ENABLE_HR),
+                        hr_scale=self._config_registry.get_config(self.CONFIG_HR_SCALE),
+                        hr_upscaler=self.sd_app.available_upscalers[
+                            self._config_registry.get_config(self.CONFIG_UPSCALER)
+                        ]
+                        if self.sd_app.available_upscalers
+                        else "",
+                        denoising_strength=self._config_registry.get_config(self.CONFIG_DENO_STRENGTH),
+                    ),
+                )
+                chain_seq.append(lora_name)
+                chain_seq.append(Image(path=images[0]))
+
+            return chain_seq
 
         tree = NameSpaceNode(
             name=CMD.stablediffusion.name,
@@ -505,31 +572,11 @@ class StableDiffusionPlugin(AbstractPlugin):
                 ),
                 ExecutableNode(name=CMD.fetch.name, aliases=CMD.fetch.value, source=fetch_resources),
                 ExecutableNode(name=CMD.halt.name, aliases=CMD.halt.value, source=lambda: self.sd_app.interrupt()),
+                ExecutableNode(**CMD.randlora.export(), source=rand_lora_generation),
             ],
         )
 
         self._root_namespace_node.add_node(tree)
-
-        processor.register(
-            judge=lambda: self._config_registry.get_config(self.CONFIG_ENABLE_DYNAMIC_PROMPT),
-            process_engine=lambda prompt: random_prompt_gen.generate(template=prompt)[0] or prompt,
-            process_name="DYNAMIC_PROMPT_INTERPRET",
-        )
-        processor.register(
-            judge=lambda: self._config_registry.get_config(self.CONFIG_ENABLE_TRANSLATE),
-            process_engine=partial(translate, tolang="en", fromlang="auto"),
-            process_name="TRANSLATE",
-        ) if translate else None
-        processor.register(
-            judge=lambda: self._config_registry.get_config(self.CONFIG_ENABLE_SHUFFLE_PROMPT),
-            process_engine=shuffle_prompt,
-            process_name="SHUFFLE",
-        )
-        processor.register(
-            judge=lambda: True,
-            process_engine=make_lora_replace_process_engine(self.sd_app.available_lora_models),
-            process_name="LORA_REPLACE",
-        )
 
         # region castings
         @self.receiver(
@@ -710,7 +757,7 @@ class StableDiffusionPlugin(AbstractPlugin):
                 controlnet_input_images=[
                     img_to_base64(
                         await download_file(
-                            save_dir=self._config_registry.get_config(self.CONFIG_IMG_TEMP_DIR_PATH), url=img.url
+                            img.url, save_dir=self._config_registry.get_config(self.CONFIG_IMG_TEMP_DIR_PATH)
                         )
                     )
                     for img in images
@@ -778,7 +825,8 @@ class StableDiffusionPlugin(AbstractPlugin):
             # Download the first image in the chain
             print(f"Downloading image from: {image_url}\n")
             img_path = await download_file(
-                save_dir=self._config_registry.get_config(self.CONFIG_IMG_TEMP_DIR_PATH), url=image_url
+                image_url,
+                save_dir=self._config_registry.get_config(self.CONFIG_IMG_TEMP_DIR_PATH),
             )
             img_base64 = img_to_base64(img_path)
             cn_unit = None
