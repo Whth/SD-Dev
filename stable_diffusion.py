@@ -3,12 +3,13 @@ import copy
 import json
 import pathlib
 import re
+import warnings
 from collections import OrderedDict
 from random import choice
 from typing import List, Dict, Optional, Any, Tuple
 
 from PIL import PngImagePlugin, Image
-from aiohttp import ClientSession
+from aiohttp import ClientSession, ClientConnectorError
 from colorama import Fore
 from pydantic import BaseModel, Field, validator
 
@@ -381,7 +382,11 @@ class StableDiffusionApp(BaseModel):
         Returns:
             List[Dict]: A list of dictionaries containing the details of the fetched models.
         """
-        models_detail_list: List[Dict] = await self._make_query_request(API_MODELS, session=session)
+        try:
+            models_detail_list: List[Dict] = await self._make_query_request(API_MODELS, session=session)
+        except ClientConnectorError as e:
+            warnings.warn(f"Cant fetch sd models,{e}")
+            return []
         self.available_sd_models.clear()
         self.available_sd_models.extend(map(lambda x: x["title"], models_detail_list))
         return models_detail_list
@@ -396,7 +401,11 @@ class StableDiffusionApp(BaseModel):
         Returns:
             List[Dict]: A list of dictionaries containing the details of the Lora models.
         """
-        models_detail_list: List[Dict] = await self._make_query_request(API_LORAS, session=session)
+        try:
+            models_detail_list: List[Dict] = await self._make_query_request(API_LORAS, session=session)
+        except ClientConnectorError as e:
+            warnings.warn(f"Cant fetch lora models,{e}")
+            return []
         self.available_lora_models.clear()
         self.available_lora_models.extend(map(lambda x: x["name"], models_detail_list))
         return models_detail_list
@@ -411,7 +420,12 @@ class StableDiffusionApp(BaseModel):
         Returns:
             List[Dict]: A list of dictionaries containing details of the upscalers.
         """
-        models_detail_list: List[Dict] = await self._make_query_request(API_GET_UPSCALERS, session=session)
+        try:
+            models_detail_list: List[Dict] = await self._make_query_request(API_GET_UPSCALERS, session=session)
+        except ClientConnectorError as e:
+            warnings.warn(f"Cant fetch upscaler models,{e}")
+            return []
+
         self.available_upscalers.clear()
         self.available_upscalers.extend(map(lambda x: x["name"], models_detail_list))
         return models_detail_list

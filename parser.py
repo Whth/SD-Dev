@@ -2,7 +2,7 @@ import random
 import warnings
 from typing import List, Tuple, Any, Dict, Optional
 
-from aiohttp import ClientSession
+from aiohttp import ClientSession, ClientConnectorError
 from pydantic import BaseModel, Field, PrivateAttr
 
 from modules.shared import img_to_base64
@@ -449,13 +449,17 @@ class Options(BaseModel):
         Returns:
             None
         """
-        if session:
-            async with session.get(API_GET_CONFIG) as response:
-                response = await response.json()
-        else:
-            async with ClientSession(base_url=self.host_url) as session:
+        try:
+            if session:
                 async with session.get(API_GET_CONFIG) as response:
                     response = await response.json()
+            else:
+                async with ClientSession(base_url=self.host_url) as session:
+                    async with session.get(API_GET_CONFIG) as response:
+                        response = await response.json()
+        except ClientConnectorError as e:
+            warnings.warn(f"Cant fetch sd configs,{e}")
+            return []
         config_dict: Dict[str, Any] = response
         updated_config_count: int = self.load_dict_to_config(config_dict=config_dict)
 
