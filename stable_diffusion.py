@@ -389,6 +389,7 @@ class StableDiffusionApp(BaseModel):
             return []
         self.available_sd_models.clear()
         self.available_sd_models.extend(map(lambda x: x["title"], models_detail_list))
+        self.available_sd_models.sort()
         return models_detail_list
 
     async def fetch_lora_models(self, session: Optional[ClientSession] = None) -> List[Dict]:
@@ -401,6 +402,7 @@ class StableDiffusionApp(BaseModel):
         Returns:
             List[Dict]: A list of dictionaries containing the details of the Lora models.
         """
+
         try:
             models_detail_list: List[Dict] = await self._make_query_request(API_LORAS, session=session)
         except ClientConnectorError as e:
@@ -408,6 +410,7 @@ class StableDiffusionApp(BaseModel):
             return []
         self.available_lora_models.clear()
         self.available_lora_models.extend(map(lambda x: x["name"], models_detail_list))
+        self.available_lora_models.sort()
         return models_detail_list
 
     async def fetch_upscalers(self, session: Optional[ClientSession] = None) -> List[Dict]:
@@ -428,6 +431,7 @@ class StableDiffusionApp(BaseModel):
 
         self.available_upscalers.clear()
         self.available_upscalers.extend(map(lambda x: x["name"], models_detail_list))
+        self.available_upscalers.sort()
         return models_detail_list
 
     async def interrogate_image(self, parser: InterrogateParser) -> OrderedDict[str, float]:

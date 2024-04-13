@@ -543,7 +543,7 @@ class StableDiffusionPlugin(AbstractPlugin):
                             aliases=CMD.lora.value,
                             help_message="get available lora models",
                             source=lambda: dict_to_markdown_table_complex(
-                                {"Loras": sorted([s.split(".")[0] for s in self.sd_app.available_lora_models])}
+                                {"Loras": [s.split(".")[0] for s in self.sd_app.available_lora_models]}
                             ),
                         ),
                         ExecutableNode(
@@ -551,15 +551,15 @@ class StableDiffusionPlugin(AbstractPlugin):
                             aliases=CMD.normal.value,
                             help_message="get available stable diffusion models",
                             source=lambda: dict_to_markdown_table_complex(
-                                {"SD_Models": sorted([s.split(".")[0] for s in self.sd_app.available_sd_models])}
+                                {"SD_Models": [s.split(".")[0] for s in self.sd_app.available_sd_models]}
                             ),
                         ),
                         ExecutableNode(
                             name=CMD.upscaler.name,
                             aliases=CMD.upscaler.value,
                             help_message="get available upscalers",
-                            source=lambda: make_stdout_seq_string(
-                                seq=self.sd_app.available_upscalers, title="Upscalers"
+                            source=lambda: dict_to_markdown_table_complex(
+                                {"Upscalers": [s.split(".")[0] for s in self.sd_app.available_upscalers]}
                             ),
                         ),
                     ],
