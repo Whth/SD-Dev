@@ -30,6 +30,7 @@ from modules.shared import (
 from .adetailer import ADetailerArgs, ADetailerUnit, ModelType
 from .controlnet import ControlNetUnit, Controlnet, ControlNetDetect
 from .extractors import get_image_url, make_image_form_paths
+from .lora_man import LoraManager
 from .parser import (
     set_default_pos_prompt,
     set_default_neg_prompt,
@@ -83,6 +84,12 @@ class CMD(EnumCMD):
     explain = ["x", "xp"]
     randlora = ["rlr"]
 
+    yield_lora = ["y", "ylr"]
+    remove_lora = ["r", "rml"]
+    clean_lora = ["clr"]
+    save_lora = ["slr"]
+    what_lora = ["wlr"]
+
 
 class StableDiffusionPlugin(AbstractPlugin):
     __TRANSLATE_PLUGIN_NAME: str = "BaiduTranslater"
@@ -121,6 +128,7 @@ class StableDiffusionPlugin(AbstractPlugin):
     CONFIG_SEND_BATCH_SIZE = "send_batch_size"
     CONFIG_UNIT_TIMEOUT = "utimeout"
     CONFIG_SWITCH_AT = "switchat"
+    CONFIG_APPEND_LORAS = "append_loras"
     DefaultConfig = {
         CONFIG_POS_KEYWORD: "+",
         CONFIG_NEG_KEYWORD: "-",
@@ -148,6 +156,7 @@ class StableDiffusionPlugin(AbstractPlugin):
         CONFIG_SEND_BATCH_SIZE: 18,
         CONFIG_UNIT_TIMEOUT: 180,
         CONFIG_SWITCH_AT: 0.7,
+        CONFIG_APPEND_LORAS: [],
         # in the current version of QQ transmitting protocol,
         # 20 is the maximum of the pictures that can be sent at once
     }
@@ -194,6 +203,9 @@ class StableDiffusionPlugin(AbstractPlugin):
         sd_options = Options(host_url=self.config_registry.get_config(self.CONFIG_SD_HOST))
         processor = PromptProcessorRegistry()
 
+        lora_manager = LoraManager()
+        lora_manager.reasign_pool(self.sd_app.available_lora_models)
+        lora_manager.parse_container(self.config_registry.get_config(self.CONFIG_APPEND_LORAS))
         processor.register(
             judge=lambda: self._config_registry.get_config(self.CONFIG_ENABLE_DYNAMIC_PROMPT),
             process_engine=lambda prompt: random_prompt_gen.generate(template=prompt)[0] if prompt else "",
@@ -213,6 +225,11 @@ class StableDiffusionPlugin(AbstractPlugin):
             judge=lambda: True,
             process_engine=make_lora_replace_process_engine(self.sd_app.available_lora_models),
             process_name="LORA_REPLACE",
+        )
+        processor.register(
+            judge=lambda: lora_manager.container,
+            processor=lambda pos, neg: (pos + lora_manager.dedup().format(), neg),
+            process_name="LORA_APPEND",
         )
 
         configurable_options: List[str] = [
@@ -323,7 +340,8 @@ class StableDiffusionPlugin(AbstractPlugin):
             """
             Asynchronous function that fetches resources upon application launch.
 
-            This function is decorated with `@self.receiver(ApplicationLaunch)` to indicate that it is a receiver for the `ApplicationLaunch` event.
+            This function is decorated with `@self.receiver(ApplicationLaunch)` to indicate that it is a receiver for
+            the `ApplicationLaunch` event.
 
             The function performs the following tasks:
             - Calls the `fetch_resources()` method of the `controlnet_app` object.
@@ -386,6 +404,52 @@ class StableDiffusionPlugin(AbstractPlugin):
                 chain_seq.append(Image(path=images[0]))
 
             return chain_seq
+
+        def _add_lora(index: int, weight: float) -> str:
+            """
+            A function to add a Lora unit, specifying the index and optional weight.
+
+            Args:
+                index (int): The index of the Lora unit.
+                weight (float, optional): The weight of the Lora unit. Defaults to 1.0.
+
+            Returns:
+                str: The formatted string representing the Lora units.
+            """
+            lora_manager.use(index, weight or 1.0)
+
+            return make_stdout_seq_string(
+                [f"|{unit.index}|{unit}" for unit in lora_manager.container], title="Lora_Units", sort=False
+            )
+
+        def _remove_lora(index: int) -> str:
+            """
+            A function that removes a Lora unit at the specified index and returns a formatted string of the remaining Lora units.
+
+            :param index: An integer representing the index of the Lora unit to be removed.
+            :return: A string containing the formatted Lora units after removal.
+            """
+            lora_manager.remove(index)
+            return make_stdout_seq_string(
+                [f"|{unit.index}|{unit}" for unit in lora_manager.container], title="Lora_Units", sort=False
+            )
+
+        def _save_lora():
+            """
+
+            save lora
+
+            """
+            self.config_registry.set_config(self.CONFIG_APPEND_LORAS, lora_manager.dump_container())
+
+        def _what_lora() -> str:
+            """
+            This function returns a string representing the stdout sequence for the Lora_Units. It does not take any parameters and returns a string.
+            """
+
+            return make_stdout_seq_string(
+                [f"|{unit.index}|{unit}" for unit in lora_manager.container], title="Lora_Units", sort=False
+            )
 
         tree = NameSpaceNode(
             name=CMD.stablediffusion.name,
@@ -573,6 +637,13 @@ class StableDiffusionPlugin(AbstractPlugin):
                 ExecutableNode(name=CMD.fetch.name, aliases=CMD.fetch.value, source=fetch_resources),
                 ExecutableNode(name=CMD.halt.name, aliases=CMD.halt.value, source=lambda: self.sd_app.interrupt()),
                 ExecutableNode(**CMD.randlora.export(), source=rand_lora_generation),
+                ExecutableNode(**CMD.yield_lora.export(), source=_add_lora),
+                ExecutableNode(**CMD.remove_lora.export(), source=_remove_lora),
+                ExecutableNode(
+                    **CMD.clean_lora.export(), source=lambda: f"Clean success = {bool(lora_manager.clean().container)}"
+                ),
+                ExecutableNode(**CMD.what_lora.export(), source=_what_lora),
+                ExecutableNode(**CMD.save_lora.export(), source=_save_lora),
             ],
         )
 
