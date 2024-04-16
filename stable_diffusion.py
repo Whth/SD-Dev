@@ -29,6 +29,7 @@ from .api import (
     IMAGE_KEY,
     PNG_INFO_KEY,
     API_INTERRUPT,
+    API_SAMPLERS,
 )
 from .controlnet import ControlNetUnit, make_cn_payload
 from .parser import (
@@ -132,6 +133,7 @@ class StableDiffusionApp(BaseModel):
     available_sd_models: List[str] = Field(default_factory=list, const=True)
     available_lora_models: List[str] = Field(default_factory=list, const=True)
     available_upscalers: List[str] = Field(default_factory=list, const=True)
+    available_samplers: List[str] = Field(default_factory=list, const=True)
 
     def __init__(self, **data):
         super().__init__(**data)
@@ -372,67 +374,31 @@ class StableDiffusionApp(BaseModel):
         if is_local_session:
             await session.close()
 
-    async def fetch_sd_models(self, session: Optional[ClientSession] = None) -> List[Dict]:
-        """
-        Fetches the SD models by making a query request to the API.
-
-        Args:
-            session (Optional[ClientSession]): An optional client session object to be used for the request.
-
-        Returns:
-            List[Dict]: A list of dictionaries containing the details of the fetched models.
-        """
+    async def _fetch_and_store_models(
+        self, api_path: str, container: List[str], key_to_extract: str, session: Optional[ClientSession]
+    ) -> List[Dict]:
         try:
-            models_detail_list: List[Dict] = await self._make_query_request(API_MODELS, session=session)
+            models_detail_list: List[Dict] = await self._make_query_request(api_path, session=session)
         except ClientConnectorError as e:
-            warnings.warn(f"Cant fetch sd models,{e}")
+            warnings.warn(f"Can't fetch models from {api_path}, {e}")
             return []
-        self.available_sd_models.clear()
-        self.available_sd_models.extend(map(lambda x: x["title"], models_detail_list))
-        self.available_sd_models.sort()
+
+        container.clear()
+        container.extend(map(lambda x: x[key_to_extract], models_detail_list))
+        container.sort()
         return models_detail_list
+
+    async def fetch_sd_models(self, session: Optional[ClientSession] = None) -> List[Dict]:
+        return await self._fetch_and_store_models(API_MODELS, self.available_sd_models, "title", session)
 
     async def fetch_lora_models(self, session: Optional[ClientSession] = None) -> List[Dict]:
-        """
-        Fetches the Lora models from the API.
-
-        Parameters:
-            session (Optional[ClientSession]): An optional ClientSession object for making the request.
-
-        Returns:
-            List[Dict]: A list of dictionaries containing the details of the Lora models.
-        """
-
-        try:
-            models_detail_list: List[Dict] = await self._make_query_request(API_LORAS, session=session)
-        except ClientConnectorError as e:
-            warnings.warn(f"Cant fetch lora models,{e}")
-            return []
-        self.available_lora_models.clear()
-        self.available_lora_models.extend(map(lambda x: x["name"], models_detail_list))
-        self.available_lora_models.sort()
-        return models_detail_list
+        return await self._fetch_and_store_models(API_LORAS, self.available_lora_models, "name", session)
 
     async def fetch_upscalers(self, session: Optional[ClientSession] = None) -> List[Dict]:
-        """
-        Fetches the list of upscalers from the API.
+        return await self._fetch_and_store_models(API_GET_UPSCALERS, self.available_upscalers, "name", session)
 
-        Parameters:
-            session (Optional[ClientSession]): An optional aiohttp ClientSession to use for the request.
-
-        Returns:
-            List[Dict]: A list of dictionaries containing details of the upscalers.
-        """
-        try:
-            models_detail_list: List[Dict] = await self._make_query_request(API_GET_UPSCALERS, session=session)
-        except ClientConnectorError as e:
-            warnings.warn(f"Cant fetch upscaler models,{e}")
-            return []
-
-        self.available_upscalers.clear()
-        self.available_upscalers.extend(map(lambda x: x["name"], models_detail_list))
-        self.available_upscalers.sort()
-        return models_detail_list
+    async def fetch_sampler(self, session: Optional[ClientSession] = None) -> List[Dict]:
+        return await self._fetch_and_store_models(API_SAMPLERS, self.available_samplers, "name", session)
 
     async def interrogate_image(self, parser: InterrogateParser) -> OrderedDict[str, float]:
         """

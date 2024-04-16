@@ -1,7 +1,7 @@
 import pathlib
 import random
 from functools import partial
-from typing import List, Optional, Callable, Union, OrderedDict
+from typing import List, Optional, Callable, Union, OrderedDict, Set
 
 from aiohttp import ClientSession, ClientTimeout
 from dynamicprompts.generators import RandomPromptGenerator
@@ -71,6 +71,7 @@ class CMD(EnumCMD):
     normal = ["n", "s", "sd"]
     lora = ["l", "lr"]
     upscaler = ["u", "up", "ups"]
+    sampler = ["sp", "samp"]
     positive = ["p", "pos"]
     negative = ["n", "neg"]
 
@@ -117,6 +118,8 @@ class StableDiffusionPlugin(AbstractPlugin):
     CONFIG_DENO_STRENGTH = "denoise_strength"
     CONFIG_HR_SCALE = "hr_scale"
     CONFIG_UPSCALER = "upscaler"
+    CONFIG_SAMPLER: str = "sampler"
+    CONFIG_CFG_SCALE: str = "cfg_scale"
     CONFIG_ENABLE_TRANSLATE = "enable_translate"
     CONFIG_ENABLE_CONTROLNET = "enable_controlnet"
     CONFIG_ENABLE_ADETAILER: str = "enable_adetailer"
@@ -129,6 +132,7 @@ class StableDiffusionPlugin(AbstractPlugin):
     CONFIG_UNIT_TIMEOUT = "utimeout"
     CONFIG_SWITCH_AT = "switchat"
     CONFIG_APPEND_LORAS = "append_loras"
+    CONFIG_STEPS: str = "steps"
     DefaultConfig = {
         CONFIG_POS_KEYWORD: "+",
         CONFIG_NEG_KEYWORD: "-",
@@ -145,7 +149,10 @@ class StableDiffusionPlugin(AbstractPlugin):
         CONFIG_STYLES: [],
         CONFIG_ENABLE_HR: 0,
         CONFIG_HR_SCALE: 1.55,
+        CONFIG_CFG_SCALE: 7.0,
         CONFIG_UPSCALER: 0,
+        CONFIG_SAMPLER: 0,
+        CONFIG_STEPS: 20,
         CONFIG_DENO_STRENGTH: 0.65,
         CONFIG_ENABLE_TRANSLATE: 0,
         CONFIG_ENABLE_CONTROLNET: 0,
@@ -232,7 +239,7 @@ class StableDiffusionPlugin(AbstractPlugin):
             process_name="LORA_APPEND",
         )
 
-        configurable_options: List[str] = [
+        configurable_options: Set[str] = {
             self.CONFIG_CURRENT_MODEL_ID,
             self.CONFIG_REFINER_MODEL_ID,
             self.CONFIG_CLIP,
@@ -251,8 +258,10 @@ class StableDiffusionPlugin(AbstractPlugin):
             self.CONFIG_CONTROLNET_MODULE,
             self.CONFIG_CONTROLNET_MODEL,
             self.CONFIG_SWITCH_AT,
-        ]
-
+            self.CONFIG_CFG_SCALE,
+            self.CONFIG_SAMPLER,
+            self.CONFIG_STEPS,
+        }
         # endregion
 
         # region std cmds
@@ -329,9 +338,11 @@ class StableDiffusionPlugin(AbstractPlugin):
             crmodel = self.sd_app.available_sd_models[self.config_registry.get_config(self.CONFIG_CURRENT_MODEL_ID)]
             rfmodel = self.sd_app.available_sd_models[self.config_registry.get_config(self.CONFIG_REFINER_MODEL_ID)]
             upscaler = self.sd_app.available_upscalers[self.config_registry.get_config(self.CONFIG_UPSCALER)]
+            sampler: str = self.sd_app.available_samplers[self.config_registry.get_config(self.CONFIG_SAMPLER)]
             stdout += f"Current model:\n{crmodel}\n"
             stdout += f"Refiner model:\n{rfmodel}\n"
             stdout += f"Upscaler:\n{upscaler}\n"
+            stdout += f"Sampler:\n{sampler}\n"
             return stdout
 
         # endregion
@@ -359,6 +370,7 @@ class StableDiffusionPlugin(AbstractPlugin):
                 await self.sd_app.fetch_sd_models(fetch_session)
                 await self.sd_app.fetch_lora_models(fetch_session)
                 await self.sd_app.fetch_upscalers(fetch_session)
+                await self.sd_app.fetch_sampler(fetch_session)
 
         async def rand_lora_generation(count: int = 1) -> MessageChain | str:
             """
@@ -623,8 +635,13 @@ class StableDiffusionPlugin(AbstractPlugin):
                             aliases=CMD.upscaler.value,
                             help_message="get available upscalers",
                             source=lambda: dict_to_markdown_table_complex(
-                                {"Upscalers": [s.split(".")[0] for s in self.sd_app.available_upscalers]}
+                                {"Upscalers": self.sd_app.available_upscalers}
                             ),
+                        ),
+                        ExecutableNode(
+                            **CMD.sampler.export(),
+                            help_message="get available samplers",
+                            source=lambda: dict_to_markdown_table_complex({"Samplers": self.sd_app.available_samplers}),
                         ),
                     ],
                 ),
@@ -738,6 +755,13 @@ class StableDiffusionPlugin(AbstractPlugin):
                         prompt=final_pos_prompt,
                         negative_prompt=final_neg_prompt,
                         styles=self._config_registry.get_config(self.CONFIG_STYLES),  # Get styles from configuration
+                        sampler_name=self.sd_app.available_samplers[
+                            self.config_registry.get_config(self.CONFIG_SAMPLER)
+                        ],
+                        cfg_scale=self.config_registry.get_config(
+                            self.CONFIG_CFG_SCALE
+                        ),  # Get CFG scale from configuration
+                        steps=self.config_registry.get_config(self.CONFIG_STEPS),
                     )
 
                     adetailer_parser = (
