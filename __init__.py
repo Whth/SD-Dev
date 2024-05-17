@@ -587,13 +587,13 @@ class StableDiffusionPlugin(AbstractPlugin):
                                     name=CMD.txt2img.name,
                                     aliases=CMD.txt2img.value,
                                     source=lambda: f"The size of the t2i Favorite storage is: \n"
-                                                   f"{len(self.sd_app.txt2img_params.favorite)}",
+                                    f"{len(self.sd_app.txt2img_params.favorite)}",
                                 ),
                                 ExecutableNode(
                                     name=CMD.img2img.name,
                                     aliases=CMD.img2img.value,
                                     source=lambda: f"The size of the i2i Favorite storage is: \n"
-                                                   f"{len(self.sd_app.img2img_params.favorite)}",
+                                    f"{len(self.sd_app.img2img_params.favorite)}",
                                 ),
                             ],
                         ),
@@ -722,10 +722,10 @@ class StableDiffusionPlugin(AbstractPlugin):
             ],
         )
         async def diffusion(
-                app: Ariadne,  # The Ariadne instance
-                target: Union[Group, Friend],  # The target group or friend to send the image to
-                message: MessageChain,  # The message containing the prompts for diffusion
-                message_event: Union[GroupMessage, FriendMessage],  # The message event
+            app: Ariadne,  # The Ariadne instance
+            target: Union[Group, Friend],  # The target group or friend to send the image to
+            message: MessageChain,  # The message containing the prompts for diffusion
+            message_event: Union[GroupMessage, FriendMessage],  # The message event
         ):
             """
             Asynchronously performs diffusion on the given message and sends the resulting image as a message
@@ -790,9 +790,8 @@ class StableDiffusionPlugin(AbstractPlugin):
                 )
 
             async with ClientSession(
-                    base_url=self.config_registry.get_config(self.CONFIG_SD_HOST),
-                    timeout=ClientTimeout(
-                        total=self.config_registry.get_config(self.CONFIG_UNIT_TIMEOUT) * batch_count),
+                base_url=self.config_registry.get_config(self.CONFIG_SD_HOST),
+                timeout=ClientTimeout(total=self.config_registry.get_config(self.CONFIG_UNIT_TIMEOUT) * batch_count),
             ) as session:
                 for _ in range(batch_count):
                     final_pos_prompt, final_neg_prompt = processor.process(pos_prompt, neg_prompt)  # Process prompts
@@ -877,14 +876,14 @@ class StableDiffusionPlugin(AbstractPlugin):
                             make_regex_part_from_enum(CMD.detect),
                         ]
                     )
-                          + ".*"
+                    + ".*"
                 )
             ],
         )
         async def cn_detect(
-                app: Ariadne,
-                target: Union[Group, Friend],
-                message: MessageChain,
+            app: Ariadne,
+            target: Union[Group, Friend],
+            message: MessageChain,
         ) -> None:
             """
             Detects the controlnet in the given message.
@@ -920,14 +919,14 @@ class StableDiffusionPlugin(AbstractPlugin):
                             make_regex_part_from_enum(CMD.interrogate),
                         ]
                     )
-                          + ".*"
+                    + ".*"
                 )
             ],
         )
         async def interrogate(
-                app: Ariadne,
-                target: Union[Group, Friend],
-                message: MessageChain,
+            app: Ariadne,
+            target: Union[Group, Friend],
+            message: MessageChain,
         ) -> None:
             """
             Interrogates the given message.
@@ -958,10 +957,10 @@ class StableDiffusionPlugin(AbstractPlugin):
             )
 
         async def _make_img2img(
-                diffusion_paser: DiffusionParser,
-                image_url: str,
-                override_settings: OverRideSettings,
-                refiner_parameters: RefinerParser = None,
+            diffusion_paser: DiffusionParser,
+            image_url: str,
+            override_settings: OverRideSettings,
+            refiner_parameters: RefinerParser = None,
         ) -> List[str]:
             # Download the first image in the chain
             print(f"Downloading image from: {image_url}\n")
