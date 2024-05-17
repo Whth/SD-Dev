@@ -90,6 +90,7 @@ class CMD(EnumCMD):
     clean_lora = ["clr"]
     save_lora = ["slr"]
     what_lora = ["wlr"]
+    weight = ["w", "wt"]
 
 
 class StableDiffusionPlugin(AbstractPlugin):
@@ -238,6 +239,11 @@ class StableDiffusionPlugin(AbstractPlugin):
             processor=lambda pos, neg: (pos + lora_manager.dedup().format(), neg),
             process_name="LORA_APPEND",
         )
+        processor.register(
+            judge=lambda: lora_manager.container,
+            process_engine=lambda prompt: prompt.replace("，", ","),
+            process_name="CommaReplace",
+        )
 
         configurable_options: Set[str] = {
             self.CONFIG_CURRENT_MODEL_ID,
@@ -262,6 +268,7 @@ class StableDiffusionPlugin(AbstractPlugin):
             self.CONFIG_SAMPLER,
             self.CONFIG_STEPS,
         }
+
         # endregion
 
         # region std cmds
@@ -417,7 +424,7 @@ class StableDiffusionPlugin(AbstractPlugin):
 
             return chain_seq
 
-        def _add_lora(index: int, weight: float) -> str:
+        def _add_lora(*tokens: str) -> str:
             """
             A function to add a Lora unit, specifying the index and optional weight.
 
@@ -428,23 +435,38 @@ class StableDiffusionPlugin(AbstractPlugin):
             Returns:
                 str: The formatted string representing the Lora units.
             """
-            lora_manager.use(index, weight or 1.0)
 
-            return make_stdout_seq_string(
-                [f"|{unit.index}|{unit}" for unit in lora_manager.container], title="Lora_Units", sort=False
-            )
+            converted_tokens = [float(token) if "." in token else int(token) for token in tokens]
+            if converted_tokens == 0:
+                return _what_lora()
 
-        def _remove_lora(index: int) -> str:
+            default_weight = 1.0
+
+            while converted_tokens:
+                match converted_tokens.pop(0):
+                    case int(index):
+                        lora_manager.use(
+                            index,
+                            converted_tokens.pop(0)
+                            if converted_tokens and isinstance(converted_tokens[0], float)
+                            else default_weight,
+                        )
+                    case _:
+                        return "Invalid Lora index, float can only be applied when putting after the index"
+
+            return _what_lora()
+
+        def _remove_lora(*indexes: str) -> str:
             """
             A function that removes a Lora unit at the specified index and returns a formatted string of the remaining Lora units.
 
             :param index: An integer representing the index of the Lora unit to be removed.
             :return: A string containing the formatted Lora units after removal.
             """
-            lora_manager.remove(index)
-            return make_stdout_seq_string(
-                [f"|{unit.index}|{unit}" for unit in lora_manager.container], title="Lora_Units", sort=False
-            )
+            converted_indexes = [int(index) for index in indexes]
+            for converted_index in converted_indexes:
+                lora_manager.remove(converted_index)
+            return _what_lora()
 
         def _save_lora():
             """
@@ -454,14 +476,36 @@ class StableDiffusionPlugin(AbstractPlugin):
             """
             self.config_registry.set_config(self.CONFIG_APPEND_LORAS, lora_manager.dump_container())
 
+            return _what_lora()
+
         def _what_lora() -> str:
             """
-            This function returns a string representing the stdout sequence for the Lora_Units. It does not take any parameters and returns a string.
+            A function that updates the Lora units index, deduplicates them, and returns a markdown table complex dictionary containing Pool_index, Lora_Units, and Weights.
             """
-
-            return make_stdout_seq_string(
-                [f"|{unit.index}|{unit}" for unit in lora_manager.container], title="Lora_Units", sort=False
+            lora_manager.update_index().dedup()
+            return dict_to_markdown_table_complex(
+                {
+                    "Index": [unit.index for unit in lora_manager.container],
+                    "Name": [unit.name for unit in lora_manager.container],
+                    "Weights": [unit.weight for unit in lora_manager.container],
+                },
+                add_index=False,
             )
+
+        def _set_all_lora_weight(weight: float) -> str:
+            """
+            Sets the weight of all Lora units to the specified value.
+
+            Args:
+                weight (float): The weight value to set for all Lora units.
+
+            Returns:
+                str: A formatted string representing the Lora units after updating their weights.
+
+            """
+            for unit in lora_manager.container:
+                unit.weight = weight
+            return _what_lora()
 
         tree = NameSpaceNode(
             name=CMD.stablediffusion.name,
@@ -543,13 +587,13 @@ class StableDiffusionPlugin(AbstractPlugin):
                                     name=CMD.txt2img.name,
                                     aliases=CMD.txt2img.value,
                                     source=lambda: f"The size of the t2i Favorite storage is: \n"
-                                    f"{len(self.sd_app.txt2img_params.favorite)}",
+                                                   f"{len(self.sd_app.txt2img_params.favorite)}",
                                 ),
                                 ExecutableNode(
                                     name=CMD.img2img.name,
                                     aliases=CMD.img2img.value,
                                     source=lambda: f"The size of the i2i Favorite storage is: \n"
-                                    f"{len(self.sd_app.img2img_params.favorite)}",
+                                                   f"{len(self.sd_app.img2img_params.favorite)}",
                                 ),
                             ],
                         ),
@@ -661,6 +705,7 @@ class StableDiffusionPlugin(AbstractPlugin):
                 ),
                 ExecutableNode(**CMD.what_lora.export(), source=_what_lora),
                 ExecutableNode(**CMD.save_lora.export(), source=_save_lora),
+                ExecutableNode(**CMD.weight.export(), source=_set_all_lora_weight),
             ],
         )
 
@@ -677,10 +722,10 @@ class StableDiffusionPlugin(AbstractPlugin):
             ],
         )
         async def diffusion(
-            app: Ariadne,  # The Ariadne instance
-            target: Union[Group, Friend],  # The target group or friend to send the image to
-            message: MessageChain,  # The message containing the prompts for diffusion
-            message_event: Union[GroupMessage, FriendMessage],  # The message event
+                app: Ariadne,  # The Ariadne instance
+                target: Union[Group, Friend],  # The target group or friend to send the image to
+                message: MessageChain,  # The message containing the prompts for diffusion
+                message_event: Union[GroupMessage, FriendMessage],  # The message event
         ):
             """
             Asynchronously performs diffusion on the given message and sends the resulting image as a message
@@ -745,8 +790,9 @@ class StableDiffusionPlugin(AbstractPlugin):
                 )
 
             async with ClientSession(
-                base_url=self.config_registry.get_config(self.CONFIG_SD_HOST),
-                timeout=ClientTimeout(total=self.config_registry.get_config(self.CONFIG_UNIT_TIMEOUT) * batch_count),
+                    base_url=self.config_registry.get_config(self.CONFIG_SD_HOST),
+                    timeout=ClientTimeout(
+                        total=self.config_registry.get_config(self.CONFIG_UNIT_TIMEOUT) * batch_count),
             ) as session:
                 for _ in range(batch_count):
                     final_pos_prompt, final_neg_prompt = processor.process(pos_prompt, neg_prompt)  # Process prompts
@@ -831,14 +877,14 @@ class StableDiffusionPlugin(AbstractPlugin):
                             make_regex_part_from_enum(CMD.detect),
                         ]
                     )
-                    + ".*"
+                          + ".*"
                 )
             ],
         )
         async def cn_detect(
-            app: Ariadne,
-            target: Union[Group, Friend],
-            message: MessageChain,
+                app: Ariadne,
+                target: Union[Group, Friend],
+                message: MessageChain,
         ) -> None:
             """
             Detects the controlnet in the given message.
@@ -874,14 +920,14 @@ class StableDiffusionPlugin(AbstractPlugin):
                             make_regex_part_from_enum(CMD.interrogate),
                         ]
                     )
-                    + ".*"
+                          + ".*"
                 )
             ],
         )
         async def interrogate(
-            app: Ariadne,
-            target: Union[Group, Friend],
-            message: MessageChain,
+                app: Ariadne,
+                target: Union[Group, Friend],
+                message: MessageChain,
         ) -> None:
             """
             Interrogates the given message.
@@ -912,10 +958,10 @@ class StableDiffusionPlugin(AbstractPlugin):
             )
 
         async def _make_img2img(
-            diffusion_paser: DiffusionParser,
-            image_url: str,
-            override_settings: OverRideSettings,
-            refiner_parameters: RefinerParser = None,
+                diffusion_paser: DiffusionParser,
+                image_url: str,
+                override_settings: OverRideSettings,
+                refiner_parameters: RefinerParser = None,
         ) -> List[str]:
             # Download the first image in the chain
             print(f"Downloading image from: {image_url}\n")
