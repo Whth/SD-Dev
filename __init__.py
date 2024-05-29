@@ -55,7 +55,7 @@ __all__ = ["StableDiffusionPlugin"]
 
 
 class CMD(EnumCMD):
-    stablediffusion = ["sd", "stbdf"]
+    stablediffusion = ["sd","ss", "stbdf"]
     again = ["a", "ag", "rc"]
     img2img = ["i", "i2i"]
     txt2img = ["t", "t2i"]
