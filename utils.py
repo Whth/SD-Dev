@@ -45,6 +45,7 @@ def extract_prompts(
     neg_keyword: str = "-",
     batch_count_keyword: str = "pP",
     raise_settings: Tuple[bool, bool, bool] = (False, False, False),
+    default_batch_count: int = 1,
 ) -> Tuple[str, str, int]:
     """
     Extracts prompts from a given string.
@@ -56,6 +57,7 @@ def extract_prompts(
         batch_count_keyword (str, optional): The batch count keyword. Defaults to "pP".
         raise_settings (Tuple[bool, bool, bool], optional): A tuple of booleans indicating whether to raise an
             exception if a prompt is not found. Defaults to (False, False, False).
+        default_batch_count (int, optional): The default batch count. Defaults to 1.
 
     Returns:
         Tuple[str, str, int]: A tuple containing the positive prompt, negative prompt,
@@ -87,7 +89,7 @@ def extract_prompts(
     return (
         (pos_matched.group(2) if pos_matched else ""),
         (neg_matched.group(2) if neg_matched else ""),
-        int(count_matched.group(1)) if count_matched else 1,
+        int(count_matched.group(1)) if count_matched else default_batch_count,
     )
 
 

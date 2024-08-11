@@ -133,7 +133,9 @@ class StableDiffusionPlugin(AbstractPlugin):
     CONFIG_UNIT_TIMEOUT = "utimeout"
     CONFIG_SWITCH_AT = "switchat"
     CONFIG_APPEND_LORAS = "append_loras"
+    CONFIG_SEED = "seed"
     CONFIG_STEPS: str = "steps"
+    CONFIG_GEN_BATCH_COUNT: str = "batc"
     DefaultConfig = {
         CONFIG_POS_KEYWORD: "+",
         CONFIG_NEG_KEYWORD: "-",
@@ -154,6 +156,8 @@ class StableDiffusionPlugin(AbstractPlugin):
         CONFIG_UPSCALER: 0,
         CONFIG_SAMPLER: 0,
         CONFIG_STEPS: 20,
+        CONFIG_SEED: -1,
+        CONFIG_GEN_BATCH_COUNT: 1,
         CONFIG_DENO_STRENGTH: 0.65,
         CONFIG_ENABLE_TRANSLATE: 0,
         CONFIG_ENABLE_CONTROLNET: 0,
@@ -271,6 +275,8 @@ class StableDiffusionPlugin(AbstractPlugin):
             self.CONFIG_CFG_SCALE,
             self.CONFIG_SAMPLER,
             self.CONFIG_STEPS,
+            self.CONFIG_SEED,
+            self.CONFIG_GEN_BATCH_COUNT,
         }
 
         # endregion
@@ -756,6 +762,7 @@ class StableDiffusionPlugin(AbstractPlugin):
                         self.CONFIG_NEG_KEYWORD
                     ),  # Get negative keyword from configuration
                     raise_settings=(True, False, False),
+                    default_batch_count=self.config_registry.get_config(self.CONFIG_GEN_BATCH_COUNT),
                 )
             except ValueError as e:
                 print(e)
@@ -812,6 +819,7 @@ class StableDiffusionPlugin(AbstractPlugin):
                             self.CONFIG_CFG_SCALE
                         ),  # Get CFG scale from configuration
                         steps=self.config_registry.get_config(self.CONFIG_STEPS),
+                        seed=self.config_registry.get_config(self.CONFIG_SEED),
                     )
 
                     adetailer_parser = (
