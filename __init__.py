@@ -55,7 +55,7 @@ __all__ = ["StableDiffusionPlugin"]
 
 
 class CMD(EnumCMD):
-    stablediffusion = ["sd","ss", "stbdf"]
+    stablediffusion = ["sd", "ss", "stbdf"]
     again = ["a", "ag", "rc"]
     img2img = ["i", "i2i"]
     txt2img = ["t", "t2i"]
@@ -219,11 +219,15 @@ class StableDiffusionPlugin(AbstractPlugin):
             process_engine=lambda prompt: random_prompt_gen.generate(template=prompt)[0] if prompt else "",
             process_name="DYNAMIC_PROMPT_INTERPRET",
         )
-        processor.register(
-            judge=lambda: self._config_registry.get_config(self.CONFIG_ENABLE_TRANSLATE),
-            process_engine=partial(translate, tolang="en", fromlang="auto"),
-            process_name="TRANSLATE",
-        ) if translate else None
+        (
+            processor.register(
+                judge=lambda: self._config_registry.get_config(self.CONFIG_ENABLE_TRANSLATE),
+                process_engine=partial(translate, tolang="en", fromlang="auto"),
+                process_name="TRANSLATE",
+            )
+            if translate
+            else None
+        )
         processor.register(
             judge=lambda: self._config_registry.get_config(self.CONFIG_ENABLE_SHUFFLE_PROMPT),
             process_engine=shuffle_prompt,
@@ -370,14 +374,13 @@ class StableDiffusionPlugin(AbstractPlugin):
             Returns:
                 None
             """
-
             async with ClientSession(base_url=self._config_registry.get_config(self.CONFIG_SD_HOST)) as fetch_session:
-                await controlnet_app.fetch_resources(fetch_session)
                 await sd_options.fetch_config(fetch_session)
                 await self.sd_app.fetch_sd_models(fetch_session)
                 await self.sd_app.fetch_lora_models(fetch_session)
                 await self.sd_app.fetch_upscalers(fetch_session)
                 await self.sd_app.fetch_sampler(fetch_session)
+                await controlnet_app.fetch_resources(fetch_session)
 
         async def rand_lora_generation(count: int = 1) -> MessageChain | str:
             """
@@ -411,11 +414,11 @@ class StableDiffusionPlugin(AbstractPlugin):
                     hires_parameters=HiResParser(  # Get enable HR flag from configuration
                         enable_hr=self._config_registry.get_config(self.CONFIG_ENABLE_HR),
                         hr_scale=self._config_registry.get_config(self.CONFIG_HR_SCALE),
-                        hr_upscaler=self.sd_app.available_upscalers[
-                            self._config_registry.get_config(self.CONFIG_UPSCALER)
-                        ]
-                        if self.sd_app.available_upscalers
-                        else "",
+                        hr_upscaler=(
+                            self.sd_app.available_upscalers[self._config_registry.get_config(self.CONFIG_UPSCALER)]
+                            if self.sd_app.available_upscalers
+                            else ""
+                        ),
                         denoising_strength=self._config_registry.get_config(self.CONFIG_DENO_STRENGTH),
                     ),
                 )
@@ -447,9 +450,11 @@ class StableDiffusionPlugin(AbstractPlugin):
                     case int(index):
                         lora_manager.use(
                             index,
-                            converted_tokens.pop(0)
-                            if converted_tokens and isinstance(converted_tokens[0], float)
-                            else default_weight,
+                            (
+                                converted_tokens.pop(0)
+                                if converted_tokens and isinstance(converted_tokens[0], float)
+                                else default_weight
+                            ),
                         )
                     case _:
                         return "Invalid Lora index, float can only be applied when putting after the index"
@@ -838,11 +843,13 @@ class StableDiffusionPlugin(AbstractPlugin):
                                 hires_parameters=HiResParser(  # Get enable HR flag from configuration
                                     enable_hr=self._config_registry.get_config(self.CONFIG_ENABLE_HR),
                                     hr_scale=self._config_registry.get_config(self.CONFIG_HR_SCALE),
-                                    hr_upscaler=self.sd_app.available_upscalers[
-                                        self._config_registry.get_config(self.CONFIG_UPSCALER)
-                                    ]
-                                    if self.sd_app.available_upscalers
-                                    else "",
+                                    hr_upscaler=(
+                                        self.sd_app.available_upscalers[
+                                            self._config_registry.get_config(self.CONFIG_UPSCALER)
+                                        ]
+                                        if self.sd_app.available_upscalers
+                                        else ""
+                                    ),
                                     denoising_strength=self._config_registry.get_config(self.CONFIG_DENO_STRENGTH),
                                 ),
                                 refiner_parameters=ref_parser,
