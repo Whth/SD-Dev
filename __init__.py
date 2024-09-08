@@ -136,6 +136,9 @@ class StableDiffusionPlugin(AbstractPlugin):
     CONFIG_SEED = "seed"
     CONFIG_STEPS: str = "steps"
     CONFIG_GEN_BATCH_COUNT: str = "batc"
+
+    CONFIG_HR_SAMPLER: str = "hrsamp"
+    CONFIG_HRPASSSTP: str = "hrpassstp"
     DefaultConfig = {
         CONFIG_POS_KEYWORD: "+",
         CONFIG_NEG_KEYWORD: "-",
@@ -157,6 +160,8 @@ class StableDiffusionPlugin(AbstractPlugin):
         CONFIG_SAMPLER: 0,
         CONFIG_STEPS: 20,
         CONFIG_SEED: -1,
+        CONFIG_HR_SAMPLER: 0,
+        CONFIG_HRPASSSTP: 0,
         CONFIG_GEN_BATCH_COUNT: 1,
         CONFIG_DENO_STRENGTH: 0.65,
         CONFIG_ENABLE_TRANSLATE: 0,
@@ -274,6 +279,8 @@ class StableDiffusionPlugin(AbstractPlugin):
             self.CONFIG_SWITCH_AT,
             self.CONFIG_CFG_SCALE,
             self.CONFIG_SAMPLER,
+            self.CONFIG_HR_SAMPLER,
+            self.CONFIG_HRPASSSTP,
             self.CONFIG_STEPS,
             self.CONFIG_SEED,
             self.CONFIG_GEN_BATCH_COUNT,
@@ -356,10 +363,12 @@ class StableDiffusionPlugin(AbstractPlugin):
             rfmodel = self.sd_app.available_sd_models[self.config_registry.get_config(self.CONFIG_REFINER_MODEL_ID)]
             upscaler = self.sd_app.available_upscalers[self.config_registry.get_config(self.CONFIG_UPSCALER)]
             sampler: str = self.sd_app.available_samplers[self.config_registry.get_config(self.CONFIG_SAMPLER)]
+            hr_sampler = self.sd_app.available_samplers[self.config_registry.get_config(self.CONFIG_HR_SAMPLER)]
             stdout += f"Current model:\n{crmodel}\n"
             stdout += f"Refiner model:\n{rfmodel}\n"
             stdout += f"Upscaler:\n{upscaler}\n"
             stdout += f"Sampler:\n{sampler}\n"
+            stdout += f"HR Sampler:\n{hr_sampler}\n"
             return stdout
 
         # endregion
@@ -425,6 +434,10 @@ class StableDiffusionPlugin(AbstractPlugin):
                             if self.sd_app.available_upscalers
                             else ""
                         ),
+                        hr_sampler_name=self.sd_app.available_samplers[
+                            self.config_registry.get_config(self.CONFIG_HR_SAMPLER)
+                        ],
+                        hr_second_pass_steps=self._config_registry.get_config(self.CONFIG_HRPASSSTP),
                         denoising_strength=self._config_registry.get_config(self.CONFIG_DENO_STRENGTH),
                     ),
                 )
@@ -858,6 +871,10 @@ class StableDiffusionPlugin(AbstractPlugin):
                                         if self.sd_app.available_upscalers
                                         else ""
                                     ),
+                                    hr_sampler_name=self.sd_app.available_samplers[
+                                        self.config_registry.get_config(self.CONFIG_HR_SAMPLER)
+                                    ],
+                                    hr_second_pass_steps=self._config_registry.get_config(self.CONFIG_HRPASSSTP),
                                     denoising_strength=self._config_registry.get_config(self.CONFIG_DENO_STRENGTH),
                                 ),
                                 refiner_parameters=ref_parser,

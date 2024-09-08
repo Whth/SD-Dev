@@ -160,6 +160,7 @@ class HiResParser(BaseModel):
 
     enable_hr: bool = False
     denoising_strength: float = 0.57
+    hr_second_pass_steps: int = 0
     hr_scale: float = 1.56
     hr_upscaler: str = "Latent (antialiased)"
     hr_checkpoint_name: str = Field(default=None)
