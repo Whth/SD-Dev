@@ -167,6 +167,11 @@ class HiResParser(BaseModel):
     hr_sampler_name: str = Field(default=None)
     hr_prompt: str = Field(default=None)
     hr_negative_prompt: str = Field(default=None)
+    hr_additional_modules: List[str] = Field(default_factory=list)
+
+    def __init__(self, **data: Any):
+        super().__init__(**data)
+        self.hr_additional_modules.append(self.hr_sampler_name)
 
 
 class InterrogateParser(BaseModel):
@@ -189,6 +194,9 @@ class OverRideSettings(BaseModel):
 
     override_settings: Dict = Field(default_factory=dict)
     override_settings_restore_afterwards: bool = False
+
+    def is_some(self) -> bool:
+        return bool(self.override_settings)
 
 
 class Options(BaseModel):
@@ -467,6 +475,27 @@ class Options(BaseModel):
         self._fetched = True
 
         print(f"Updated SD-config count: {updated_config_count}")
+
+    async def set_configs(self, settings: Dict, session: ClientSession = None):
+        """
+        Sets the configuration using the specified settings.
+        Args:
+            settings:
+            session:
+
+        Returns:
+
+        """
+        try:
+            if session:
+                async with session.post(API_GET_CONFIG, json=settings) as response:
+                    return response
+            else:
+                async with ClientSession(base_url=self.host_url) as session:
+                    async with session.post(API_GET_CONFIG, json=settings) as response:
+                        return response
+        except ClientConnectorError as e:
+            warnings.warn(f"Cant fetch sd configs,{e}")
 
     def load_dict_to_config(self, config_dict: Dict[str, Any]) -> int:
         print(f"Loading config dict size: {len(config_dict)}")

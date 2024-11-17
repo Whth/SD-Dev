@@ -1,5 +1,6 @@
 import pathlib
 import random
+from asyncio import gather
 from functools import partial
 from typing import List, Optional, Callable, Union, OrderedDict, Set
 
@@ -390,12 +391,14 @@ class StableDiffusionPlugin(AbstractPlugin):
                 None
             """
             async with ClientSession(base_url=self._config_registry.get_config(self.CONFIG_SD_HOST)) as fetch_session:
-                await sd_options.fetch_config(fetch_session)
-                await self.sd_app.fetch_sd_models(fetch_session)
-                await self.sd_app.fetch_lora_models(fetch_session)
-                await self.sd_app.fetch_upscalers(fetch_session)
-                await self.sd_app.fetch_sampler(fetch_session)
-                await controlnet_app.fetch_resources(fetch_session)
+                await gather(
+                    sd_options.fetch_config(fetch_session),
+                    self.sd_app.fetch_sd_models(fetch_session),
+                    self.sd_app.fetch_lora_models(fetch_session),
+                    self.sd_app.fetch_upscalers(fetch_session),
+                    self.sd_app.fetch_sampler(fetch_session),
+                    controlnet_app.fetch_resources(fetch_session),
+                )
 
         async def rand_lora_generation(count: int = 1) -> MessageChain | str:
             """
@@ -789,30 +792,26 @@ class StableDiffusionPlugin(AbstractPlugin):
             send_batch_size = self.config_registry.get_config(
                 self.CONFIG_SEND_BATCH_SIZE
             )  # Get send batch size from configuration
-            overrides: None | OverRideSettings = None
-            ref_parser: None | RefinerParser = None
-            if self.sd_app.available_sd_models:
-                sd_options.record_start()
-                sd_options.sd_model_checkpoint = self.sd_app.available_sd_models[
-                    self.config_registry.get_config(self.CONFIG_CURRENT_MODEL_ID)
-                ]
-                sd_options.CLIP_stop_at_last_layers = self.config_registry.get_config(self.CONFIG_CLIP)
+            sd_options.record_start()
+            sd_options.sd_model_checkpoint = self.sd_app.available_sd_models[
+                self.config_registry.get_config(self.CONFIG_CURRENT_MODEL_ID)
+            ]
+            sd_options.CLIP_stop_at_last_layers = self.config_registry.get_config(self.CONFIG_CLIP)
 
-                overrides = sd_options.generate_override_settings_payload(
-                    sd_options.record_end(), recover_after_override=False
+            overrides: OverRideSettings = sd_options.generate_override_settings_payload(sd_options.record_end())
+            if overrides.is_some():
+                await sd_options.set_configs(overrides.override_settings)
+
+            ref_parser = (
+                RefinerParser(
+                    refiner_checkpoint=(
+                        self.sd_app.available_sd_models[self.config_registry.get_config(self.CONFIG_REFINER_MODEL_ID)]
+                    ),
+                    refiner_switch_at=self.config_registry.get_config(self.CONFIG_SWITCH_AT),
                 )
-                ref_parser = (
-                    RefinerParser(
-                        refiner_checkpoint=(
-                            self.sd_app.available_sd_models[
-                                self.config_registry.get_config(self.CONFIG_REFINER_MODEL_ID)
-                            ]
-                        ),
-                        refiner_switch_at=self.config_registry.get_config(self.CONFIG_SWITCH_AT),
-                    )
-                    if self.config_registry.get_config(self.CONFIG_ENABLE_REFINER)
-                    else None
-                )
+                if self.config_registry.get_config(self.CONFIG_ENABLE_REFINER)
+                else None
+            )
 
             async with ClientSession(
                 base_url=self.config_registry.get_config(self.CONFIG_SD_HOST),
@@ -851,9 +850,7 @@ class StableDiffusionPlugin(AbstractPlugin):
                     )
                     if image_url:
                         send_result.extend(
-                            await _make_img2img(
-                                diffusion_parser, image_url, override_settings=overrides, refiner_parameters=ref_parser
-                            )
+                            await _make_img2img(diffusion_parser, image_url, refiner_parameters=ref_parser)
                         )  # Make image-to-image diffusion
                     else:
                         # Generate the image using the diffusion parser
@@ -879,7 +876,6 @@ class StableDiffusionPlugin(AbstractPlugin):
                                 ),
                                 refiner_parameters=ref_parser,
                                 adetailer_parameters=adetailer_parser,
-                                override_settings=overrides,
                                 session=session,
                             )
                         )
@@ -991,7 +987,7 @@ class StableDiffusionPlugin(AbstractPlugin):
         async def _make_img2img(
             diffusion_paser: DiffusionParser,
             image_url: str,
-            override_settings: OverRideSettings,
+            override_settings: OverRideSettings = None,
             refiner_parameters: RefinerParser = None,
         ) -> List[str]:
             # Download the first image in the chain
