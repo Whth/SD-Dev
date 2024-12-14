@@ -11,6 +11,7 @@ API_GET_UPSCALERS: str = "/sdapi/v1/upscalers"
 API_INTERROGATE: str = "/sdapi/v1/interrogate"
 API_INTERRUPT: str = "/sdapi/v1/interrupt"
 API_SAMPLERS: str = "/sdapi/v1/samplers"
+API_MODULES: str = "/sdapi/v1/sd-modules"
 API_CONTROLNET_MODEL_LIST: str = "/controlnet/model_list"
 API_CONTROLNET_MODULE_LIST: str = "/controlnet/module_list"
 CONTROLNET_MODULE_KEY: str = "module_list"  # used to extract the list obj in the response json

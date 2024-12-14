@@ -168,10 +168,12 @@ class HiResParser(BaseModel):
     hr_prompt: str = Field(default=None)
     hr_negative_prompt: str = Field(default=None)
     hr_additional_modules: List[str] = Field(default_factory=list)
-
+    hr_vae:str=""
     def __init__(self, **data: Any):
         super().__init__(**data)
         self.hr_additional_modules.append(self.hr_sampler_name)
+        self.hr_additional_modules.append(self.hr_vae)
+
 
 
 class InterrogateParser(BaseModel):

@@ -30,6 +30,7 @@ from .api import (
     PNG_INFO_KEY,
     API_INTERRUPT,
     API_SAMPLERS,
+    API_MODULES
 )
 from .controlnet import ControlNetUnit, make_cn_payload
 from .parser import (
@@ -134,6 +135,7 @@ class StableDiffusionApp(BaseModel):
     available_lora_models: List[str] = Field(default_factory=list, const=True)
     available_upscalers: List[str] = Field(default_factory=list, const=True)
     available_samplers: List[str] = Field(default_factory=list, const=True)
+    available_vae: List[str] = Field(default_factory=list, const=True)
 
     def __init__(self, **data):
         super().__init__(**data)
@@ -399,6 +401,8 @@ class StableDiffusionApp(BaseModel):
 
     async def fetch_sampler(self, session: Optional[ClientSession] = None) -> List[Dict]:
         return await self._fetch_and_store_models(API_SAMPLERS, self.available_samplers, "name", session)
+    async def fetch_modules(self, session: Optional[ClientSession] = None) -> List[Dict]:
+        return await self._fetch_and_store_models(API_MODULES, self.available_vae, "model_name", session)
 
     async def interrogate_image(self, parser: InterrogateParser) -> OrderedDict[str, float]:
         """

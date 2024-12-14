@@ -72,6 +72,7 @@ class CMD(EnumCMD):
     normal = ["n", "s", "sd"]
     lora = ["l", "lr"]
     upscaler = ["u", "up", "ups"]
+    vae = ["va","v"]
     sampler = ["sp", "samp"]
     positive = ["p", "pos"]
     negative = ["n", "neg"]
@@ -137,6 +138,7 @@ class StableDiffusionPlugin(AbstractPlugin):
     CONFIG_SEED = "seed"
     CONFIG_STEPS: str = "steps"
     CONFIG_GEN_BATCH_COUNT: str = "batc"
+    CONFIG_HR_VAE:str="hrvae"
 
     CONFIG_HR_SAMPLER: str = "hrsamp"
     CONFIG_HRPASSSTP: str = "hrpassstp"
@@ -177,6 +179,8 @@ class StableDiffusionPlugin(AbstractPlugin):
         CONFIG_APPEND_LORAS: [],
         # in the current version of QQ transmitting protocol,
         # 20 is the maximum of the pictures that can be sent at once
+
+        CONFIG_HR_VAE:0
     }
 
     @classmethod
@@ -285,6 +289,7 @@ class StableDiffusionPlugin(AbstractPlugin):
             self.CONFIG_STEPS,
             self.CONFIG_SEED,
             self.CONFIG_GEN_BATCH_COUNT,
+            self.CONFIG_HR_VAE
         }
 
         # endregion
@@ -370,6 +375,7 @@ class StableDiffusionPlugin(AbstractPlugin):
             stdout += f"Upscaler:\n{upscaler}\n"
             stdout += f"Sampler:\n{sampler}\n"
             stdout += f"HR Sampler:\n{hr_sampler}\n"
+            
             return stdout
 
         # endregion
@@ -397,6 +403,7 @@ class StableDiffusionPlugin(AbstractPlugin):
                     self.sd_app.fetch_lora_models(fetch_session),
                     self.sd_app.fetch_upscalers(fetch_session),
                     self.sd_app.fetch_sampler(fetch_session),
+                    self.sd_app.fetch_modules(fetch_session),
                     controlnet_app.fetch_resources(fetch_session),
                 )
 
@@ -437,9 +444,8 @@ class StableDiffusionPlugin(AbstractPlugin):
                             if self.sd_app.available_upscalers
                             else ""
                         ),
-                        hr_sampler_name=self.sd_app.available_samplers[
-                            self.config_registry.get_config(self.CONFIG_HR_SAMPLER)
-                        ],
+                        hr_vae=self.sd_app.available_vae[self._config_registry.get_config(self.CONFIG_HR_VAE)],
+                        
                         hr_second_pass_steps=self._config_registry.get_config(self.CONFIG_HRPASSSTP),
                         denoising_strength=self._config_registry.get_config(self.CONFIG_DENO_STRENGTH),
                     ),
@@ -714,6 +720,11 @@ class StableDiffusionPlugin(AbstractPlugin):
                             help_message="get available samplers",
                             source=lambda: dict_to_markdown_table_complex({"Samplers": self.sd_app.available_samplers}),
                         ),
+                        ExecutableNode(
+                            **CMD.vae.export(),
+                            help_message="get available vae",
+                            source=lambda: dict_to_markdown_table_complex({"VAE": self.sd_app.available_vae}),
+                        ),
                     ],
                 ),
                 ExecutableNode(
@@ -868,6 +879,8 @@ class StableDiffusionPlugin(AbstractPlugin):
                                         if self.sd_app.available_upscalers
                                         else ""
                                     ),
+                                    hr_vae=self.sd_app.available_vae[self._config_registry.get_config(self.CONFIG_HR_VAE)],
+
                                     hr_sampler_name=self.sd_app.available_samplers[
                                         self.config_registry.get_config(self.CONFIG_HR_SAMPLER)
                                     ],
